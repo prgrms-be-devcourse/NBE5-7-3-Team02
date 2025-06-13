@@ -1,38 +1,18 @@
-package io.twogether.nbe_5_7_2_02team.oauth.domain;
+package io.twogether.nbe_5_7_2_02team.oauth.domain
 
-import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
+import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
+import jakarta.persistence.*
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken extends BaseEntity {
-
+class RefreshToken(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    val id: Long? = null,
 
-    private String refreshToken;
+    val refreshToken: String,
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;
-
-    @Builder
-    public RefreshToken(String refreshToken, Member member) {
-        this.refreshToken = refreshToken;
-        this.member = member;
-    }
-}
+    val member: Member
+) : BaseEntity()
