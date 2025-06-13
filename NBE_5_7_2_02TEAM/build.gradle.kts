@@ -25,43 +25,43 @@ repositories {
 }
 
 dependencies {
-    /* SPRING FRAMEWORK */
-    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation ("org.springframework.boot:spring-boot-starter-security")
-    implementation ("org.springframework.boot:spring-boot-starter-web")
-    implementation ("org.springframework.boot:spring-boot-starter-validation")
-    implementation ("org.springframework.boot:spring-boot-starter-websocket")
-    implementation ("org.springframework.security:spring-security-messaging")
-    developmentOnly ("org.springframework.boot:spring-boot-devtools")
+    // SPRING FRAMEWORK
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework.security:spring-security-messaging")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    /* DATABASE */
-    runtimeOnly ("com.h2database:h2")
-    runtimeOnly ("com.mysql:mysql-connector-j")
-    implementation ("org.flywaydb:flyway-mysql")
-    implementation ("org.flywaydb:flyway-core")
+    // DATABASE
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.flywaydb:flyway-mysql")
+    implementation("org.flywaydb:flyway-core")
 
-    /* QUERYDSL */
-    implementation ("io.github.openfeign.querydsl:querydsl-jpa:6.11")
-    annotationProcessor ("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
+    // QUERYDSL
+    implementation("io.github.openfeign.querydsl:querydsl-jpa:6.11")
+    annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
 
-    /* ETC */
-    compileOnly ("org.projectlombok:lombok")
-    annotationProcessor ("org.projectlombok:lombok")
-    implementation ("io.jsonwebtoken:jjwt-api:0.12.6")
-    runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    // ETC
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.21")
 
-    /* TEST */
-    testCompileOnly ("org.projectlombok:lombok")
-    testAnnotationProcessor ("org.projectlombok:lombok")
-    testImplementation ("org.springframework.boot:spring-boot-starter-test")
-    testImplementation ("org.springframework.security:spring-security-test")
-    testRuntimeOnly ("org.junit.platform:junit-platform-launcher")
-    testImplementation ("org.testcontainers:mysql")
-    testImplementation ("org.testcontainers:junit-jupiter")
-    testImplementation ("com.github.database-rider:rider-spring:1.44.0")
+    // TEST
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.testcontainers:mysql")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("com.github.database-rider:rider-spring:1.44.0")
 }
 
 tasks.test {
