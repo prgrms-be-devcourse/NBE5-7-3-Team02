@@ -1,16 +1,14 @@
-package io.twogether.nbe_5_7_2_02team.oauth.dao;
+package io.twogether.nbe_5_7_2_02team.oauth.dao
 
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken;
-import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshTokenBlackList;
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
+import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken
+import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshTokenBlackList
+import java.util.*
 
-import java.util.Optional;
+interface TokenRepository {
+    fun save(member: Member, token: String): RefreshToken?
 
-public interface TokenRepository {
+    fun addBlackList(refreshToken: RefreshToken): RefreshTokenBlackList?
 
-    RefreshToken save(Member member, String token);
-
-    RefreshTokenBlackList addBlackList(RefreshToken refreshToken);
-
-    Optional<RefreshToken> findValidRefToken(Long memberId);
+    fun findValidRefToken(memberId: Long): RefreshToken?
 }
