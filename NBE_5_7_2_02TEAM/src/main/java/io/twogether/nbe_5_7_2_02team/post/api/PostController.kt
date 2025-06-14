@@ -21,12 +21,12 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/posts")
 class PostController(
     private val postService: PostService,
-    private val mapper: ObjectMapper
+    private val mapper: ObjectMapper,
 ) {
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPost(
         @AuthenticationPrincipal userDetails: UserDetails,
-        @ModelAttribute request: @Valid PostCreateRequest
+        @ModelAttribute request: @Valid PostCreateRequest,
     ): ResponseEntity<PostResponse> {
         if (StringUtils.isNotBlank(request.recruitmentFieldsJson)) {
             try {
@@ -49,7 +49,7 @@ class PostController(
         @PathVariable postId: Long,
         @RequestPart("post") request: PostUpdateRequest,
         @RequestPart(value = "images", required = false) images: MutableList<MultipartFile>?,
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<PostResponse> {
         request.images = images
         val response =
@@ -59,7 +59,8 @@ class PostController(
 
     @DeleteMapping(value = ["/{postId}"])
     fun deletePost(
-        @PathVariable postId: Long, @AuthenticationPrincipal userDetails: UserDetails
+        @PathVariable postId: Long,
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Void> {
         postService.deletePost(postId, userDetails.username.toLong())
         return ResponseEntity.ok().build()
@@ -68,7 +69,7 @@ class PostController(
     @GetMapping
     fun findFilteredPosts(
         @ModelAttribute request: PostGetRequest,
-        @AuthenticationPrincipal userDetails: UserDetails?
+        @AuthenticationPrincipal userDetails: UserDetails?,
     ): ResponseEntity<PostGetResponse> {
         val response = postService.getFilteredPosts(request, userDetails)
         if (CollectionUtils.isEmpty(response.posts)) {
@@ -79,7 +80,8 @@ class PostController(
 
     @GetMapping("/member/{memberId}")
     fun findPosts(
-        @ModelAttribute request: PostGetRequest, @PathVariable memberId: Long
+        @ModelAttribute request: PostGetRequest,
+        @PathVariable memberId: Long,
     ): ResponseEntity<PostGetResponse> {
         val response = postService.getPostsByMember(request, memberId)
         if (CollectionUtils.isEmpty(response.posts)) {
@@ -89,14 +91,17 @@ class PostController(
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@PathVariable postId: Long): ResponseEntity<PostDetailResponse> {
+    fun getPost(
+        @PathVariable postId: Long,
+    ): ResponseEntity<PostDetailResponse> {
         val response = postService.getPostById(postId)
         return ResponseEntity.ok(response)
     }
 
     @PostMapping("/{postId}/likes")
     fun likePost(
-        @PathVariable postId: Long, @AuthenticationPrincipal userDetails: UserDetails
+        @PathVariable postId: Long,
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Void> {
         postService.likePost(postId, userDetails.username.toLong())
         return ResponseEntity.ok().build()
@@ -104,7 +109,8 @@ class PostController(
 
     @DeleteMapping("/{postId}/likes")
     fun unlikePost(
-        @PathVariable postId: Long, @AuthenticationPrincipal userDetails: UserDetails
+        @PathVariable postId: Long,
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Void> {
         postService.unlikePost(postId, userDetails.username.toLong())
         return ResponseEntity.ok().build()
@@ -114,10 +120,12 @@ class PostController(
     fun applyToField(
         @PathVariable postId: Long?,
         @RequestBody request: @Valid PostApplyRequest,
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Void> {
         postService.apply(
-            postId, request.fieldName, userDetails.username.toLong()
+            postId,
+            request.fieldName,
+            userDetails.username.toLong(),
         )
         return ResponseEntity.ok().build()
     }
