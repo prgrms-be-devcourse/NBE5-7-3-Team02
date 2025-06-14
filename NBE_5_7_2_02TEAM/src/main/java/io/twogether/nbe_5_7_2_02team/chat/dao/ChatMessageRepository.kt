@@ -11,7 +11,7 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
     fun findByIdAndChatRoomAndChatMember(
         id: Long,
         chatRoom: ChatRoom,
-        chatMember: ChatMember
+        chatMember: ChatMember,
     ): ChatMessage
 
     fun deleteByChatRoom(chatRoom: ChatRoom)

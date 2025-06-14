@@ -7,12 +7,16 @@ import io.twogether.nbe_5_7_2_02team.member.domain.Member
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ChatMemberRepository : JpaRepository<ChatMember, Long> {
-    fun findByChatRoomAndMember(chatRoom: ChatRoom, member: Member): ChatMember
+    fun findByChatRoomAndMember(
+        chatRoom: ChatRoom,
+        member: Member,
+    ): ChatMember
 
     fun findByChatRoom(chatRoom: ChatRoom): MutableList<ChatMember>
 
     fun findByMemberAndChatMemberStatusIn(
-        member: Member, chatMemberStatuses: MutableCollection<ChatMemberStatus>
+        member: Member,
+        chatMemberStatuses: MutableCollection<ChatMemberStatus>,
     ): MutableList<ChatMember>
 
     fun deleteByChatRoom(chatRoom: ChatRoom)
