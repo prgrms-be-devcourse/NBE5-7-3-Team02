@@ -2,10 +2,6 @@ package io.twogether.nbe_5_7_2_02team.post.dto.request;
 
 import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -14,8 +10,7 @@ import java.util.List;
 
 public class PostUpdateRequest {
 
-    public PostUpdateRequest(){
-    }
+    public PostUpdateRequest() {}
 
     public String getTitle() {
         return title;
@@ -37,8 +32,7 @@ public class PostUpdateRequest {
         return recruitmentStatus;
     }
 
-    public void setRecruitmentStatus(
-        RecruitmentStatus recruitmentStatus) {
+    public void setRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
         this.recruitmentStatus = recruitmentStatus;
     }
 
@@ -70,8 +64,7 @@ public class PostUpdateRequest {
         return recruitmentFields;
     }
 
-    public void setRecruitmentFields(
-        List<RecruitmentFieldRequest> recruitmentFields) {
+    public void setRecruitmentFields(List<RecruitmentFieldRequest> recruitmentFields) {
         this.recruitmentFields = recruitmentFields;
     }
 

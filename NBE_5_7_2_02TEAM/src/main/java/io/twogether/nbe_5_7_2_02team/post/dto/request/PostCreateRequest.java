@@ -9,10 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -21,8 +17,7 @@ import java.util.List;
 
 public class PostCreateRequest {
 
-    public PostCreateRequest() {
-    }
+    public PostCreateRequest() {}
 
     public String getTitle() {
         return title;
@@ -44,8 +39,7 @@ public class PostCreateRequest {
         return recruitmentStatus;
     }
 
-    public void setRecruitmentStatus(
-        RecruitmentStatus recruitmentStatus) {
+    public void setRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
         this.recruitmentStatus = recruitmentStatus;
     }
 
@@ -85,8 +79,7 @@ public class PostCreateRequest {
         return recruitmentFields;
     }
 
-    public void setRecruitmentFields(
-        List<RecruitmentFieldRequest> recruitmentFields) {
+    public void setRecruitmentFields(List<RecruitmentFieldRequest> recruitmentFields) {
         this.recruitmentFields = recruitmentFields;
     }
 

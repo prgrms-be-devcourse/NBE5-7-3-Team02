@@ -5,10 +5,7 @@ import io.twogether.nbe_5_7_2_02team.member.domain.Member;
 
 import jakarta.persistence.*;
 
-import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -18,8 +15,7 @@ import java.util.List;
 @Entity
 public class Post extends BaseEntity {
 
-    protected Post() {
-    }
+    protected Post() {}
 
     public Long getId() {
         return id;
