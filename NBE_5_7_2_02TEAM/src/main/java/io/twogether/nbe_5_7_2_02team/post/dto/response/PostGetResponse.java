@@ -11,9 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
-@Getter
 public class PostGetResponse {
+
+    public List<PostGetResult> getPosts() {
+        return posts;
+    }
 
     private List<PostGetResult> posts;
 

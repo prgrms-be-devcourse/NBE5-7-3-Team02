@@ -19,10 +19,76 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
 public class PostCreateRequest {
+
+    public PostCreateRequest() {
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public RecruitmentStatus getRecruitmentStatus() {
+        return recruitmentStatus;
+    }
+
+    public void setRecruitmentStatus(
+        RecruitmentStatus recruitmentStatus) {
+        this.recruitmentStatus = recruitmentStatus;
+    }
+
+    public LocalDate getRecruitmentDeadline() {
+        return recruitmentDeadline;
+    }
+
+    public void setRecruitmentDeadline(LocalDate recruitmentDeadline) {
+        this.recruitmentDeadline = recruitmentDeadline;
+    }
+
+    public List<MultipartFile> getImages() {
+        return images;
+    }
+
+    public void setImages(List<MultipartFile> images) {
+        this.images = images;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getRecruitmentFieldsJson() {
+        return recruitmentFieldsJson;
+    }
+
+    public void setRecruitmentFieldsJson(String recruitmentFieldsJson) {
+        this.recruitmentFieldsJson = recruitmentFieldsJson;
+    }
+
+    public List<RecruitmentFieldRequest> getRecruitmentFields() {
+        return recruitmentFields;
+    }
+
+    public void setRecruitmentFields(
+        List<RecruitmentFieldRequest> recruitmentFields) {
+        this.recruitmentFields = recruitmentFields;
+    }
 
     @NotBlank(message = "제목은 필수입니다.")
     private String title;
