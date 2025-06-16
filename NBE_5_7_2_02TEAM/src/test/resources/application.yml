@@ -43,3 +43,8 @@ custom:
     secrets:
       origin-key: ${JWT_ORIGIN_KEY}
       app-key: ${JWT_APP_KEY}
+
+management:
+  endpoints:
+    web:
+      base-path: ${ACTUATOR_BASE_PATH}

@@ -54,6 +54,11 @@ custom:
     secrets:
       origin-key: ${JWT_ORIGIN_KEY}
       app-key: ${JWT_APP_KEY}
+
+management:
+  endpoints:
+    web:
+      base-path: ${ACTUATOR_BASE_PATH}
 ---
 spring:
   config:
@@ -68,3 +73,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
+  security:
+    user:
+      name: ${PROM_NAME}
+      password: ${PROM_PASSWORD}
+      roles: PROMETHEUS
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: ${ACTUATOR_BASE_PATH}
+  endpoint:
+    prometheus:
+      access: unrestricted

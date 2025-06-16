@@ -1,10 +1,14 @@
-name: Java Style Check
+name: Style Check
 
 on:
   push:
     branches-ignore: 
       - main
       - dev
+
+concurrency:
+  group: feat-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   java-style:
