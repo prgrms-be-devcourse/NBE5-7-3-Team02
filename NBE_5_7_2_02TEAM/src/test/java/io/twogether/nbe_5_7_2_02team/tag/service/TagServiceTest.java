@@ -32,7 +32,7 @@ class TagServiceTest {
         tags = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < random.nextInt(10) + 1; i++) {
-            Tag tag = Tag.builder().name("TAG-" + i).build();
+            Tag tag = new Tag("TAG-" + i);
             tags.add(tag);
             tagRepository.save(tag);
         }
