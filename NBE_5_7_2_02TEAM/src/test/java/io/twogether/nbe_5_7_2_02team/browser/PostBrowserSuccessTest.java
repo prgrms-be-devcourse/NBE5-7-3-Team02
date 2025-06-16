@@ -34,7 +34,6 @@ import io.twogether.nbe_5_7_2_02team.post.dto.request.PostApplyRequest;
 import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 
-import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 
 import org.junit.jupiter.api.DisplayName;
@@ -45,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -301,15 +301,15 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         long targetPostId = 2L;
         TokenPair tokenPair = getTokenPair(targetMemberId);
 
-        PostUpdateRequest request = new PostUpdateRequest(
-            "NEW TITLE",
-            "NEW CONTENT",
-            DONE,
-            null,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            new ArrayList<>()
-        );
+        PostUpdateRequest request =
+                new PostUpdateRequest(
+                        "NEW TITLE",
+                        "NEW CONTENT",
+                        DONE,
+                        null,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>());
 
         MockMultipartFile jsonPart =
                 new MockMultipartFile(
