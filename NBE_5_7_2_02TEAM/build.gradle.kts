@@ -26,6 +26,10 @@ repositories {
     mavenCentral()
 }
 
+springBoot {
+    buildInfo()
+}
+
 dependencies {
     // SPRING FRAMEWORK
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -35,6 +39,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.security:spring-security-messaging")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // DATABASE
@@ -46,6 +51,9 @@ dependencies {
     // QUERYDSL
     implementation("io.github.openfeign.querydsl:querydsl-jpa:6.11")
     annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
+
+    // MONITORING
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     // ETC
     compileOnly("org.projectlombok:lombok")
