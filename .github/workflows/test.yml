@@ -21,6 +21,8 @@ jobs:
       GITHUB_CLIENT_ID: ${{ secrets.OAUTH_GITHUB_CLIENT_ID }}
       GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
       PROJECT_DIR: NBE_5_7_2_02TEAM
+      ACTUATOR_BASE_PATH: ${{ secrets.ACTUATOR_BASE_PATH }}
+
     steps:
       - uses: actions/checkout@v4
 
