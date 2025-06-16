@@ -48,12 +48,12 @@ interface ServerChatItem {
 
 // 백엔드 ChatMemberGetResponse DTO와 일치하도록 수정
 interface ServerChatParticipant {
-    chatroomId: number
-    memberId: number
-    memberName: string
-    memberImage: string | null
-    createdAt: string
-    chatMemberStatus: string
+  chatroom_id: number
+  member_id: number
+  member_name: string
+  member_image: string | null
+  created_at: string
+  chat_member_status: string
 }
 
 // 프론트엔드에서 사용할 참여자 정보
