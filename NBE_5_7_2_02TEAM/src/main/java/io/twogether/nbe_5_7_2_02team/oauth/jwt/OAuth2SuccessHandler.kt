@@ -35,13 +35,13 @@ class OAuth2SuccessHandler(
         request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
     ) {
         val principal = authentication.principal as MemberDetails
-        val findMember = memberRepository.findById(principal.id)
+        val findMember = memberRepository.findById(principal.id!!)
             ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val params = HashMap<String, String>()
 
         val refreshTokenOptional =
-            jwtTokenProvider.findRefreshToken(principal.id)
+            jwtTokenProvider.findRefreshToken(principal.id!!)
 
         if (refreshTokenOptional == null) {
             val tokenPair = jwtTokenProvider.generateTokenPair(findMember)
@@ -49,7 +49,7 @@ class OAuth2SuccessHandler(
             params["refresh"] = tokenPair.refreshToken
         } else {
             val accessToken =
-                jwtTokenProvider.issueAccessToken(principal.id, principal.role)
+                jwtTokenProvider.issueAccessToken(principal.id!!, principal.role!!)
             params["access"] = accessToken
             params["refresh"] = refreshTokenOptional.refreshToken
         }
