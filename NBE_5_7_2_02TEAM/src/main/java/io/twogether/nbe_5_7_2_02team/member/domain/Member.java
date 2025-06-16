@@ -89,13 +89,13 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(
-        String email,
-        String name,
-        String profileImage,
-        String job,
-        String course,
-        String githubId,
-        Role role) {
+            String email,
+            String name,
+            String profileImage,
+            String job,
+            String course,
+            String githubId,
+            Role role) {
         this.email = email;
         this.name = name;
         this.profileImage = profileImage;

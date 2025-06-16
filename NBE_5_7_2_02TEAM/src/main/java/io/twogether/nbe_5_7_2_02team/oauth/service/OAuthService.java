@@ -199,10 +199,8 @@ public class OAuthService extends DefaultOAuth2UserService {
     // GitHub의 Access Token으로 로그인 (첫 로그인 시 정보 저장)
     public LoginResponse login(String accessToken) {
         GitHubUserInfoResponse userInfo = getUserInfo(accessToken);
-        Member member =
-                memberRepository
-                        .findByEmail(userInfo.getEmail());
-//                        .orElseGet(() -> saveUserInfo(userInfo));
+        Member member = memberRepository.findByEmail(userInfo.getEmail());
+        //                        .orElseGet(() -> saveUserInfo(userInfo));
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
         return LoginResponse.builder()
                 .tokenPair(tokenPair)
