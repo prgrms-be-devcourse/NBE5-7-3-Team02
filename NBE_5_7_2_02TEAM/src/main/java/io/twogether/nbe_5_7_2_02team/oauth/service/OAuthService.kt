@@ -54,11 +54,13 @@ class OAuthService(
 
         val memberDetails = MemberDetailsFactory.memberDetails(providerId, oAuth2User)
 
-        val member = memberRepository.findById(loginResponse.memberId).orElseThrow{ErrorException(ErrorCode.NOT_FOUND_MEMBER)}
+        val member = memberRepository.findById(loginResponse.memberId)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+
+        memberDetails.id=member.id
+        memberDetails.role=member.role
 
         return memberDetails
-            .setId(member.id)
-            .setRole(member.role)
     }
 
     // GitHub에서 받은 code로 GitHub의 AccessToken 발급
@@ -87,7 +89,7 @@ class OAuthService(
             val body = response.body
             if (body != null && body.containsKey("access_token")) {
                 log.info("GitHub access token obtained successfully")
-                GitHubLoginResponse(accessToken = body.getAsString("access_token"))
+                GitHubLoginResponse(body.getAsString("access_token"))
             } else {
                 log.error("GitHub token response missing access_token: {}", body)
                 throw ErrorException(ErrorCode.OAUTH_TOKEN_ERROR)
@@ -112,11 +114,7 @@ class OAuthService(
         val email = fetchPrimaryEmail(entity)
         val organizations = fetchOrganizations(entity)
 
-        return GitHubUserInfoResponse(
-            githubId = login,
-            avatarUrl = avatarUrl,
-            email = email,
-            organizations = organizations)
+        return GitHubUserInfoResponse(login, avatarUrl, email, organizations)
     }
 
     // GitHub 사용자의 기본 이메일
@@ -195,12 +193,7 @@ class OAuthService(
         validatePrgrmsOrganization(userInfo.organizations)
 
         val member =
-            Member(
-                githubId=userInfo.githubId,
-                email=userInfo.email,
-                profileImage=userInfo.avatarUrl,
-                role=Role.MEMBER
-                )
+            Member( Role.MEMBER,  userInfo.email, userInfo.avatarUrl, userInfo.githubId)
 
         return memberRepository.save(member)
     }
@@ -213,19 +206,14 @@ class OAuthService(
                 .findByEmail(userInfo.email)
                 ?: saveUserInfo(userInfo)
         val tokenPair = jwtTokenProvider.generateTokenPair(member)
-        return LoginResponse(
-            tokenPair = tokenPair,
-            role = member.role,
-            memberId = member.id,
+        return LoginResponse(tokenPair, member.role, member.id,
         )
     }
 
     // 추가 회원 가입 정보 등록
     fun signup(request: SignUpRequest, id: Long): SignUpResponse {
-        val member =
-            memberRepository
-                .findById(id)
-                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
+        val member = memberRepository.findById(id)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         member.name = request.name
         member.job = request.job
@@ -249,10 +237,8 @@ class OAuthService(
     }
 
     fun getMemberDetailsById(id: Long): MemberDetails {
-        val member =
-            memberRepository
-                .findById(id)
-                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
+        val member = memberRepository.findById(id)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
         return MemberDetails.from(member)
     }
 

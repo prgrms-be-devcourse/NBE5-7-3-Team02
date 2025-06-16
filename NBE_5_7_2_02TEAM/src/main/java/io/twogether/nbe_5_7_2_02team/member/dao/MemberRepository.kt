@@ -1,12 +1,10 @@
-package io.twogether.nbe_5_7_2_02team.member.dao;
+package io.twogether.nbe_5_7_2_02team.member.dao
 
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
+import org.springframework.data.jpa.repository.JpaRepository
+import java.util.*
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
-
-public interface MemberRepository extends JpaRepository<Member, Long> {
-
-    Optional<Member> findByEmail(String email);
+interface MemberRepository : JpaRepository<Member?, Long?> {
+    fun findByEmail(email: String?): Member?
+    fun findById(id: Long): Member?
 }

@@ -23,15 +23,12 @@ open class TokenService (
         val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
         val memberId = tokenBody.memberId
 
-        jwtTokenProvider
-            .findRefreshToken(memberId)
-            .filter { rt: RefreshToken -> rt.refreshToken == refreshTokenValue }
-            .orElseThrow { ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN) }
+        jwtTokenProvider.findRefreshToken(memberId)
+            ?.takeIf { it.refreshToken == refreshTokenValue }
+            ?: throw ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN)
 
-        val member =
-            memberRepository
-                .findById(memberId)
-                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
+        val member = memberRepository.findById(memberId)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         return jwtTokenProvider.generateTokenPair(member)
     }
@@ -44,11 +41,9 @@ open class TokenService (
         val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
         val memberId = tokenBody.memberId
 
-        val refreshToken =
-            jwtTokenProvider
-                .findRefreshToken(memberId)
-                .filter { rt: RefreshToken -> rt.refreshToken == refreshTokenValue }
-                .orElseThrow { ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN) }
+        val refreshToken = jwtTokenProvider.findRefreshToken(memberId)
+            ?.takeIf { it.refreshToken == refreshTokenValue }
+            ?: throw ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN)
 
         jwtTokenProvider.addBlackList(refreshToken)
     }

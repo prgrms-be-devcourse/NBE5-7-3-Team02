@@ -24,7 +24,6 @@ public class CheckUserLogin {
         }
 
         return memberRepository
-                .findById(Long.parseLong(userDetails.getUsername()))
-                .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
+                .findById(Long.parseLong(userDetails.getUsername()));
     }
 }
