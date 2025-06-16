@@ -200,8 +200,8 @@ public class OAuthService extends DefaultOAuth2UserService {
     public LoginResponse login(String accessToken) {
         GitHubUserInfoResponse userInfo = getUserInfo(accessToken);
         Member member = memberRepository.findByEmail(userInfo.getEmail());
-        //TODO: Kotiln 전환시 .orElseThrow{} 로 전환한 부분입니다.
-//                        .orElseGet(() -> saveUserInfo(userInfo));
+        // TODO: Kotiln 전환시 .orElseThrow{} 로 전환한 부분입니다.
+        //                        .orElseGet(() -> saveUserInfo(userInfo));
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
         return LoginResponse.builder()
                 .tokenPair(tokenPair)
