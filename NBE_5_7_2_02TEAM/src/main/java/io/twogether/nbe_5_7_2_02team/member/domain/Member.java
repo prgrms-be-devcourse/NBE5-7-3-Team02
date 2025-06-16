@@ -17,24 +17,31 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @Column(nullable = false)
-    private String email;
+    public String email;
 
-    @Setter private String name;
+    @Setter public String name;
 
-    private String profileImage;
+    public String profileImage;
 
     @Column(nullable = false)
-    private String githubId;
+    public String githubId;
 
-    @Setter private String job;
+    @Setter public String job;
 
-    @Setter private String course;
+    @Setter public String course;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    public Role role;
+
+    public Member(Role role, String email, String profileImage, String githubId) {
+        this.role = role;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.githubId = githubId;
+    }
 
     public void updateProfile(String nickname, String profileImageUrl) {
         if (StringUtils.hasText(nickname)) {
