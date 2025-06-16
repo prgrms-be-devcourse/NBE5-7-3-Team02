@@ -17,6 +17,8 @@ class MemberDetails(
     var avatarUrl: String? = null
 ) : OAuth2User, UserDetails {
 
+    constructor(name: String?, attribute: Map<String,Any>?) : this()
+
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return role?.let { listOf(SimpleGrantedAuthority(it.name)) } ?: emptyList()
     }
