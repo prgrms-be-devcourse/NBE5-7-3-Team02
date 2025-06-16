@@ -37,7 +37,10 @@ class PostService(
     private val tagRepository: TagRepository,
 ) {
     @Transactional
-    fun createPost(request: PostCreateRequest, memberId: Long): PostResponse {
+    fun createPost(
+        request: PostCreateRequest,
+        memberId: Long,
+    ): PostResponse {
         val member =
             memberRepository
                 .findById(memberId)
@@ -58,7 +61,11 @@ class PostService(
     }
 
     @Transactional
-    fun updatePost(postId: Long, request: PostUpdateRequest, memberId: Long): PostResponse {
+    fun updatePost(
+        postId: Long,
+        request: PostUpdateRequest,
+        memberId: Long,
+    ): PostResponse {
         val updatePost =
             postRepository
                 .findById(postId)
@@ -94,7 +101,10 @@ class PostService(
     }
 
     @Transactional
-    fun deletePost(postId: Long, memberId: Long) {
+    fun deletePost(
+        postId: Long,
+        memberId: Long,
+    ) {
         val deletePost =
             postRepository
                 .findById(postId)
@@ -117,7 +127,10 @@ class PostService(
     }
 
     @Transactional(readOnly = true)
-    fun getFilteredPosts(request: PostGetRequest, userDetails: UserDetails?): PostGetResponse {
+    fun getFilteredPosts(
+        request: PostGetRequest,
+        userDetails: UserDetails?,
+    ): PostGetResponse {
         val memberId = userDetails?.username?.toLong()
 
         return PostGetResponse.from(
@@ -127,19 +140,23 @@ class PostService(
                 request.limit,
                 parseRecruitmentStatus(request.isRecruit),
                 request.isFollowing,
-                request.tags
-            )
+                request.tags,
+            ),
         )
     }
 
     @Transactional(readOnly = true)
-    fun getPostsByMember(request: PostGetRequest, memberId: Long?): PostGetResponse {
-        return PostGetResponse.from(
+    fun getPostsByMember(
+        request: PostGetRequest,
+        memberId: Long?,
+    ): PostGetResponse =
+        PostGetResponse.from(
             postRepository.findPostsByMemberId(
-                memberId, request.lastPostId, request.limit
-            )
+                memberId,
+                request.lastPostId,
+                request.limit,
+            ),
         )
-    }
 
     private fun parseRecruitmentStatus(isRecruit: Boolean?): RecruitmentStatus {
         if (isRecruit != null) {
@@ -156,7 +173,8 @@ class PostService(
                 .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
         val tagNames =
-            post.postTags.map { postTag: PostTag -> postTag.tag.name }
+            post.postTags
+                .map { postTag: PostTag -> postTag.tag.name }
                 .toList()
 
         return PostDetailResponse(
@@ -164,12 +182,15 @@ class PostService(
             post.content,
             post.recruitmentStatus,
             tagNames,
-            post.imageUrls
+            post.imageUrls,
         )
     }
 
     @Transactional
-    fun likePost(postId: Long, memberId: Long) {
+    fun likePost(
+        postId: Long,
+        memberId: Long,
+    ) {
         val member =
             memberRepository
                 .findById(memberId)
@@ -190,7 +211,10 @@ class PostService(
     }
 
     @Transactional
-    fun unlikePost(postId: Long, memberId: Long) {
+    fun unlikePost(
+        postId: Long,
+        memberId: Long,
+    ) {
         val member =
             memberRepository
                 .findById(memberId)
@@ -206,7 +230,11 @@ class PostService(
     }
 
     @Transactional
-    fun apply(postId: Long, fieldName: String, memberId: Long) {
+    fun apply(
+        postId: Long,
+        fieldName: String,
+        memberId: Long,
+    ) {
         val member =
             memberRepository
                 .findById(memberId)
@@ -229,12 +257,13 @@ class PostService(
             post.recruitmentFields
                 .stream()
                 .filter { f: RecruitmentField ->
-                    f.fieldName.trim()
+                    f.fieldName
+                        .trim()
                         .equals(fieldName.trim(), ignoreCase = true)
-                }
-                .findFirst()
+                }.findFirst()
                 .orElseThrow(
-                    Supplier { ErrorException(ErrorCode.NOT_FOUND_RECRUITMENT_FIELD) })
+                    Supplier { ErrorException(ErrorCode.NOT_FOUND_RECRUITMENT_FIELD) },
+                )
 
         if (field.isClosed) {
             throw ErrorException(ErrorCode.RECRUITMENT_CLOSED)

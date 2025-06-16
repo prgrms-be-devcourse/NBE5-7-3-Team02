@@ -31,8 +31,11 @@ class PostController(
     ): ResponseEntity<PostResponse> {
         if (StringUtils.isNotBlank(request.recruitmentFieldsJson)) {
             try {
-                request.recruitmentFields = mapper.readValue(request.recruitmentFieldsJson,
-                    object : TypeReference<List<RecruitmentFieldRequest>>() {})
+                request.recruitmentFields =
+                    mapper.readValue(
+                        request.recruitmentFieldsJson,
+                        object : TypeReference<List<RecruitmentFieldRequest>>() {},
+                    )
             } catch (e: Exception) {
                 // TODO: 커스텀 Exception으로 변경
                 throw RuntimeException("Invalid recruitmentFieldsJson", e)

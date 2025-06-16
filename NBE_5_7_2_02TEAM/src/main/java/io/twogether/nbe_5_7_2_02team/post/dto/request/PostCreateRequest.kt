@@ -9,33 +9,25 @@ import jakarta.validation.constraints.Size
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
-data class PostCreateRequest (
+data class PostCreateRequest(
     @field:NotBlank(message = "제목은 필수입니다.")
     val title: String,
-
     @field:NotBlank(message = "내용은 필수입니다.")
     val content: String,
-
     @field:NotNull(message = "모집 상태는 필수입니다.")
     val recruitmentStatus: RecruitmentStatus,
-
     @field:FutureOrPresent(message = "마감일은 오늘 이후의 날짜여야 합니다.")
     val recruitmentDeadline: LocalDate?,
-
     @field:Size(
         max = 10,
-        message = "이미지는 최대 10개까지만 업로드할 수 있습니다."
+        message = "이미지는 최대 10개까지만 업로드할 수 있습니다.",
     )
     val images: List<MultipartFile> = listOf(),
-
     val tags: List<String> = listOf(),
-
     val recruitmentFieldsJson: String?,
-
     @field:JsonIgnore
-    var recruitmentFields: List<RecruitmentFieldRequest> = listOf()
+    var recruitmentFields: List<RecruitmentFieldRequest> = listOf(),
 ) {
-    override fun toString(): String {
-        return "PostCreateRequest(title='$title', content='$content', recruitmentStatus=$recruitmentStatus, recruitmentDeadline=$recruitmentDeadline, images=$images, tags=$tags, recruitmentFieldsJson=$recruitmentFieldsJson, recruitmentFields=$recruitmentFields)"
-    }
+    override fun toString(): String =
+        "PostCreateRequest(title='$title', content='$content', recruitmentStatus=$recruitmentStatus, recruitmentDeadline=$recruitmentDeadline, images=$images, tags=$tags, recruitmentFieldsJson=$recruitmentFieldsJson, recruitmentFields=$recruitmentFields)"
 }
