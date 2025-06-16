@@ -11,6 +11,8 @@ interface ServerChatRoom {
   id: number;
   post_id: number; // 서버에서 오는 필드명
   title: string;
+  member_count: number;
+  updated_at: Date;
 }
 
 function ChatRoomList() {

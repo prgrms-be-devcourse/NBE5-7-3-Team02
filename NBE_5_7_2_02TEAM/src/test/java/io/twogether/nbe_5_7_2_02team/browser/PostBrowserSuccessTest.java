@@ -10,6 +10,7 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,9 +22,15 @@ import io.twogether.nbe_5_7_2_02team.global.annotation.FlywayReset;
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
 import io.twogether.nbe_5_7_2_02team.member.domain.Member;
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair;
+import io.twogether.nbe_5_7_2_02team.post.dao.LikesRepository;
+import io.twogether.nbe_5_7_2_02team.post.dao.PostApplicationRepository;
 import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
+import io.twogether.nbe_5_7_2_02team.post.dao.RecruitmentFieldRepository;
+import io.twogether.nbe_5_7_2_02team.post.domain.Likes;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
+import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentField;
 import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus;
+import io.twogether.nbe_5_7_2_02team.post.dto.request.PostApplyRequest;
 import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 
@@ -48,6 +55,9 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Autowired private TagRepository tagRepository;
     @Autowired private PostRepository postRepository;
     @Autowired private ObjectMapper objectMapper;
+    @Autowired private LikesRepository likesRepository;
+    @Autowired private PostApplicationRepository postApplicationRepository;
+    @Autowired private RecruitmentFieldRepository recruitmentFieldRepository;
 
     @AllArgsConstructor
     static class PostCreateRequest {
@@ -60,7 +70,7 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @ParameterizedTest
     @MethodSource("postRequestProvider")
     @DataSet(value = "datasets/v2/member.yml", cleanBefore = true, cleanAfter = true)
-    @DisplayName("POST: /api/posts 게시글 생성")
+    @DisplayName("POST: /api/posts - 게시글 생성")
     void createPost(PostCreateRequest request) throws Exception {
         createPostHelper(request);
     }
@@ -317,6 +327,121 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         assertThat(modifiedPost.getRecruitmentStatus()).isEqualTo(request.getRecruitmentStatus());
 
         assertThat(tagRepository.findById(2L).isPresent()).isFalse();
+    }
+
+    @Test
+    @DataSet(
+            value = {
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+            },
+            cleanBefore = true,
+            cleanAfter = true)
+    @DisplayName("GET: /api/posts/{postId} 회원 접근 - postId를 통한 게시글 조회")
+    void getPost() throws Exception {
+        // given
+        TokenPair tokenPair = getTokenPair(1L);
+        long targetPostId = 1L;
+        Post expectedPost = postRepository.findById(targetPostId).orElseThrow();
+
+        // when & then
+        mockMvc.perform(
+                        get("/api/posts/" + targetPostId)
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.title").value(expectedPost.getTitle()),
+                        jsonPath("$.content").value(expectedPost.getContent()),
+                        jsonPath("$.recruitment_status")
+                                .value(expectedPost.getRecruitmentStatus().name()));
+    }
+
+    @Test
+    @DataSet(
+            value = {
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+            },
+            cleanBefore = true,
+            cleanAfter = true)
+    @DisplayName("POST: /api/posts/{postId}/likes 회원 접근 - 게시글 좋아요")
+    void likePost() throws Exception {
+        // given
+        long targetMemberId = 1L;
+        Post targetPost = postRepository.findById(1L).orElseThrow();
+        Member targetMember = memberRepository.findById(targetMemberId).orElseThrow();
+        TokenPair tokenPair = getTokenPair(targetMemberId);
+
+        // when
+        mockMvc.perform(
+                        post("/api/posts/" + targetPost.getId() + "/likes")
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isOk());
+
+        // then
+        Optional<Likes> actualLikesOptional =
+                likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikesOptional.isPresent()).isTrue();
+
+        Likes actualLikes = actualLikesOptional.get();
+        assertThat(actualLikes.getPost().getId()).isEqualTo(targetPost.getId());
+        assertThat(actualLikes.getMember().getId()).isEqualTo(targetMember.getId());
+    }
+
+    @Test
+    @DataSet(
+            value = {"datasets/v2/member.yml", "datasets/v2/post.yml", "datasets/v2/likes.yml"},
+            cleanBefore = true,
+            cleanAfter = true)
+    @DisplayName("DELETE: /api/posts/{postId}/likes 회원 접근 - 게시글 좋아요 취소")
+    void unlikePost() throws Exception {
+        // given
+        long targetMemberId = 1L;
+        Post targetPost = postRepository.findById(1L).orElseThrow();
+        Member targetMember = memberRepository.findById(targetMemberId).orElseThrow();
+        TokenPair tokenPair = getTokenPair(targetMemberId);
+
+        // when
+        mockMvc.perform(
+                        delete("/api/posts/" + targetPost.getId() + "/likes")
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isOk());
+
+        // then
+        Optional<Likes> actualLikesOptional =
+                likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikesOptional.isPresent()).isFalse();
+    }
+
+    @Test
+    @DataSet(
+            value = {
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+                "datasets/v2/recruitment_field.yml"
+            },
+            cleanBefore = true,
+            cleanAfter = true)
+    @DisplayName("POST: /api/posts/{postId}/apply 회원 접근 - 2번 멤버가 1번 멤버의 1번 게시글에 참여")
+    void applyPost() throws Exception {
+        // given
+        String targetField = "백엔드";
+        PostApplyRequest request = new PostApplyRequest(targetField);
+        TokenPair tokenPair = getTokenPair(2L);
+
+        // when
+        mockMvc.perform(
+                        post("/api/posts/1/apply")
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        // then
+        Member member = memberRepository.findById(2L).orElseThrow();
+        RecruitmentField field = recruitmentFieldRepository.findById(1L).orElseThrow();
+        assertThat(field.getCurrentCount()).isEqualTo(1);
+        assertThat(postApplicationRepository.existsByMemberAndField(member, field)).isTrue();
     }
 
     private TokenPair getTokenPair(Long memberId) {

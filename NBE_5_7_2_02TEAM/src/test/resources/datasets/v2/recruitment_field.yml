@@ -1,0 +1,5 @@
+recruitment_field:
+  - id: 1
+    post_id: 1
+    field_name: '백엔드'
+    total_count: 2
