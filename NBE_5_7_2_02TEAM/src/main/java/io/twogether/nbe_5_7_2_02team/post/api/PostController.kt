@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/posts")
 class PostController(
     private val postService: PostService,
-    private val mapper: ObjectMapper,
 ) {
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPost(
@@ -32,7 +31,7 @@ class PostController(
         if (StringUtils.isNotBlank(request.recruitmentFieldsJson)) {
             try {
                 request.recruitmentFields =
-                    mapper.readValue(
+                    ObjectMapper().readValue(
                         request.recruitmentFieldsJson,
                         object : TypeReference<List<RecruitmentFieldRequest>>() {},
                     )
