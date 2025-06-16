@@ -49,7 +49,6 @@ class OAuthService(
         log.info("oAuth2User = {}", oAuth2User)
         val loginResponse = login(userRequest.accessToken.tokenValue)
 
-//        val providerId = userRequest.clientRegistration.registrationId.uppercase(Locale.getDefault())
         val providerId = userRequest.clientRegistration.registrationId.uppercase()
 
         val memberDetails = MemberDetailsFactory.memberDetails(providerId, oAuth2User)
@@ -127,18 +126,6 @@ class OAuthService(
                 Array<Any>::class.java
             )
 
-//        val emails = response.body
-//        if (emails != null) {
-//            for (emailObj in emails) {
-//                if (emailObj is Map<*, *>) {
-//                    val primary = java.lang.Boolean.TRUE == emailObj["primary"]
-//                    val verified = java.lang.Boolean.TRUE == emailObj["verified"]
-//                    if (primary && verified && emailObj["email"] != null) {
-//                        return emailObj["email"].toString()
-//                    }
-//                }
-//            }
-//        }
         response.body?.let { emails ->
             for (emailObj in emails) {
                 if (emailObj is Map<*, *>) {
@@ -163,16 +150,6 @@ class OAuthService(
                 "https://api.github.com/user/orgs", HttpMethod.GET, entity, Array<Any>::class.java
             )
 
-//        val organizations: MutableList<String> = ArrayList()
-//        val orgs = response.body
-//
-//        if (orgs != null) {
-//            for (orgObj in orgs) {
-//                if (orgObj is Map<*, *> && orgObj["login"] != null) {
-//                    organizations.add(orgObj["login"].toString())
-//                }
-//            }
-//        }
         val organizations = mutableListOf<String>()
         response.body?.let { orgs ->
             for (orgObj in orgs) {
@@ -223,9 +200,6 @@ class OAuthService(
     }
 
     private fun validatePrgrmsOrganization(organizations: List<String>) {
-//        val hasPrgrms =
-//            organizations.stream().map { obj: String -> obj.lowercase(Locale.getDefault()) }
-//                .anyMatch { o: String -> ALLOWED_ORGS.contains(o) }
 
         val hasPrgrms = organizations
             .map { it.lowercase() }
@@ -244,12 +218,6 @@ class OAuthService(
 
     // 인증 헤더 생성
     private fun createAuthHeaders(accessToken: String): HttpHeaders {
-//        val headers = HttpHeaders()
-//        headers.accept =
-//            listOf(MediaType.APPLICATION_JSON)
-//        headers.contentType = MediaType.APPLICATION_JSON
-//        headers["Authorization"] = "token $accessToken"
-//        return headers
         return HttpHeaders().apply {
             accept = listOf(MediaType.APPLICATION_JSON)
             contentType = MediaType.APPLICATION_JSON
