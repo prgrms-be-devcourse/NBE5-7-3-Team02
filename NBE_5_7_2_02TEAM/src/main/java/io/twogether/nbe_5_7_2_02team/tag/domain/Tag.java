@@ -10,17 +10,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
 
     @Id
@@ -33,8 +26,21 @@ public class Tag {
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
     private List<PostTag> postTags = new ArrayList<>();
 
-    @Builder
+    public Tag() {}
+
     public Tag(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<PostTag> getPostTags() {
+        return postTags;
     }
 }

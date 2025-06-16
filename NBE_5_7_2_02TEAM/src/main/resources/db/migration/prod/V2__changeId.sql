@@ -67,7 +67,7 @@ ALTER TABLE likes
     ADD CONSTRAINT FK_likes_member FOREIGN KEY (member_id) REFERENCES member(id),
     ADD INDEX IDX_likes_member_id (member_id),
     ADD CONSTRAINT FK_likes_post FOREIGN KEY (post_id) REFERENCES post(id),
-    ADD UNIQUE KEY UK_likes_post_id (post_id);
+    ADD UNIQUE KEY UK_likes_post_member_id (post_id, member_id);
 ALTER TABLE post_image
     ADD CONSTRAINT FK_post_image_post FOREIGN KEY (post_id) REFERENCES post(id);
 ALTER TABLE post_tag

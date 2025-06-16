@@ -26,6 +26,10 @@ repositories {
     mavenCentral()
 }
 
+springBoot {
+    buildInfo()
+}
+
 dependencies {
     // SPRING FRAMEWORK
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -35,6 +39,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.security:spring-security-messaging")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // DATABASE
@@ -47,6 +52,9 @@ dependencies {
     implementation("io.github.openfeign.querydsl:querydsl-jpa:6.11")
     annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
 
+    // MONITORING
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
     // ETC
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -54,6 +62,9 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.21")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+    implementation("org.apache.commons:commons-collections4:4.5.0")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")

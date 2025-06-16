@@ -5,15 +5,16 @@ import com.querydsl.core.annotations.QueryProjection;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
-@Getter
 public class PostGetResponse {
+
+    public List<PostGetResult> getPosts() {
+        return posts;
+    }
 
     private List<PostGetResult> posts;
 
