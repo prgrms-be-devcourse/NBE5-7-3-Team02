@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/tags")
 class TagController(
-    private val tagService: TagService
+    private val tagService: TagService,
 ) {
-
     @GetMapping
     fun getTags(): ResponseEntity<TagGetResponse> {
         val tags = tagService.getAllTags()
         val response = TagGetResponse.of(tags)
 
-        return if (response.tags.isEmpty())
+        return if (response.tags.isEmpty()) {
             ResponseEntity.noContent().build()
-        else
+        } else {
             ResponseEntity.ok(response)
+        }
     }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Entity
 class Tag(
     @Column(nullable = false)
-    val name: String
+    val name: String,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class TagService(
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
 ) {
-
     fun getAllTags(): List<Tag> = tagRepository.findAll()
 }
