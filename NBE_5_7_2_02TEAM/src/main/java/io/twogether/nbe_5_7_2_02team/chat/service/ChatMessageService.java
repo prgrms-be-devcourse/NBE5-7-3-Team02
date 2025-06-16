@@ -12,6 +12,7 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage;
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
 import io.twogether.nbe_5_7_2_02team.chat.dto.request.ChatMessagePostRequest;
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponse;
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponseKt;
 import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin;
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
@@ -44,7 +45,7 @@ public class ChatMessageService {
         List<ChatMessage> chatMessageList =
                 chatMessageRepository.findByChatRoomOrderByCreatedAtAsc(chatRoom);
 
-        return chatMessageList.stream().map(ChatMessageGetResponse::from).toList();
+        return chatMessageList.stream().map(ChatMessageGetResponseKt::toGetResponse).toList();
     }
 
     @Transactional
@@ -84,7 +85,7 @@ public class ChatMessageService {
 
         chatRoom.setLastChatId(chatMessageId);
 
-        return ChatMessageGetResponse.from(chatMessage);
+        return ChatMessageGetResponseKt.toGetResponse(chatMessage);
     }
 
     @Transactional

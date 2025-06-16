@@ -12,7 +12,7 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         id: Long,
         chatRoom: ChatRoom,
         chatMember: ChatMember,
-    ): ChatMessage
+    ): ChatMessage?
 
     fun deleteByChatRoom(chatRoom: ChatRoom)
 }

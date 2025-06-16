@@ -10,7 +10,7 @@ interface ChatMemberRepository : JpaRepository<ChatMember, Long> {
     fun findByChatRoomAndMember(
         chatRoom: ChatRoom,
         member: Member,
-    ): ChatMember
+    ): ChatMember?
 
     fun findByChatRoom(chatRoom: ChatRoom): MutableList<ChatMember>
 
