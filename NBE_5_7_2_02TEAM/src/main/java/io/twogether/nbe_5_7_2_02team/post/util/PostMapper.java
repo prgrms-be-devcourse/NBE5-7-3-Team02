@@ -9,11 +9,14 @@ import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
 import io.twogether.nbe_5_7_2_02team.post.dto.request.RecruitmentFieldRequest;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 import io.twogether.nbe_5_7_2_02team.tag.domain.Tag;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -63,14 +66,15 @@ public class PostMapper {
         }
 
         return tags.stream()
-            .map(name -> {
-                Tag tag = tagRepository.findByName(name);
-                if (tag == null) {
-                    tag = tagRepository.save(new Tag(name));
-                }
-                return new PostTag(post, tag);
-            })
-            .toList();
+                .map(
+                        name -> {
+                            Tag tag = tagRepository.findByName(name);
+                            if (tag == null) {
+                                tag = tagRepository.save(new Tag(name));
+                            }
+                            return new PostTag(post, tag);
+                        })
+                .toList();
     }
 
     public List<RecruitmentField> toRecruitmentFields(
