@@ -57,7 +57,7 @@ public class MemberService {
                             target);
         }
 
-        return MemberMapper.toMyPageResponse(
+        return MyPageResponse.of(
                 target, posts, followerCount, followingCount, following, owner);
     }
 
