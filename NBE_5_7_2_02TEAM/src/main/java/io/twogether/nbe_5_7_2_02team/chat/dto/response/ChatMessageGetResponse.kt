@@ -1,28 +1,22 @@
-package io.twogether.nbe_5_7_2_02team.chat.dto.response;
+package io.twogether.nbe_5_7_2_02team.chat.dto.response
 
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage;
+import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage
+import java.time.LocalDateTime
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+data class ChatMessageGetResponse (
+    val id: Long?,
+    val memberId: Long,
+    val memberName: String,
+    val content: String,
+    val createdAt: LocalDateTime
+)
 
-import java.time.LocalDateTime;
-
-@Getter
-@RequiredArgsConstructor
-public class ChatMessageGetResponse {
-
-    private final Long id;
-    private final Long memberId;
-    private final String memberName;
-    private final String content;
-    private final LocalDateTime createdAt;
-
-    public static ChatMessageGetResponse from(ChatMessage chatMessage) {
-        return new ChatMessageGetResponse(
-                chatMessage.getId(),
-                chatMessage.getChatMember().getMember().getId(),
-                chatMessage.getChatMember().getMember().getName(),
-                chatMessage.getContent(),
-                chatMessage.getCreatedAt());
-    }
+fun ChatMessage.toGetResponse(): ChatMessageGetResponse {
+    return ChatMessageGetResponse(
+        id = this.id,
+        memberId = this.chatMember.member.id,
+        memberName = this.chatMember.member.name,
+        content = this.content,
+        createdAt = this.createdAt
+    )
 }
