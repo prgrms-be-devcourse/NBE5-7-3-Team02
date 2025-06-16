@@ -12,14 +12,7 @@ object MemberDetailsFactory {
 
         when (provider.uppercase().trim()) {
             "GITHUB" -> {
-                return MemberDetails.builder()
-                    .name(attributes["login"].toString())
-                    .attributes(attributes)
-                    .build()
-//                return MemberDetails(
-//                    name = attributes["login"].toString(),
-//                    attributes = attributes
-//                )
+                return MemberDetails(attributes["login"].toString(), attributes)
             }
 
             else -> throw ErrorException(ErrorCode.UNSUPPORTED_PROVIDER)

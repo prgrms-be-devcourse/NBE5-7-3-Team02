@@ -36,38 +36,34 @@ class JwtTokenProvider(
     private val log = LoggerFactory.getLogger(JwtTokenProvider::class.java)
 
     fun generateTokenPair(member: Member): TokenPair {
-        refreshTokenRepository
-            .findByMemberId(member.id)
-            .ifPresent { refreshToken: RefreshToken ->
-                refreshTokenBlackListRepository.deleteByRefreshToken(refreshToken)
-                refreshTokenRepository.delete(refreshToken)
-            }
+        val token = refreshTokenRepository.findByMemberId(member.id);
+        if (token != null) {
+            refreshTokenBlackListRepository.deleteByRefreshToken(token);
+            refreshTokenRepository.delete(token);
+        }
 
         val accessToken = issueAccessToken(member.id, member.role)
         val refreshToken = issueRefreshToken(member.id, member.role)
 
         tokenRepository.save(member, refreshToken)
 
-        return TokenPair(
-            accessToken = accessToken,
-            refreshToken = refreshToken
-        )
+        return TokenPair(accessToken, refreshToken)
     }
 
-    fun findRefreshToken(memberId: Long): Optional<RefreshToken> {
+    fun findRefreshToken(memberId: Long): RefreshToken? {
         return tokenRepository.findValidRefToken(memberId)
     }
 
-    fun addBlackList(refreshToken: RefreshToken?) {
+    fun addBlackList(refreshToken: RefreshToken) {
         tokenRepository.addBlackList(refreshToken)
     }
 
     fun issueAccessToken(id: Long, role: Role): String {
-        return issue(id, role, jwtConfiguration.validation().access)
+        return issue(id, role, jwtConfiguration.validation.access)
     }
 
     fun issueRefreshToken(id: Long, role: Role): String {
-        return issue(id, role, jwtConfiguration.validation().refresh)
+        return issue(id, role, jwtConfiguration.validation.refresh)
     }
 
     private fun issue(id: Long, role: Role, expTime: Long): String {
@@ -77,13 +73,13 @@ class JwtTokenProvider(
             .claim("role", role)
             .issuedAt(Date())
             .expiration(Date(Date().time + expTime))
-            .signWith(secretKey, Jwts.SIG.HS256)
+            .signWith(getSecretKey(), Jwts.SIG.HS256)
             .compact()
     }
 
     fun validate(token: String): Boolean {
         try {
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+            Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token)
             return true
         } catch (e: SecurityException) {
             throw ErrorException(ErrorCode.INVALID_ACCESS_SIGNATURE)
@@ -119,7 +115,7 @@ class JwtTokenProvider(
         val sub = parsed.payload.subject
         val role = parsed.payload["role"].toString()
 
-        return TokenBody.builder().memberId(sub.toLong()).role(Role.valueOf(role)).build()
+        return TokenBody(sub.toLong(), Role.valueOf(role))
     }
 
     private fun getSecretKey(): SecretKey{

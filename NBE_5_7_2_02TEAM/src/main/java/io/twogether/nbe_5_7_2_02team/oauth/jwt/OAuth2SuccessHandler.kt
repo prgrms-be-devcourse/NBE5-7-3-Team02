@@ -45,7 +45,7 @@ class OAuth2SuccessHandler(
         val refreshTokenOptional =
             jwtTokenProvider.findRefreshToken(principal.id)
 
-        if (refreshTokenOptional.isEmpty) {
+        if (refreshTokenOptional == null) {
             val tokenPair = jwtTokenProvider.generateTokenPair(findMember)
             params["access"] = tokenPair.accessToken
             params["refresh"] = tokenPair.refreshToken
@@ -53,7 +53,7 @@ class OAuth2SuccessHandler(
             val accessToken =
                 jwtTokenProvider.issueAccessToken(principal.id, principal.role)
             params["access"] = accessToken
-            params["refresh"] = refreshTokenOptional.get().refreshToken
+            params["refresh"] = refreshTokenOptional.refreshToken
         }
 
         val urlStr = genUrlStr(params)
