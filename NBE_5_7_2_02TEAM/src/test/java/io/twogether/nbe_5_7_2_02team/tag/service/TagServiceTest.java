@@ -5,17 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.twogether.nbe_5_7_2_02team.global.annotation.FlywayReset;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 import io.twogether.nbe_5_7_2_02team.tag.domain.Tag;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @FlywayReset
 @SpringBootTest
@@ -32,7 +30,7 @@ class TagServiceTest {
         tags = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < random.nextInt(10) + 1; i++) {
-            Tag tag = Tag.builder().name("TAG-" + i).build();
+            Tag tag = new Tag("TAG-" + i);
             tags.add(tag);
             tagRepository.save(tag);
         }
