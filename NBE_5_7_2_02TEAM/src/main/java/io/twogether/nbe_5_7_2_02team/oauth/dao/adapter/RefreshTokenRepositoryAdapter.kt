@@ -19,17 +19,17 @@ class RefreshTokenRepositoryAdapter(
 ) : TokenRepository {
     override fun save(member: Member, token: String): RefreshToken {
         return refreshTokenRepository.save(
-            RefreshToken(member = member, refreshToken = token)
+            RefreshToken(token, member)
         )
     }
 
     override fun addBlackList(refreshToken: RefreshToken): RefreshTokenBlackList {
         return refreshTokenBlackListRepository.save(
-            RefreshTokenBlackList(refreshToken = refreshToken)
+            RefreshTokenBlackList(refreshToken)
         )
     }
 
-    override fun findValidRefToken(memberId: Long): Optional<RefreshToken> {
+    override fun findValidRefToken(memberId: Long): RefreshToken? {
         val query = entityManager.createQuery(
             """
             select rf from RefreshToken rf 
@@ -42,6 +42,6 @@ class RefreshTokenRepositoryAdapter(
 
         query.setParameter("memberId", memberId)
 
-        return query.resultStream.findFirst()
+        return query.resultStream.findFirst().orElse(null)
     }
 }

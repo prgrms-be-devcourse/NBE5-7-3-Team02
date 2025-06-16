@@ -30,9 +30,10 @@ public class RefreshToken extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder
     public RefreshToken(String refreshToken, Member member) {
         this.refreshToken = refreshToken;
         this.member = member;
     }
+
+
 }
