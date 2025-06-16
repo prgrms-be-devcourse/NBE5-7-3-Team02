@@ -41,7 +41,7 @@ class TokenController (
         @RequestBody request: SignUpRequest,
         @AuthenticationPrincipal memberDetails: MemberDetails
     ): ResponseEntity<SignUpResponse> {
-        val response = oAuthService.signup(request, memberDetails.id)
+        val response = memberDetails.id?.let { oAuthService.signup(request, it) }
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 }
