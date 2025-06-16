@@ -30,8 +30,8 @@ public class MemberBrowserFailureTest extends BrowserTestTemplate {
     void getMyProfile_Unauthorized() throws Exception {
 
         mockMvc.perform(get("/api/member/me"))
-            .andExpect(status().isFound())
-            .andExpect(redirectedUrl("http://localhost/oauth2/authorization/github"));
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/oauth2/authorization/github"));
     }
 
     @Test
@@ -46,9 +46,9 @@ public class MemberBrowserFailureTest extends BrowserTestTemplate {
         long invalidId = 9999L;
 
         mockMvc.perform(
-                get("/api/member/" + invalidId)
-                    .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
-            .andExpect(status().isNotFound()); // 404
+                        get("/api/member/" + invalidId)
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isNotFound()); // 404
     }
 
     @Test
@@ -56,14 +56,14 @@ public class MemberBrowserFailureTest extends BrowserTestTemplate {
     @DisplayName("PATCH: /api/member/me - 인증 토큰 없음")
     void updateMyProfile_Unauthorized() throws Exception {
         MockMultipartFile image =
-            new MockMultipartFile("image", "a.png", "image/png", "dummy".getBytes());
+                new MockMultipartFile("image", "a.png", "image/png", "dummy".getBytes());
 
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/api/member/me")
-                    .file(image)
-                    .param("nickname", "memberNickname"))
-            .andExpect(status().isFound())
-            .andExpect(redirectedUrl("http://localhost/oauth2/authorization/github"));
+                        multipart(HttpMethod.PATCH, "/api/member/me")
+                                .file(image)
+                                .param("nickname", "memberNickname"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/oauth2/authorization/github"));
     }
 
     @Test
@@ -77,13 +77,13 @@ public class MemberBrowserFailureTest extends BrowserTestTemplate {
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
 
         MockMultipartFile image =
-            new MockMultipartFile("image", "a.png", "image/png", "dummy".getBytes());
+                new MockMultipartFile("image", "a.png", "image/png", "dummy".getBytes());
 
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/api/member/me")
-                    .file(image)
-                    .param("nickname", " ") // 공백
-                    .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
-            .andExpect(status().isBadRequest());
+                        multipart(HttpMethod.PATCH, "/api/member/me")
+                                .file(image)
+                                .param("nickname", " ") // 공백
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isBadRequest());
     }
 }

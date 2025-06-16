@@ -10,7 +10,6 @@ import io.twogether.nbe_5_7_2_02team.member.dto.request.UpdateProfileRequest;
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MemberUpdateResponse;
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MyPageResponse;
 import io.twogether.nbe_5_7_2_02team.member.util.Uploader.ImageUpload;
-import io.twogether.nbe_5_7_2_02team.member.util.mapper.MemberMapper;
 import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
 
@@ -57,8 +56,7 @@ public class MemberService {
                             target);
         }
 
-        return MyPageResponse.of(
-                target, posts, followerCount, followingCount, following, owner);
+        return MyPageResponse.of(target, posts, followerCount, followingCount, following, owner);
     }
 
     @Transactional

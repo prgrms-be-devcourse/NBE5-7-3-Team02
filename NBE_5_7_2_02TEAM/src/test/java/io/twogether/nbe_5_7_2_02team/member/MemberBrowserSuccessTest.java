@@ -38,12 +38,12 @@ public class MemberBrowserSuccessTest extends BrowserTestTemplate {
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
 
         mockMvc.perform(
-                get("/api/member/me")
-                    .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(memberId))
-            .andExpect(jsonPath("$.name").value(member.getName()))
-            .andExpect(jsonPath("$.email").value(member.getEmail()));
+                        get("/api/member/me")
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(memberId))
+                .andExpect(jsonPath("$.name").value(member.getName()))
+                .andExpect(jsonPath("$.email").value(member.getEmail()));
     }
 
     @Test
@@ -60,12 +60,12 @@ public class MemberBrowserSuccessTest extends BrowserTestTemplate {
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(loginMember);
 
         mockMvc.perform(
-                get("/api/member/" + targetMemberId)
-                    .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(targetMemberId))
-            .andExpect(jsonPath("$.name").value(targetMember.getName()))
-            .andExpect(jsonPath("$.email").value(targetMember.getEmail()));
+                        get("/api/member/" + targetMemberId)
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(targetMemberId))
+                .andExpect(jsonPath("$.name").value(targetMember.getName()))
+                .andExpect(jsonPath("$.email").value(targetMember.getEmail()));
     }
 
     @Test
@@ -78,20 +78,20 @@ public class MemberBrowserSuccessTest extends BrowserTestTemplate {
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
 
         MockMultipartFile newImage =
-            new MockMultipartFile(
-                "image", "profile.png", "image/png", "fake image content".getBytes());
+                new MockMultipartFile(
+                        "image", "profile.png", "image/png", "fake image content".getBytes());
         MockPart nicknamePart =
-            new MockPart("nickname", "newNickName".getBytes(StandardCharsets.UTF_8));
+                new MockPart("nickname", "newNickName".getBytes(StandardCharsets.UTF_8));
         nicknamePart.getHeaders().setContentType(MediaType.TEXT_PLAIN);
 
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/api/member/me")
-                    .file(newImage)
-                    .part(nicknamePart)
-                    .header("Authorization", "Bearer " + tokenPair.getAccessToken())
-                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("newNickName"))
-            .andExpect(jsonPath("$.image").isNotEmpty());
+                        multipart(HttpMethod.PATCH, "/api/member/me")
+                                .file(newImage)
+                                .part(nicknamePart)
+                                .header("Authorization", "Bearer " + tokenPair.getAccessToken())
+                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("newNickName"))
+                .andExpect(jsonPath("$.image").isNotEmpty());
     }
 }
