@@ -18,14 +18,13 @@ import java.util.function.Supplier
 
 @Service
 @RequiredArgsConstructor
-class ChatMessageService (
+class ChatMessageService(
     private val chatRoomService: ChatRoomService,
     private val chatMessageRepository: ChatMessageRepository,
     private val chatMemberRepository: ChatMemberRepository,
     private val memberRepository: MemberRepository,
     private val checkUserLogin: CheckUserLogin,
 ) {
-
     @Transactional(readOnly = true)
     fun getChatMessage(chatRoomId: Long): List<ChatMessageGetResponse>? {
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
@@ -38,7 +37,9 @@ class ChatMessageService (
 
     @Transactional
     fun createChatMessage(
-        chatRoomId: Long, chatMessagePostRequest: ChatMessagePostRequest, memberId: Long
+        chatRoomId: Long,
+        chatMessagePostRequest: ChatMessagePostRequest,
+        memberId: Long,
     ): ChatMessageGetResponse {
         val member =
             memberRepository
@@ -60,12 +61,14 @@ class ChatMessageService (
         }
 
         val chatMessageId =
-            chatMessageRepository.save(
-                    ChatMessage.builder()
+            chatMessageRepository
+                .save(
+                    ChatMessage
+                        .builder()
                         .chatRoom(chatRoom)
                         .chatMember(chatMember)
                         .content(content)
-                        .build()
+                        .build(),
                 ).id
 
         val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()
@@ -76,7 +79,11 @@ class ChatMessageService (
     }
 
     @Transactional
-    fun deleteChatMessage(chatMessageId: Long, chatRoomId: Long, userDetails: UserDetails?) {
+    fun deleteChatMessage(
+        chatMessageId: Long,
+        chatRoomId: Long,
+        userDetails: UserDetails?,
+    ) {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
@@ -89,7 +96,9 @@ class ChatMessageService (
 
         val chatMessage =
             chatMessageRepository.findByIdAndChatRoomAndChatMember(
-                chatMessageId, chatRoom, chatMember
+                chatMessageId,
+                chatRoom,
+                chatMember,
             )
 
         if (chatMessage == null) {

@@ -11,18 +11,17 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @RequiredArgsConstructor
-class ChatRepositoryAdapter (
+class ChatRepositoryAdapter(
     private val chatRoomRepository: ChatRoomRepository,
     private val chatMemberRepository: ChatMemberRepository,
     private val chatMessageRepository: ChatMessageRepository,
 ) : ChatRepository {
-
     override fun deleteByPost(post: Post) {
-        chatRoomRepository.findByPost(post) ?:
-                { chatRoom: ChatRoom ->
-                    chatMessageRepository.deleteByChatRoom(chatRoom)
-                    chatMemberRepository.deleteByChatRoom(chatRoom)
-                    chatRoomRepository.delete(chatRoom)
-                }
+        chatRoomRepository.findByPost(post)
+            ?: { chatRoom: ChatRoom ->
+                chatMessageRepository.deleteByChatRoom(chatRoom)
+                chatMemberRepository.deleteByChatRoom(chatRoom)
+                chatRoomRepository.delete(chatRoom)
+            }
     }
 }

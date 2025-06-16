@@ -11,10 +11,9 @@ import java.util.function.Supplier
 
 @Component
 @RequiredArgsConstructor
-class CheckUserLogin (
-    private val memberRepository: MemberRepository
+class CheckUserLogin(
+    private val memberRepository: MemberRepository,
 ) {
-
     fun checkUserLogin(userDetails: UserDetails?): Member {
         if (userDetails == null) {
             throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_LOGIN)

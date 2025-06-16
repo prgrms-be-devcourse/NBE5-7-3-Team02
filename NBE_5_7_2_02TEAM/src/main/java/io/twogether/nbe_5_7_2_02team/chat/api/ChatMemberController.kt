@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/chatroom")
-class ChatMemberController (
-    private val chatMemberService: ChatMemberService
+class ChatMemberController(
+    private val chatMemberService: ChatMemberService,
 ) {
-
     @GetMapping("/entered")
     fun getChatRoomListByUser(
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<List<ChatRoomGetResponse>?> {
         val chatRoomGetResponse = chatMemberService.getChatRoomListByUser(userDetails)
 
@@ -27,7 +26,7 @@ class ChatMemberController (
 
     @GetMapping("/{chatroomId}/member")
     fun getChatMemberList(
-        @PathVariable("chatroomId") chatroomId: Long
+        @PathVariable("chatroomId") chatroomId: Long,
     ): ResponseEntity<List<ChatMemberGetResponse>?> {
         val chatMemberGetResponse = chatMemberService.getChatMember(chatroomId)
 
@@ -37,7 +36,7 @@ class ChatMemberController (
     @PostMapping("/{chatroomId}/member")
     fun createChatMember(
         @PathVariable("chatroomId") chatroomId: Long,
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
         val chatMember = chatMemberService.createChatMember(chatroomId, userDetails)
 
@@ -48,7 +47,7 @@ class ChatMemberController (
     fun updateChatMember(
         @PathVariable("chatroomId") chatroomId: Long,
         @AuthenticationPrincipal userDetails: UserDetails,
-        @RequestBody chatMemberUpdateRequest: ChatMemberUpdateRequest
+        @RequestBody chatMemberUpdateRequest: ChatMemberUpdateRequest,
     ): ResponseEntity<Long> {
         val chatMember = chatMemberService.updateChatMember(chatroomId, userDetails, chatMemberUpdateRequest.chatMemberStatus)
 

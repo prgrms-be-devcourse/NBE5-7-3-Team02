@@ -17,13 +17,12 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("/api/chatroom")
-class ChatMessageController (
-    private val chatMessageService: ChatMessageService
+class ChatMessageController(
+    private val chatMessageService: ChatMessageService,
 ) {
-
     @GetMapping("/{chatroomId}/message")
     fun getChatMessageList(
-        @PathVariable chatroomId: Long
+        @PathVariable chatroomId: Long,
     ): ResponseEntity<List<ChatMessageGetResponse>?> {
         val chatMessage = chatMessageService.getChatMessage(chatroomId)
 
@@ -35,7 +34,7 @@ class ChatMessageController (
     fun createChatMessage(
         @DestinationVariable chatroomId: Long,
         @Payload chatMessagePostRequest: ChatMessagePostRequest,
-        principal: Principal
+        principal: Principal,
     ): ChatMessageGetResponse {
         var tokenBody: TokenBody?
         var memberId: Long? = null
@@ -60,7 +59,7 @@ class ChatMessageController (
     fun deleteChatMessage(
         @PathVariable chatroomId: Long,
         @RequestParam chatMessageId: Long,
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
         chatMessageService.deleteChatMessage(chatMessageId, chatroomId, userDetails)
 

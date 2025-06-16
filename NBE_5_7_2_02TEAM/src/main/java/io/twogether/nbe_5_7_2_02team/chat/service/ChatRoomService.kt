@@ -12,11 +12,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.function.Supplier
 
 @Service
-class ChatRoomService (
+class ChatRoomService(
     private val chatRoomRepository: ChatRoomRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) {
-
     @Transactional(readOnly = true)
     fun getChatRoomList(): List<ChatRoomGetResponse>? {
         val chatRoomList = chatRoomRepository.findAll()
@@ -46,7 +45,8 @@ class ChatRoomService (
                 .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
         chatRoomRepository
-            .findByPost(post)?.let { throw ErrorException(ErrorCode.CHAT_ROOM_ALREADY_EXISTS)}
+            .findByPost(post)
+            ?.let { throw ErrorException(ErrorCode.CHAT_ROOM_ALREADY_EXISTS) }
 
         return chatRoomRepository.save<ChatRoom>(ChatRoom.builder().post(post).build()).id
     }
@@ -58,7 +58,6 @@ class ChatRoomService (
         chatRoomRepository.delete(chatRoom)
     }
 
-    fun checkChatRoomExists(id: Long): ChatRoom {
-        return chatRoomRepository.findChatRoomById(id) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
-    }
+    fun checkChatRoomExists(id: Long): ChatRoom =
+        chatRoomRepository.findChatRoomById(id) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
 }

@@ -17,22 +17,21 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @RequiredArgsConstructor
-class ChatMemberService (
+class ChatMemberService(
     private val chatRoomService: ChatRoomService,
     private val chatMemberRepository: ChatMemberRepository,
     private val checkUserLogin: CheckUserLogin,
 ) {
-
     @Transactional(readOnly = true)
     fun getChatRoomListByUser(
-        @AuthenticationPrincipal userDetails: UserDetails?
+        @AuthenticationPrincipal userDetails: UserDetails?,
     ): List<ChatRoomGetResponse>? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
         val joinedChatRoomList: List<ChatMember?> =
             chatMemberRepository.findByMemberAndChatMemberStatusIn(
                 member,
-                listOf(ChatMemberStatus.ONLINE, ChatMemberStatus.OFFLINE)
+                listOf(ChatMemberStatus.ONLINE, ChatMemberStatus.OFFLINE),
             )
 
         return joinedChatRoomList.map { chatMember -> chatMember?.chatRoom!!.toGetResponse() }
@@ -53,7 +52,10 @@ class ChatMemberService (
     }
 
     @Transactional
-    fun createChatMember(chatroomId: Long, userDetails: UserDetails?): Long? {
+    fun createChatMember(
+        chatroomId: Long,
+        userDetails: UserDetails?,
+    ): Long? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
@@ -71,13 +73,13 @@ class ChatMemberService (
         val id =
             chatMemberRepository
                 .save(
-                    ChatMember.builder()
+                    ChatMember
+                        .builder()
                         .chatRoom(chatRoom)
                         .member(member)
                         .chatMemberStatus(ChatMemberStatus.ONLINE)
-                        .build()
-                )
-                .id
+                        .build(),
+                ).id
 
         val size = chatMemberRepository.countByChatRoom(chatRoom)
 
@@ -90,7 +92,7 @@ class ChatMemberService (
     fun updateChatMember(
         chatroomId: Long,
         userDetails: UserDetails?,
-        chatMemberStatus: ChatMemberStatus
+        chatMemberStatus: ChatMemberStatus,
     ): Long? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
