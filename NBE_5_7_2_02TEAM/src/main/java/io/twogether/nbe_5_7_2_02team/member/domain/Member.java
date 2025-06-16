@@ -17,12 +17,12 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @Column(nullable = false)
-    private String email;
+    public String email;
 
-    @Setter private String name;
+    @Setter public String name;
 
     private String profileImage;
 
@@ -34,7 +34,7 @@ public class Member extends BaseEntity {
     @Setter private String course;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    public Role role;
 
     public void updateProfile(String nickname, String profileImageUrl) {
         if (StringUtils.hasText(nickname)) {
