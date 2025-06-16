@@ -35,10 +35,8 @@ class OAuth2SuccessHandler(
         request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
     ) {
         val principal = authentication.principal as MemberDetails
-        val findMember =
-            memberRepository
-                .findById(principal.id)
-                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
+        val findMember = memberRepository.findById(principal.id)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val params = HashMap<String, String>()
 
@@ -61,7 +59,7 @@ class OAuth2SuccessHandler(
     }
 
     private fun genUrlStr(params: HashMap<String, String>): String {
-        return UriComponentsBuilder.fromUriString(baseUrl)
+        return UriComponentsBuilder.fromUriString(baseUrl!!)
             .queryParam("accessToken", params["access"])
             .queryParam("refreshToken", params["refresh"])
             .build()

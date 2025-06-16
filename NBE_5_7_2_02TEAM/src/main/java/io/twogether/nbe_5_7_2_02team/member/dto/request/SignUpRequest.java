@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SignUpRequest {
 
-    private String name;
-    private String job;
-    private String course;
+    public String name;
+    public String job;
+    public String course;
 }
