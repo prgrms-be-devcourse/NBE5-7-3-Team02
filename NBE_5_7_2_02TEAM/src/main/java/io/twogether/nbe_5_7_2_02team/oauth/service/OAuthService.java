@@ -201,8 +201,8 @@ public class OAuthService extends DefaultOAuth2UserService {
         GitHubUserInfoResponse userInfo = getUserInfo(accessToken);
         Member member =
                 memberRepository
-                        .findByEmail(userInfo.getEmail())
-                        .orElseGet(() -> saveUserInfo(userInfo));
+                        .findByEmail(userInfo.getEmail());
+//                        .orElseGet(() -> saveUserInfo(userInfo));
         TokenPair tokenPair = jwtTokenProvider.generateTokenPair(member);
         return LoginResponse.builder()
                 .tokenPair(tokenPair)

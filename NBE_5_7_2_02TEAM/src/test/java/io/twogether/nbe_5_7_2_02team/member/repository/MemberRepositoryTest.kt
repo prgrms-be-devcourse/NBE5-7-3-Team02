@@ -17,13 +17,13 @@ class MemberRepositoryTest @Autowired constructor(
     fun `이메일로 회원을 조회할 수 있다`() {
         //given
         val member = Member(
-            name = "backend",
-            githubId = "be_github",
-            email = "backend@test.com",
-            profileImage = "https://example.com/profile.jpg",
-            job = "백엔드 개발자",
-            course = "데브코스",
-            role = Role.MEMBER
+            "backend",
+            "be_github",
+            "backend@test.com",
+            "https://example.com/profile.jpg",
+            "백엔드 개발자",
+             "데브코스",
+             Role.MEMBER
         )
 
         val saved = memberRepository.save(member)

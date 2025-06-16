@@ -73,7 +73,7 @@ public class TokenBrowserSuccessTest extends BrowserTestTemplate {
         TokenPair tokenPair = genTokenPair(memberId);
 
         SignUpRequest request =
-                SignUpRequest.builder().name("신규가입자").job("DEVELOPER").course("SPRING").build();
+            new SignUpRequest("신규가입자","DEVELOPER","SPRING");
 
         // when & then
         mockMvc.perform(
