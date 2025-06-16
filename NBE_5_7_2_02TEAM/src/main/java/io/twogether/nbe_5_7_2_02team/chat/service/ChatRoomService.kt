@@ -1,80 +1,64 @@
-package io.twogether.nbe_5_7_2_02team.chat.service;
+package io.twogether.nbe_5_7_2_02team.chat.service
 
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_ROOM_ALREADY_EXISTS;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_ROOM_NOT_FOUND;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.NOT_FOUND_POST;
-
-import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRoomRepository;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponseKt;
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
-import io.twogether.nbe_5_7_2_02team.post.domain.Post;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRoomRepository
+import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.toGetResponse
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
-public class ChatRoomService {
-
-    private final ChatRoomRepository chatRoomRepository;
-    private final PostRepository postRepository;
+class ChatRoomService (
+    private val chatRoomRepository: ChatRoomRepository,
+    private val postRepository: PostRepository
+) {
 
     @Transactional(readOnly = true)
-    public List<ChatRoomGetResponse> getChatRoomList() {
-        List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
+    fun chatRoomList(): List<ChatRoomGetResponse>? {
+        val chatRoomList = chatRoomRepository.findAll()
 
-        return chatRoomList.stream().map(ChatRoomGetResponseKt::toGetResponse).toList();
+        return chatRoomList.map { chatRoom -> chatRoom.toGetResponse() }
     }
 
     @Transactional(readOnly = true)
-    public ChatRoomGetResponse getChatRoomByPost(Long postId) {
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(NOT_FOUND_POST));
+    fun getChatRoomByPost(postId: Long): ChatRoomGetResponse {
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        ChatRoom chatRoom =
-                chatRoomRepository
-                        .findByPost(post)
-                        .orElseThrow(() -> new ErrorException(CHAT_ROOM_NOT_FOUND));
+        val chatRoom =
+            chatRoomRepository
+                .findByPost(post) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
 
-        return ChatRoomGetResponseKt.toGetResponse(chatRoom);
+        return chatRoom.toGetResponse()
     }
 
     @Transactional
-    public Long createChatroom(Long postId) {
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(NOT_FOUND_POST));
+    fun createChatroom(postId: Long): Long? {
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
         chatRoomRepository
-                .findByPost(post)
-                .ifPresent(
-                        chatRoom -> {
-                            throw new ErrorException(CHAT_ROOM_ALREADY_EXISTS);
-                        });
+            .findByPost(post)?.let { throw ErrorException(ErrorCode.CHAT_ROOM_ALREADY_EXISTS)}
 
-        return chatRoomRepository.save(ChatRoom.builder().post(post).build()).getId();
+        return chatRoomRepository.save<ChatRoom>(ChatRoom.builder().post(post).build()).id
     }
 
     @Transactional
-    public void deleteChatroom(Long id) {
-        ChatRoom chatRoom = checkChatRoomExists(id);
+    fun deleteChatroom(id: Long) {
+        val chatRoom = checkChatRoomExists(id)
 
-        chatRoomRepository.delete(chatRoom);
+        chatRoomRepository.delete(chatRoom)
     }
 
-    public ChatRoom checkChatRoomExists(Long id) {
-        return chatRoomRepository
-                .findById(id)
-                .orElseThrow(() -> new ErrorException(CHAT_ROOM_NOT_FOUND));
+    fun checkChatRoomExists(id: Long): ChatRoom {
+        return chatRoomRepository.findById(id) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
     }
 }
