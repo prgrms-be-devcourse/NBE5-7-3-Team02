@@ -54,7 +54,8 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers(CorsUtils::isPreFlightRequest)
                                         .permitAll()
-                                        .requestMatchers(actuatorBasePath + "/**").hasRole("PROMETHEUS")
+                                        .requestMatchers(actuatorBasePath + "/**")
+                                        .hasRole("PROMETHEUS")
                                         .requestMatchers("/api/chatroom/entered")
                                         .authenticated()
                                         .requestMatchers(
