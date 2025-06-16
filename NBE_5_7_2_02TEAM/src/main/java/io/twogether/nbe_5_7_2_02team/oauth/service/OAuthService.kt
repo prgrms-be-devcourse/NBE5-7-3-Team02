@@ -113,7 +113,7 @@ class OAuthService(
         val email = fetchPrimaryEmail(entity)
         val organizations = fetchOrganizations(entity)
 
-        return GitHubUserInfoResponse(login, avatarUrl, email, organizations)
+        return GitHubUserInfoResponse(login, email, avatarUrl, organizations)
     }
 
     // GitHub 사용자의 기본 이메일
