@@ -2,6 +2,7 @@ package io.twogether.nbe_5_7_2_02team.post.api
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.twogether.nbe_5_7_2_02team.post.dto.request.*
 import io.twogether.nbe_5_7_2_02team.post.dto.response.PostDetailResponse
 import io.twogether.nbe_5_7_2_02team.post.dto.response.PostGetResponse
@@ -30,8 +31,9 @@ class PostController(
     ): ResponseEntity<PostResponse> {
         if (StringUtils.isNotBlank(request.recruitmentFieldsJson)) {
             try {
+                val mapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
                 request.recruitmentFields =
-                    ObjectMapper().readValue(
+                    mapper.readValue(
                         request.recruitmentFieldsJson,
                         object : TypeReference<List<RecruitmentFieldRequest>>() {},
                     )
