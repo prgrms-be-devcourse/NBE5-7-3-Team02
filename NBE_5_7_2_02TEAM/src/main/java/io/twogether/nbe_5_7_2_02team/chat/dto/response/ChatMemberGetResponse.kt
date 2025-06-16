@@ -7,14 +7,13 @@ data class ChatMemberGetResponse(
     val memberId: Long?,
     val memberName: String,
     val memberImage: String,
-    val chatMemberStatus: ChatMemberStatus
+    val chatMemberStatus: ChatMemberStatus,
 )
 
-fun ChatMember.toGetResponse(): ChatMemberGetResponse {
-    return ChatMemberGetResponse(
+fun ChatMember.toGetResponse(): ChatMemberGetResponse =
+    ChatMemberGetResponse(
         memberId = this.member.id,
         memberName = this.member.name,
         memberImage = this.member.profileImage,
-        chatMemberStatus = this.chatMemberStatus
+        chatMemberStatus = this.chatMemberStatus,
     )
-}

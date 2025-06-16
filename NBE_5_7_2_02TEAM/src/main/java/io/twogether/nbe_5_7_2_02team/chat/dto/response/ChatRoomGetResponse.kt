@@ -8,15 +8,14 @@ data class ChatRoomGetResponse(
     val postId: Long,
     val title: String,
     val memberCount: Long,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
 )
 
-fun ChatRoom.toGetResponse(): ChatRoomGetResponse {
-    return ChatRoomGetResponse(
+fun ChatRoom.toGetResponse(): ChatRoomGetResponse =
+    ChatRoomGetResponse(
         id = this.id,
         postId = this.post.id,
         title = this.post.title,
         memberCount = this.memberCount,
-        updatedAt = this.updatedAt
+        updatedAt = this.updatedAt,
     )
-}
