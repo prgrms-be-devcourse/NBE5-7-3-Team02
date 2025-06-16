@@ -27,7 +27,6 @@ public class RefreshTokenBlackList extends BaseEntity {
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
-    @Builder
     public RefreshTokenBlackList(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
