@@ -16,6 +16,10 @@ import java.util.List;
 @Entity
 public class Tag {
 
+    public String getName() {
+        return name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

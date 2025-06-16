@@ -1,5 +1,6 @@
 package io.twogether.nbe_5_7_2_02team.post.api
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.twogether.nbe_5_7_2_02team.post.dto.request.*
 import io.twogether.nbe_5_7_2_02team.post.dto.response.PostDetailResponse
@@ -30,8 +31,8 @@ class PostController(
     ): ResponseEntity<PostResponse> {
         if (StringUtils.isNotBlank(request.recruitmentFieldsJson)) {
             try {
-                val fields = mapper.readValue(request.recruitmentFieldsJson, Array<RecruitmentFieldRequest>::class.java)
-                request.recruitmentFields = fields.toMutableList()
+                request.recruitmentFields = mapper.readValue(request.recruitmentFieldsJson,
+                    object : TypeReference<List<RecruitmentFieldRequest>>() {})
             } catch (e: Exception) {
                 // TODO: 커스텀 Exception으로 변경
                 throw RuntimeException("Invalid recruitmentFieldsJson", e)
@@ -48,7 +49,7 @@ class PostController(
     fun updatePost(
         @PathVariable postId: Long,
         @RequestPart("post") request: PostUpdateRequest,
-        @RequestPart(value = "images", required = false) images: MutableList<MultipartFile>?,
+        @RequestPart(value = "images", required = false) images: List<MultipartFile> = listOf(),
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<PostResponse> {
         request.images = images
@@ -118,7 +119,7 @@ class PostController(
 
     @PostMapping("/{postId}/apply")
     fun applyToField(
-        @PathVariable postId: Long?,
+        @PathVariable postId: Long,
         @RequestBody request: @Valid PostApplyRequest,
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Void> {

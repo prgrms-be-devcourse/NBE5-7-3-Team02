@@ -36,7 +36,6 @@ public class PostApplication {
     @JoinColumn(name = "field_id", nullable = false)
     private RecruitmentField field;
 
-    @Builder
     public PostApplication(Member member, Post post, RecruitmentField field) {
         this.member = member;
         this.post = post;

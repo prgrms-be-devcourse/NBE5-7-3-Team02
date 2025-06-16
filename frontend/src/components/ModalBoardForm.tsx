@@ -26,7 +26,7 @@ export const ModalBoardForm = ({ open, onClose }: ModalComponentProps) => {
   const [recruitmentStatus, setRecruitmentStatus] = useState<string>("NONE");
   const [recruitmentDeadline, setRecruitmentDeadline] = useState<string>("");
   const [recruitmentFields, setRecruitmentFields] = useState([
-    { fieldName: "", totalCount: 1 },
+    { field_name: "", total_count: 1 },
   ]);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -39,7 +39,7 @@ export const ModalBoardForm = ({ open, onClose }: ModalComponentProps) => {
     setContent("");
     setRecruitmentStatus("NONE");
     setRecruitmentDeadline("");
-    setRecruitmentFields([{ fieldName: "", totalCount: 1 }]);
+    setRecruitmentFields([{ field_name: "", total_count: 1 }]);
     setFiles([]);
   };
 
@@ -182,11 +182,11 @@ export const ModalBoardForm = ({ open, onClose }: ModalComponentProps) => {
                   <div key={idx} className="flex gap-2">
                     <TextInput
                       placeholder="분야명 (예: 프론트엔드)"
-                      value={field.fieldName}
+                      value={field.field_name}
                       onChange={(e) =>
                         setRecruitmentFields((prev) =>
                           prev.map((f, i) =>
-                            i === idx ? { ...f, fieldName: e.target.value } : f,
+                            i === idx ? { ...f, field_name: e.target.value } : f,
                           ),
                         )
                       }
@@ -195,14 +195,14 @@ export const ModalBoardForm = ({ open, onClose }: ModalComponentProps) => {
                       type="number"
                       min={1}
                       placeholder="모집 인원"
-                      value={field.totalCount}
+                      value={field.total_count}
                       onChange={(e) =>
                         setRecruitmentFields((prev) =>
                           prev.map((f, i) =>
                             i === idx
                               ? {
                                   ...f,
-                                  totalCount: Number(e.target.value),
+                                  total_count: Number(e.target.value),
                                 }
                               : f,
                           ),
@@ -227,7 +227,7 @@ export const ModalBoardForm = ({ open, onClose }: ModalComponentProps) => {
                   onClick={() =>
                     setRecruitmentFields((prev) => [
                       ...prev,
-                      { fieldName: "", totalCount: 1 },
+                      { field_name: "", total_count: 1 },
                     ])
                   }
                 >

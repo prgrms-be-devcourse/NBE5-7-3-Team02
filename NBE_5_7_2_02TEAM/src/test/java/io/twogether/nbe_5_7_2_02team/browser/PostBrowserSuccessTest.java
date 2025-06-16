@@ -34,6 +34,7 @@ import io.twogether.nbe_5_7_2_02team.post.dto.request.PostApplyRequest;
 import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 
+import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 
 import org.junit.jupiter.api.DisplayName;
@@ -300,10 +301,15 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         long targetPostId = 2L;
         TokenPair tokenPair = getTokenPair(targetMemberId);
 
-        PostUpdateRequest request = new PostUpdateRequest();
-        request.setTitle("NEW TITLE");
-        request.setContent("NEW CONTENT");
-        request.setRecruitmentStatus(DONE);
+        PostUpdateRequest request = new PostUpdateRequest(
+            "NEW TITLE",
+            "NEW CONTENT",
+            DONE,
+            null,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>()
+        );
 
         MockMultipartFile jsonPart =
                 new MockMultipartFile(
@@ -379,11 +385,8 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
                 .andExpect(status().isOk());
 
         // then
-        Optional<Likes> actualLikesOptional =
-                likesRepository.findByPostAndMember(targetPost, targetMember);
-        assertThat(actualLikesOptional.isPresent()).isTrue();
-
-        Likes actualLikes = actualLikesOptional.get();
+        Likes actualLikes = likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikes).isNotNull();
         assertThat(actualLikes.getPost().getId()).isEqualTo(targetPost.getId());
         assertThat(actualLikes.getMember().getId()).isEqualTo(targetMember.getId());
     }
@@ -408,9 +411,8 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
                 .andExpect(status().isOk());
 
         // then
-        Optional<Likes> actualLikesOptional =
-                likesRepository.findByPostAndMember(targetPost, targetMember);
-        assertThat(actualLikesOptional.isPresent()).isFalse();
+        Likes actualLikes = likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikes).isNull();
     }
 
     @Test
