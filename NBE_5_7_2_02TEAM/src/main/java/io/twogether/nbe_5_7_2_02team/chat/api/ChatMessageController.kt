@@ -37,7 +37,7 @@ class ChatMessageController (
         @Payload chatMessagePostRequest: ChatMessagePostRequest,
         principal: Principal
     ): ChatMessageGetResponse {
-        var tokenBody: TokenBody? = null
+        var tokenBody: TokenBody?
         var memberId: Long? = null
 
         if (principal is Authentication) {
@@ -64,6 +64,6 @@ class ChatMessageController (
     ): ResponseEntity<Long> {
         chatMessageService.deleteChatMessage(chatMessageId, chatroomId, userDetails)
 
-        return ResponseEntity.ok<Long>(chatroomId)
+        return ResponseEntity.ok(chatroomId)
     }
 }

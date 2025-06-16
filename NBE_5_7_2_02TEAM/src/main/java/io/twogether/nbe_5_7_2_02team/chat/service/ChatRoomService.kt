@@ -18,7 +18,7 @@ class ChatRoomService (
 ) {
 
     @Transactional(readOnly = true)
-    fun chatRoomList(): List<ChatRoomGetResponse>? {
+    fun getChatRoomList(): List<ChatRoomGetResponse>? {
         val chatRoomList = chatRoomRepository.findAll()
 
         return chatRoomList.map { chatRoom -> chatRoom.toGetResponse() }
@@ -59,6 +59,6 @@ class ChatRoomService (
     }
 
     fun checkChatRoomExists(id: Long): ChatRoom {
-        return chatRoomRepository.findById(id) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
+        return chatRoomRepository.findChatRoomById(id) ?: throw ErrorException(ErrorCode.CHAT_ROOM_NOT_FOUND)
     }
 }

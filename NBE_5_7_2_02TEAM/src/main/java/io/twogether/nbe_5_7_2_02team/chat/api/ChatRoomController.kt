@@ -13,7 +13,7 @@ class ChatRoomController (
 ) {
 
     @GetMapping
-    fun chatRoomList(): ResponseEntity<List<ChatRoomGetResponse>?> {
+    fun getChatRoomList(): ResponseEntity<List<ChatRoomGetResponse>?> {
             val chatRoomGetResponse = chatRoomService.getChatRoomList()
 
             return ResponseEntity.ok<List<ChatRoomGetResponse>?>(chatRoomGetResponse)
@@ -25,7 +25,7 @@ class ChatRoomController (
     ): ResponseEntity<ChatRoomGetResponse> {
         val chatRoomGetResponse = chatRoomService.getChatRoomByPost(postId)
 
-        return ResponseEntity.ok<ChatRoomGetResponse>(chatRoomGetResponse)
+        return ResponseEntity.ok(chatRoomGetResponse)
     }
 
     @PostMapping("/{postId}")
@@ -34,6 +34,6 @@ class ChatRoomController (
     ): ResponseEntity<Long> {
         val chatRoomId = chatRoomService.createChatroom(postId)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body<Long>(chatRoomId)
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatRoomId)
     }
 }

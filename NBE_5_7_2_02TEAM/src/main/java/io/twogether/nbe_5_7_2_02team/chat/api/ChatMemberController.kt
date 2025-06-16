@@ -41,7 +41,7 @@ class ChatMemberController (
     ): ResponseEntity<Long> {
         val chatMember = chatMemberService.createChatMember(chatroomId, userDetails)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body<Long>(chatMember)
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatMember)
     }
 
     @PutMapping("/{chatroomId}/member")
@@ -52,6 +52,6 @@ class ChatMemberController (
     ): ResponseEntity<Long> {
         val chatMember = chatMemberService.updateChatMember(chatroomId, userDetails, chatMemberUpdateRequest.chatMemberStatus)
 
-        return ResponseEntity.ok<Long>(chatMember)
+        return ResponseEntity.ok(chatMember)
     }
 }

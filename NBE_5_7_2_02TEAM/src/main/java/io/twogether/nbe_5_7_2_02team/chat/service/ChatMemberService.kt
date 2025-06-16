@@ -39,7 +39,7 @@ class ChatMemberService (
     }
 
     @Transactional(readOnly = true)
-    fun getChatMember(chatroomId: Long): List<ChatMemberGetResponse?> {
+    fun getChatMember(chatroomId: Long): List<ChatMemberGetResponse>? {
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
         val chatMemberList: List<ChatMember?> =
@@ -49,7 +49,7 @@ class ChatMemberService (
             throw ErrorException(ErrorCode.CHAT_ROOM_EMPTY)
         }
 
-        return chatMemberList.map { chatMember -> chatMember?.toGetResponse() }
+        return chatMemberList.map { chatMember -> chatMember!!.toGetResponse() }
     }
 
     @Transactional
