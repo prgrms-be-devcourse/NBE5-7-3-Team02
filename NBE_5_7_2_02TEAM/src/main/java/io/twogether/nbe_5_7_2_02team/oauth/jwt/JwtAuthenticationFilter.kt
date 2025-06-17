@@ -48,7 +48,10 @@ class JwtAuthenticationFilter(
     }
 
     @Throws(IOException::class)
-    private fun handleAuthTokenException(response: HttpServletResponse, e: ErrorException) {
+    private fun handleAuthTokenException(
+        response: HttpServletResponse,
+        e: ErrorException,
+    ) {
         val message = e.errorCode.message
 
         response.apply {
@@ -57,11 +60,11 @@ class JwtAuthenticationFilter(
             characterEncoding = "UTF-8"
             writer.write(
                 """
-            {
-                "code": "${e.errorCode.code}",
-                "message": "$message"
-            }
-            """.trimIndent()
+                {
+                    "code": "${e.errorCode.code}",
+                    "message": "$message"
+                }
+                """.trimIndent(),
             )
         }
     }
