@@ -95,13 +95,7 @@ class ChatMemberServiceTest {
                         .password("PASSWORD")
                         .authorities(Collections.emptyList())
                         .build();
-        post =
-                new Post(
-                        "제목",
-                        "내용",
-                        RecruitmentStatus.NONE,
-                        member1
-                        );
+        post = new Post("제목", "내용", RecruitmentStatus.NONE, member1);
 
         postRepository.save(post);
 

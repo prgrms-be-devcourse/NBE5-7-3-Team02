@@ -1,6 +1,7 @@
 package io.twogether.nbe_5_7_2_02team.member.domain;
 
 import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,13 +9,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import org.springframework.util.StringUtils;
 
 @Entity
 public class Member extends BaseEntity {
 
-    protected Member() {
-    }
+    protected Member() {}
 
     public static MemberBuilder builder() {
         return new MemberBuilder();
@@ -102,13 +103,13 @@ public class Member extends BaseEntity {
     }
 
     public Member(
-        String email,
-        String name,
-        String profileImage,
-        String job,
-        String course,
-        String githubId,
-        Role role) {
+            String email,
+            String name,
+            String profileImage,
+            String job,
+            String course,
+            String githubId,
+            Role role) {
         this.email = email;
         this.name = name;
         this.profileImage = profileImage;
@@ -128,8 +129,7 @@ public class Member extends BaseEntity {
         private String githubId;
         private Role role;
 
-        MemberBuilder() {
-        }
+        MemberBuilder() {}
 
         public MemberBuilder email(String email) {
             this.email = email;
@@ -167,14 +167,32 @@ public class Member extends BaseEntity {
         }
 
         public Member build() {
-            return new Member(this.email, this.name, this.profileImage, this.job, this.course,
-                this.githubId, this.role);
+            return new Member(
+                    this.email,
+                    this.name,
+                    this.profileImage,
+                    this.job,
+                    this.course,
+                    this.githubId,
+                    this.role);
         }
 
         public String toString() {
-            return "Member.MemberBuilder(email=" + this.email + ", name=" + this.name
-                + ", profileImage=" + this.profileImage + ", job=" + this.job + ", course="
-                + this.course + ", githubId=" + this.githubId + ", role=" + this.role + ")";
+            return "Member.MemberBuilder(email="
+                    + this.email
+                    + ", name="
+                    + this.name
+                    + ", profileImage="
+                    + this.profileImage
+                    + ", job="
+                    + this.job
+                    + ", course="
+                    + this.course
+                    + ", githubId="
+                    + this.githubId
+                    + ", role="
+                    + this.role
+                    + ")";
         }
     }
 }

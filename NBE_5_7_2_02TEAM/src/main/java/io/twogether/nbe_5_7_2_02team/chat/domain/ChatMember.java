@@ -2,6 +2,7 @@ package io.twogether.nbe_5_7_2_02team.chat.domain;
 
 import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity;
 import io.twogether.nbe_5_7_2_02team.member.domain.Member;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,8 +38,7 @@ public class ChatMember extends BaseEntity {
         this.chatMemberStatus = chatMemberStatus;
     }
 
-    protected ChatMember() {
-    }
+    protected ChatMember() {}
 
     public Long getId() {
         return id;

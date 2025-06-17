@@ -47,24 +47,12 @@ class ChatRoomServiceTest {
         chatRoomRepository.deleteAll();
         postRepository.deleteAll();
 
-        Member member = new Member(
-            "email@test.com",
-            "name",
-            "image",
-            "job",
-            "course",
-            "gitid",
-            Role.MEMBER
-        );
+        Member member =
+                new Member(
+                        "email@test.com", "name", "image", "job", "course", "gitid", Role.MEMBER);
         memberRepository.save(member);
 
-        post =
-                new Post(
-                        "제목",
-                        "내용",
-                        RecruitmentStatus.NONE,
-                        member
-                );
+        post = new Post("제목", "내용", RecruitmentStatus.NONE, member);
 
         postRepository.save(post);
 

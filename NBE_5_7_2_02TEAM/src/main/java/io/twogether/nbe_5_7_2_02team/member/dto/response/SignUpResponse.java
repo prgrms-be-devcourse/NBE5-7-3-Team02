@@ -23,13 +23,13 @@ public class SignUpResponse {
 
     public static SignUpResponse from(Member member) {
         return SignUpResponse.builder()
-            .id(member.getId())
-            .email(member.getEmail())
-            .name(member.getName())
-            .job(member.getJob())
-            .course(member.getCourse())
-            .role(member.getRole())
-            .build();
+                .id(member.getId())
+                .email(member.getEmail())
+                .name(member.getName())
+                .job(member.getJob())
+                .course(member.getCourse())
+                .role(member.getRole())
+                .build();
     }
 
     public static SignUpResponseBuilder builder() {
@@ -69,8 +69,7 @@ public class SignUpResponse {
         private String course;
         private Role role;
 
-        SignUpResponseBuilder() {
-        }
+        SignUpResponseBuilder() {}
 
         public SignUpResponseBuilder id(Long id) {
             this.id = id;
@@ -103,14 +102,24 @@ public class SignUpResponse {
         }
 
         public SignUpResponse build() {
-            return new SignUpResponse(this.id, this.email, this.name, this.job, this.course,
-                this.role);
+            return new SignUpResponse(
+                    this.id, this.email, this.name, this.job, this.course, this.role);
         }
 
         public String toString() {
-            return "SignUpResponse.SignUpResponseBuilder(id=" + this.id + ", email=" + this.email
-                + ", name=" + this.name + ", job=" + this.job + ", course=" + this.course
-                + ", role=" + this.role + ")";
+            return "SignUpResponse.SignUpResponseBuilder(id="
+                    + this.id
+                    + ", email="
+                    + this.email
+                    + ", name="
+                    + this.name
+                    + ", job="
+                    + this.job
+                    + ", course="
+                    + this.course
+                    + ", role="
+                    + this.role
+                    + ")";
         }
     }
 }
