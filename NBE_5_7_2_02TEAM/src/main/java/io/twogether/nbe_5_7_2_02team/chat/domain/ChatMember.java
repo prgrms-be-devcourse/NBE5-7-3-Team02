@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -39,7 +38,6 @@ public class ChatMember extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ChatMemberStatus chatMemberStatus;
 
-    @Builder
     public ChatMember(ChatRoom chatRoom, Member member, ChatMemberStatus chatMemberStatus) {
         this.chatRoom = chatRoom;
         this.member = member;
@@ -52,6 +50,10 @@ public class ChatMember extends BaseEntity {
 
     public ChatRoom getChatRoom() {
         return chatRoom;
+    }
+
+    public void setChatMemberStatus(ChatMemberStatus chatMemberStatus) {
+        this.chatMemberStatus = chatMemberStatus;
     }
 
     public Member getMember() {
