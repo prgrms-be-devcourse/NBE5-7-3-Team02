@@ -14,4 +14,8 @@ import lombok.NoArgsConstructor;
 public class TokenBody {
     private Long memberId;
     private Role role;
+
+    public Long getMemberId() {
+        return memberId;
+    }
 }

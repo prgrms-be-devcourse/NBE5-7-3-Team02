@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -29,13 +28,20 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public void setMemberCount(Long memberCount) {
+        this.memberCount = memberCount;
+    }
+
+    public void setLastChatId(Long lastChatId) {
+        this.lastChatId = lastChatId;
+    }
+
     @Column(name = "member_count")
     private Long memberCount = 0L;
 
     @Column(name = "last_chat_id")
     private Long lastChatId = 0L;
 
-    @Builder(toBuilder = true)
     public ChatRoom(Post post) {
         this.post = post;
     }

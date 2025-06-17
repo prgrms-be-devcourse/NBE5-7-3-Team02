@@ -39,20 +39,18 @@ class ChatMessageService(
     fun createChatMessage(
         chatRoomId: Long,
         chatMessagePostRequest: ChatMessagePostRequest,
-        memberId: Long,
+        memberId: Long?,
     ): ChatMessageGetResponse {
         val member =
             memberRepository
                 .findById(memberId)
                 .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
+//                TODO: MemberRepository.java가 마이그레이션 된 후 적용 예정
+//                ?: ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member)
-
-        if (chatMember == null) {
-            throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
-        }
+        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         val content = chatMessagePostRequest.content
 
@@ -63,12 +61,7 @@ class ChatMessageService(
         val chatMessageId =
             chatMessageRepository
                 .save(
-                    ChatMessage
-                        .builder()
-                        .chatRoom(chatRoom)
-                        .chatMember(chatMember)
-                        .content(content)
-                        .build(),
+                    ChatMessage(chatRoom, chatMember, content)
                 ).id
 
         val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()
@@ -88,22 +81,14 @@ class ChatMessageService(
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member)
-
-        if (chatMember == null) {
-            throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
-        }
+        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         val chatMessage =
             chatMessageRepository.findByIdAndChatRoomAndChatMember(
                 chatMessageId,
                 chatRoom,
                 chatMember,
-            )
-
-        if (chatMessage == null) {
-            throw ErrorException(ErrorCode.CHAT_MESSAGE_NOT_FOUND)
-        }
+            ) ?: throw ErrorException(ErrorCode.CHAT_MESSAGE_NOT_FOUND)
 
         chatMessageRepository.deleteById(chatMessage.id)
     }
