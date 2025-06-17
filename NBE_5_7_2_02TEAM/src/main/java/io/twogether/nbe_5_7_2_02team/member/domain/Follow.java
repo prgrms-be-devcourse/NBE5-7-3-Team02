@@ -5,7 +5,6 @@ import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity;
 import jakarta.persistence.*;
 
 import lombok.*;
-import lombok.AccessLevel;
 
 @Entity
 public class Follow extends BaseEntity {

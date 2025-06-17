@@ -8,6 +8,7 @@ import lombok.*;
 
 import org.springframework.util.StringUtils;
 
+
 @Entity
 public class Member extends BaseEntity {
 

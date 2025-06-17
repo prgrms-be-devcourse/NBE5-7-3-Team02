@@ -13,11 +13,14 @@ import io.twogether.nbe_5_7_2_02team.member.util.Uploader.ImageUpload;
 import io.twogether.nbe_5_7_2_02team.member.util.mapper.MemberMapperKt;
 import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -32,9 +35,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MyPageResponse getMemberPage(Long targetMemberId, Long viewerId) {
         Member target =
-            memberRepository
-                .findById(targetMemberId)
-                .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
+                memberRepository
+                        .findById(targetMemberId)
+                        .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
         List<Post> posts = postRepository.findAllByMemberId(targetMemberId);
 
         Long followerCount = followRepository.countByFollowing(target);
@@ -47,23 +50,23 @@ public class MemberService {
 
         if (!targetMemberId.equals(viewerId)) {
             following =
-                followRepository.existsByFollowerAndFollowing(
-                    memberRepository
-                        .findById(viewerId)
-                        .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER)),
-                    target);
+                    followRepository.existsByFollowerAndFollowing(
+                            memberRepository
+                                    .findById(viewerId)
+                                    .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER)),
+                            target);
         }
 
         return MemberMapperKt.toMyPageResponse(
-            target, posts, followerCount, followingCount, following, owner);
+                target, posts, followerCount, followingCount, following, owner);
     }
 
     @Transactional
     public MemberUpdateResponse updateProfile(Long memberId, UpdateProfileRequest request) {
         Member member =
-            memberRepository
-                .findById(memberId)
-                .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
+                memberRepository
+                        .findById(memberId)
+                        .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
 
         String imageUrl = imageUpload.saveProfileImage(request.getImage(), memberId);
 
