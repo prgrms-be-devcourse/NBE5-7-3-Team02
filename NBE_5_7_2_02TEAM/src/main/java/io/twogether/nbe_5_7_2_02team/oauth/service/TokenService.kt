@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-open class TokenService (
+class TokenService (
     private val jwtTokenProvider: JwtTokenProvider,
     private val memberRepository: MemberRepository
 ){
 
     // RefreshToken으로 AccessToken과 RefreshToken 재발급
     @Transactional
-    open fun refreshToken(refreshTokenValue: String): TokenPair {
+    fun refreshToken(refreshTokenValue: String): TokenPair {
         jwtTokenProvider.refreshValidate(refreshTokenValue)
 
         val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
@@ -35,7 +35,7 @@ open class TokenService (
 
     // RefreshToken을 무효화해서 로그아웃
     @Transactional
-    open fun invalidateRefreshToken(refreshTokenValue: String) {
+    fun invalidateRefreshToken(refreshTokenValue: String) {
         jwtTokenProvider.refreshValidate(refreshTokenValue)
 
         val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
