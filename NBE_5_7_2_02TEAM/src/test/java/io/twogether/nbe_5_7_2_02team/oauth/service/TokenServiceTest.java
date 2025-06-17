@@ -47,7 +47,7 @@ class TokenServiceTest extends BrowserTestTemplate {
 
         tokenService.invalidateRefreshToken(tokenPair.getRefreshToken());
 
-        RefreshToken refreshToken = refreshTokenRepository.findByMemberId(1L).orElseThrow();
+        RefreshToken refreshToken = refreshTokenRepository.findByMemberId(1L);
 
         assertNotNull(refreshTokenBlackListRepository.findByRefreshTokenId(refreshToken.getId()));
     }

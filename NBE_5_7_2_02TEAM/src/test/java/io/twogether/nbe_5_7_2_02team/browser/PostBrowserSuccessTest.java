@@ -369,7 +369,7 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         // given
         long targetMemberId = 1L;
         Post targetPost = postRepository.findById(1L).orElseThrow();
-        Member targetMember = memberRepository.findById(targetMemberId).orElseThrow();
+        Member targetMember = memberRepository.findById(targetMemberId);
         TokenPair tokenPair = getTokenPair(targetMemberId);
 
         // when
@@ -398,7 +398,7 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         // given
         long targetMemberId = 1L;
         Post targetPost = postRepository.findById(1L).orElseThrow();
-        Member targetMember = memberRepository.findById(targetMemberId).orElseThrow();
+        Member targetMember = memberRepository.findById(targetMemberId);
         TokenPair tokenPair = getTokenPair(targetMemberId);
 
         // when
@@ -438,7 +438,7 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
                 .andExpect(status().isOk());
 
         // then
-        Member member = memberRepository.findById(2L).orElseThrow();
+        Member member = memberRepository.findById(2L);
         RecruitmentField field = recruitmentFieldRepository.findById(1L).orElseThrow();
         assertThat(field.getCurrentCount()).isEqualTo(1);
         assertThat(postApplicationRepository.existsByMemberAndField(member, field)).isTrue();
