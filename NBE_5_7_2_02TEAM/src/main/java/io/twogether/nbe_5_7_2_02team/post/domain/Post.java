@@ -108,40 +108,4 @@ public class Post extends BaseEntity {
         if (content != null) this.content = content;
         if (status != null) this.recruitmentStatus = status;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public RecruitmentStatus getRecruitmentStatus() {
-        return recruitmentStatus;
-    }
-
-    public LocalDate getRecruitmentDeadline() {
-        return recruitmentDeadline;
-    }
-
-    public List<RecruitmentField> getRecruitmentFields() {
-        return recruitmentFields;
-    }
-
-    public List<PostTag> getPostTags() {
-        return postTags;
-    }
-
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public Member getMember() {
-        return member;
-    }
 }
