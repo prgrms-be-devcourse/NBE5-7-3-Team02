@@ -115,9 +115,9 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Test
     @DataSet(
             value = {
-                    "datasets/v2/member.yml",
-                    "datasets/v2/post.yml",
-                    "datasets/v2/tag.yml",
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+                "datasets/v2/tag.yml",
             },
             cleanBefore = true,
             cleanAfter = true)
@@ -134,9 +134,9 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Test
     @DataSet(
             value = {
-                    "datasets/v2/member.yml",
-                    "datasets/v2/post.yml",
-                    "datasets/v2/tag.yml",
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+                "datasets/v2/tag.yml",
             },
             cleanBefore = true,
             cleanAfter = true)
@@ -247,9 +247,9 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Test
     @DataSet(
             value = {
-                    "datasets/v2/member.yml",
-                    "datasets/v2/post.yml",
-                    "datasets/v2/tag.yml",
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+                "datasets/v2/tag.yml",
             },
             cleanBefore = true,
             cleanAfter = true)
@@ -274,9 +274,9 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Test
     @DataSet(
             value = {
-                    "datasets/v2/member.yml",
-                    "datasets/v2/post.yml",
-                    "datasets/v2/tag.yml",
+                "datasets/v2/member.yml",
+                "datasets/v2/post.yml",
+                "datasets/v2/tag.yml",
             },
             cleanBefore = true,
             cleanAfter = true)
