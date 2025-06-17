@@ -9,7 +9,7 @@ interface TokenRepository {
     fun save(
         member: Member,
         token: String,
-    ): RefreshToken?
+    ): RefreshToken
 
     fun addBlackList(refreshToken: RefreshToken): RefreshTokenBlackList?
 
