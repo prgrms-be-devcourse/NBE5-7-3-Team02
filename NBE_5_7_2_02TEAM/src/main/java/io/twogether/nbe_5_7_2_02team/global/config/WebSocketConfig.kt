@@ -21,9 +21,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 class WebSocketConfig(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
 ) : WebSocketMessageBrokerConfigurer {
-
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config.enableSimpleBroker("/sub")
         config.setApplicationDestinationPrefixes("/pub")
@@ -34,29 +33,35 @@ class WebSocketConfig(
     }
 
     override fun configureClientInboundChannel(registration: ChannelRegistration) {
-        registration.interceptors(object : ChannelInterceptor {
-            override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
-                val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
-                    ?: return message
+        registration.interceptors(
+            object : ChannelInterceptor {
+                override fun preSend(
+                    message: Message<*>,
+                    channel: MessageChannel,
+                ): Message<*> {
+                    val accessor =
+                        MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
+                            ?: return message
 
-                if (StompCommand.CONNECT == accessor.command) {
-                    val token = accessor.getFirstNativeHeader("Authorization")?.substringAfter("Bearer ")
+                    if (StompCommand.CONNECT == accessor.command) {
+                        val token = accessor.getFirstNativeHeader("Authorization")?.substringAfter("Bearer ")
 
-                    token?.let {
-                        try {
-                            if (jwtTokenProvider.validate(it)) {
-                                val tokenBody = jwtTokenProvider.parseJwt(it)
-                                val authorities = listOf(SimpleGrantedAuthority("ROLE_${tokenBody.role.name}"))
-                                val authentication = UsernamePasswordAuthenticationToken(tokenBody, null, authorities)
-                                accessor.user = authentication
+                        token?.let {
+                            try {
+                                if (jwtTokenProvider.validate(it)) {
+                                    val tokenBody = jwtTokenProvider.parseJwt(it)
+                                    val authorities = listOf(SimpleGrantedAuthority("ROLE_${tokenBody.role.name}"))
+                                    val authentication = UsernamePasswordAuthenticationToken(tokenBody, null, authorities)
+                                    accessor.user = authentication
+                                }
+                            } catch (e: ErrorException) {
+                                throw ErrorException(ErrorCode.INVALID_ACCESS_TOKEN)
                             }
-                        } catch (e: ErrorException) {
-                            throw ErrorException(ErrorCode.INVALID_ACCESS_TOKEN)
-                        }
-                    } ?: throw ErrorException(ErrorCode.INVALID_ACCESS_TOKEN)
+                        } ?: throw ErrorException(ErrorCode.INVALID_ACCESS_TOKEN)
+                    }
+                    return message
                 }
-                return message
-            }
-        })
+            },
+        )
     }
 }
