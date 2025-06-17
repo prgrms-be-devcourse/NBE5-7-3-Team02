@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +26,6 @@ public class RefreshTokenBlackList extends BaseEntity {
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
-    @Builder
     public RefreshTokenBlackList(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }

@@ -9,11 +9,20 @@ import lombok.*;
 import org.springframework.util.StringUtils;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
-    public Long getId() {
-        return id;
+    protected Member() {}
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 
     public String getEmail() {
@@ -44,6 +53,10 @@ public class Member extends BaseEntity {
         return role;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,19 +64,26 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
-    @Setter private String name;
+    private String name;
 
     private String profileImage;
 
     @Column(nullable = false)
     private String githubId;
 
-    @Setter private String job;
+    private String job;
 
-    @Setter private String course;
+    private String course;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public Member(Role role, String email, String profileImage, String githubId) {
+        this.role = role;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.githubId = githubId;
+    }
 
     public void updateProfile(String nickname, String profileImageUrl) {
         if (StringUtils.hasText(nickname)) {
