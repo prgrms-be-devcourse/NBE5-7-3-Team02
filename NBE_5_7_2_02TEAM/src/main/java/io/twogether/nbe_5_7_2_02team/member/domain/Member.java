@@ -59,7 +59,6 @@ public class Member extends BaseEntity {
         return id;
     }
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
