@@ -11,30 +11,75 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
+
+    protected Member() {}
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(nullable = false)
-    public String email;
+    private String email;
 
-    @Setter public String name;
+    private String name;
 
-    public String profileImage;
+    private String profileImage;
 
     @Column(nullable = false)
-    public String githubId;
+    private String githubId;
 
-    @Setter public String job;
+    private String job;
 
-    @Setter public String course;
+    private String course;
 
     @Enumerated(EnumType.STRING)
-    public Role role;
+    private Role role;
 
     public Member(Role role, String email, String profileImage, String githubId) {
         this.role = role;
