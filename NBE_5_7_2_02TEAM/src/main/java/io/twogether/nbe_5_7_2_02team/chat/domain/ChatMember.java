@@ -52,8 +52,7 @@ public class ChatMember extends BaseEntity {
         return chatRoom;
     }
 
-    public void setChatMemberStatus(
-        ChatMemberStatus chatMemberStatus) {
+    public void setChatMemberStatus(ChatMemberStatus chatMemberStatus) {
         this.chatMemberStatus = chatMemberStatus;
     }
 
