@@ -78,8 +78,6 @@ dependencies {
     testImplementation("com.github.database-rider:rider-spring:1.44.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-
 }
 
 tasks.test {

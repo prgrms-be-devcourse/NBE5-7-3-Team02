@@ -15,9 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @FlywayReset
 class TokenBrowserSuccessTest : BrowserTestTemplate() {
@@ -39,21 +37,22 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
         val request = RefreshRequest(tokenPair.refreshToken)
 
         // when & then
-        mockMvc.post("/api/token/refresh") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(request)
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.access_token") { value(tokenPair.accessToken) }
-            jsonPath("$.refresh_token") { value(tokenPair.refreshToken) }
-        }
+        mockMvc
+            .post("/api/token/refresh") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.access_token") { value(tokenPair.accessToken) }
+                jsonPath("$.refresh_token") { value(tokenPair.refreshToken) }
+            }
     }
 
     @Test
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
     @DisplayName("POST: /api/logout 로그아웃 요청 성공")
     @Throws(
-        Exception::class
+        Exception::class,
     )
     fun logout() {
         // given
@@ -61,20 +60,21 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
         val request = LogoutRequest(tokenPair.refreshToken)
 
         // when & then
-        mockMvc.post("/api/logout") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(request)
-            header("Authorization", "Bearer ${tokenPair.accessToken}")
-        }.andExpect {
-            status { isOk() }
-        }
+        mockMvc
+            .post("/api/logout") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+                header("Authorization", "Bearer ${tokenPair.accessToken}")
+            }.andExpect {
+                status { isOk() }
+            }
     }
 
     @Test
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
     @DisplayName("POST: /api/signup 회원가입 성공")
     @Throws(
-        Exception::class
+        Exception::class,
     )
     fun signup() {
         // given
@@ -82,21 +82,26 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
         val tokenPair = genTokenPair(memberId)
 
         val request =
-            SignUpRequest.builder().name("신규가입자").job("DEVELOPER").course("SPRING").build()
+            SignUpRequest
+                .builder()
+                .name("신규가입자")
+                .job("DEVELOPER")
+                .course("SPRING")
+                .build()
 
         // when & then
-        mockMvc.post("/api/signup") {
-            header("Authorization", "Bearer ${tokenPair.accessToken}")
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(request)
-        }.andExpect {
-            status { isCreated() }
-            jsonPath("$.id") { value(memberId) }
-            jsonPath("$.name") { value(request.getName()) }
-            jsonPath("$.job") { value(request.getJob()) }
-            jsonPath("$.course") { value(request.getCourse()) }
-
-        }
+        mockMvc
+            .post("/api/signup") {
+                header("Authorization", "Bearer ${tokenPair.accessToken}")
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+            }.andExpect {
+                status { isCreated() }
+                jsonPath("$.id") { value(memberId) }
+                jsonPath("$.name") { value(request.getName()) }
+                jsonPath("$.job") { value(request.getJob()) }
+                jsonPath("$.course") { value(request.getCourse()) }
+            }
     }
 
     private fun genTokenPair(memberId: Long): TokenPair {
