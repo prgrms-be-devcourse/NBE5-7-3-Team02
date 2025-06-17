@@ -8,21 +8,33 @@ import lombok.*;
 import lombok.AccessLevel;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow extends BaseEntity {
+
+    public Follow() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getFollower() {
+        return follower;
+    }
+
+    public Member getFollowing() {
+        return following;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_id", nullable = false)
-    private Member follower;
+    public Member follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "following_id", nullable = false)
-    private Member following;
+    public Member following;
 
     public Follow(Member follower, Member following) {
         this.follower = follower;
