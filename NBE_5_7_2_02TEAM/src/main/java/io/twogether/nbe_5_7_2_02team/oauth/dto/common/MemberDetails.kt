@@ -9,10 +9,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 
 class MemberDetails(
     var id: Long? = null,
-    private val _name: String? = null,
+    private val name: String? = null,
     var email: String? = null,
     var role: Role? = null,
-    private var _attributes: Map<String, Any>? = null,
+    private var attributes: Map<String, Any>? = null,
     var githubId: String? = null,
     var avatarUrl: String? = null,
 ) : OAuth2User,
@@ -26,15 +26,15 @@ class MemberDetails(
     override fun getUsername(): String = id?.toString() ?: ""
 
     // OAuth2User interface methods
-    override fun getName(): String? = _name
+    override fun getName(): String? = name
 
-    override fun getAttributes(): Map<String, Any> = _attributes ?: emptyMap()
+    override fun getAttributes(): Map<String, Any> = attributes ?: emptyMap()
 
     companion object {
         fun from(member: Member): MemberDetails =
             MemberDetails(
                 id = member.id,
-                _name = member.name,
+                name = member.name,
                 email = member.email,
                 role = member.role,
             )

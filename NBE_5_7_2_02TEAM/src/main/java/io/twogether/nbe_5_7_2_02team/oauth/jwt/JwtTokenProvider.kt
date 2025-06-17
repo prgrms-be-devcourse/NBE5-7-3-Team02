@@ -30,8 +30,6 @@ class JwtTokenProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val refreshTokenBlackListRepository: RefreshTokenBlackListRepository,
 ) {
-    private val log = LoggerFactory.getLogger(JwtTokenProvider::class.java)
-
     fun generateTokenPair(member: Member): TokenPair {
         val token = refreshTokenRepository.findByMemberId(member.id)
         if (token != null) {

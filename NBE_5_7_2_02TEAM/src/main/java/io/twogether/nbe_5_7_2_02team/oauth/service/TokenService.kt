@@ -28,7 +28,7 @@ class TokenService(
 
         val member =
             memberRepository.findById(memberId)
-                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
 
         return jwtTokenProvider.generateTokenPair(member)
     }

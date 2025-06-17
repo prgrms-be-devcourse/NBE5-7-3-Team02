@@ -36,7 +36,8 @@ class OAuth2SuccessHandler(
         val principal = authentication.principal as MemberDetails
         val findMember =
             memberRepository.findById(principal.id!!)
-                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
+
 
         val params = HashMap<String, String>()
 

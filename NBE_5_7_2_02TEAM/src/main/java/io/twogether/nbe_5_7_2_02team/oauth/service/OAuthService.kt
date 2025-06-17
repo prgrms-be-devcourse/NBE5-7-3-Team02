@@ -54,7 +54,7 @@ class OAuthService(
 
         val member =
             memberRepository.findById(loginResponse.memberId)
-                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
 
         memberDetails.id = member.id
         memberDetails.role = member.role
@@ -206,7 +206,7 @@ class OAuthService(
     ): SignUpResponse {
         val member =
             memberRepository.findById(id)
-                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
 
         member.name = request.name
         member.job = request.job
@@ -229,7 +229,7 @@ class OAuthService(
     fun getMemberDetailsById(id: Long): MemberDetails {
         val member =
             memberRepository.findById(id)
-                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
         return MemberDetails.from(member)
     }
 
