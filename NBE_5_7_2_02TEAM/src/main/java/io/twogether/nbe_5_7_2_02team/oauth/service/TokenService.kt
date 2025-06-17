@@ -27,7 +27,8 @@ class TokenService(
             ?: throw ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN)
 
         val member =
-            memberRepository.findById(memberId)
+            memberRepository
+                .findById(memberId)
                 .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
 
         return jwtTokenProvider.generateTokenPair(member)

@@ -16,7 +16,6 @@ import io.twogether.nbe_5_7_2_02team.oauth.dao.TokenRepository
 import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenBody
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
