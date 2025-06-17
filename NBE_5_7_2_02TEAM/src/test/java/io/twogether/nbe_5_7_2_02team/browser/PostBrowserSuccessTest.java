@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -300,10 +301,15 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
         long targetPostId = 2L;
         TokenPair tokenPair = getTokenPair(targetMemberId);
 
-        PostUpdateRequest request = new PostUpdateRequest();
-        request.setTitle("NEW TITLE");
-        request.setContent("NEW CONTENT");
-        request.setRecruitmentStatus(DONE);
+        PostUpdateRequest request =
+                new PostUpdateRequest(
+                        "NEW TITLE",
+                        "NEW CONTENT",
+                        DONE,
+                        null,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>());
 
         MockMultipartFile jsonPart =
                 new MockMultipartFile(
@@ -379,11 +385,8 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
                 .andExpect(status().isOk());
 
         // then
-        Optional<Likes> actualLikesOptional =
-                likesRepository.findByPostAndMember(targetPost, targetMember);
-        assertThat(actualLikesOptional.isPresent()).isTrue();
-
-        Likes actualLikes = actualLikesOptional.get();
+        Likes actualLikes = likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikes).isNotNull();
         assertThat(actualLikes.getPost().getId()).isEqualTo(targetPost.getId());
         assertThat(actualLikes.getMember().getId()).isEqualTo(targetMember.getId());
     }
@@ -408,9 +411,8 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
                 .andExpect(status().isOk());
 
         // then
-        Optional<Likes> actualLikesOptional =
-                likesRepository.findByPostAndMember(targetPost, targetMember);
-        assertThat(actualLikesOptional.isPresent()).isFalse();
+        Likes actualLikes = likesRepository.findByPostAndMember(targetPost, targetMember);
+        assertThat(actualLikes).isNull();
     }
 
     @Test

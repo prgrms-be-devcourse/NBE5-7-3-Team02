@@ -65,6 +65,7 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
     implementation("org.apache.commons:commons-lang3:3.17.0")
     implementation("org.apache.commons:commons-collections4:4.5.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")

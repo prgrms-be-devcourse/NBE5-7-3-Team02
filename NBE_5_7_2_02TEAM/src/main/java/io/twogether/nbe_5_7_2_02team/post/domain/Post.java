@@ -76,7 +76,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    @Setter
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
     @ElementCollection
     @CollectionTable(name = "post_image", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_url")
