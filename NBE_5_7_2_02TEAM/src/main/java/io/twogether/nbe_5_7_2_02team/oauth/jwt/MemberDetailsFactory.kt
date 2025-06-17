@@ -1,28 +1,21 @@
-package io.twogether.nbe_5_7_2_02team.oauth.jwt;
+package io.twogether.nbe_5_7_2_02team.oauth.jwt
 
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode;
-import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails;
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails
+import org.springframework.security.oauth2.core.user.OAuth2User
+import java.util.*
 
-import org.springframework.security.oauth2.core.user.OAuth2User;
+object MemberDetailsFactory {
+    fun memberDetails(provider: String, oAuth2User: OAuth2User): MemberDetails {
+        val attributes = oAuth2User.attributes
 
-import java.util.Map;
-
-public class MemberDetailsFactory {
-
-    public static MemberDetails memberDetails(String provider, OAuth2User oAuth2User) {
-
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        switch (provider.toUpperCase().trim()) {
-            case "GITHUB" -> {
-                return MemberDetails.builder()
-                        .name(attributes.get("login").toString())
-                        .attributes(attributes)
-                        .build();
+        when (provider.uppercase().trim()) {
+            "GITHUB" -> {
+                return MemberDetails(name = attributes["login"].toString(), attribute = attributes)
             }
 
-            default -> throw new ErrorException(ErrorCode.UNSUPPORTED_PROVIDER);
+            else -> throw ErrorException(ErrorCode.UNSUPPORTED_PROVIDER)
         }
     }
 }

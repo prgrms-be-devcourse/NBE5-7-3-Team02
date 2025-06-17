@@ -24,18 +24,18 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDetails implements OAuth2User, UserDetails {
 
-    @Setter private Long id;
+    @Setter public Long id;
 
-    private String name;
-    @Setter private String email;
+    public String name;
+    @Setter public String email;
 
-    @Setter private Role role;
+    @Setter public Role role;
 
-    @Setter private Map<String, Object> attributes;
+    @Setter public Map<String, Object> attributes;
 
-    private String githubId;
+    public String githubId;
 
-    private String avatarUrl;
+    public String avatarUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -75,5 +75,10 @@ public class MemberDetails implements OAuth2User, UserDetails {
         this.attributes = attributes;
         this.githubId = githubId;
         this.avatarUrl = avatarUrl;
+    }
+
+    public MemberDetails(String name, Map<String, Object> attributes) {
+        this.name = name;
+        this.attributes = attributes;
     }
 }

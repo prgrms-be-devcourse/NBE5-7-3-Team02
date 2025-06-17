@@ -24,7 +24,7 @@ public class RefreshToken extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String refreshToken;
+    public String refreshToken;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

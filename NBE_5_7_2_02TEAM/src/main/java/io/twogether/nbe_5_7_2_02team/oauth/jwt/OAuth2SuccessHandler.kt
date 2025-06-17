@@ -1,78 +1,69 @@
-package io.twogether.nbe_5_7_2_02team.oauth.jwt;
+package io.twogether.nbe_5_7_2_02team.oauth.jwt
 
-import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken;
-import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails;
-import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair;
-import io.twogether.nbe_5_7_2_02team.oauth.service.OAuthService;
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
+import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails
+import io.twogether.nbe_5_7_2_02team.oauth.service.OAuthService
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import lombok.RequiredArgsConstructor
+import lombok.extern.slf4j.Slf4j
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.Authentication
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
+import org.springframework.stereotype.Component
+import org.springframework.web.util.UriComponentsBuilder
+import java.io.IOException
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
-
-@Slf4j
 @Component
-@RequiredArgsConstructor
-public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+class OAuth2SuccessHandler(
+    private val memberRepository: MemberRepository,
+    private val oAuthService: OAuthService,
+    private val jwtTokenProvider: JwtTokenProvider
+) : SimpleUrlAuthenticationSuccessHandler() {
 
-    private final MemberRepository memberRepository;
+    @Value("\${custom.jwt.redirection.base}")
+    private val baseUrl: String? = null
 
-    @Value("${custom.jwt.redirection.base}")
-    private String baseUrl;
+    private val log = LoggerFactory.getLogger(OAuth2SuccessHandler::class.java)
 
-    private final OAuthService oAuthService;
-    private final JwtTokenProvider jwtTokenProvider;
+    @Throws(IOException::class, ServletException::class)
+    override fun onAuthenticationSuccess(
+        request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
+    ) {
+        val principal = authentication.principal as MemberDetails
+        val findMember = memberRepository.findById(principal.id!!)
+            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
-    @Override
-    public void onAuthenticationSuccess(
-            HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
-        MemberDetails principal = (MemberDetails) authentication.getPrincipal();
-        Member findMember =
-                memberRepository
-                        .findById(principal.getId())
-                        .orElseThrow(() -> new RuntimeException("Member not found"));
+        val params = HashMap<String, String>()
 
-        HashMap<String, String> params = new HashMap<>();
+        val refreshTokenOptional =
+            jwtTokenProvider.findRefreshToken(principal.id!!)
 
-        Optional<RefreshToken> refreshTokenOptional =
-                jwtTokenProvider.findRefreshToken(principal.getId());
-
-        if (refreshTokenOptional.isEmpty()) {
-            TokenPair tokenPair = jwtTokenProvider.generateTokenPair(findMember);
-            params.put("access", tokenPair.getAccessToken());
-            params.put("refresh", tokenPair.getRefreshToken());
+        if (refreshTokenOptional == null) {
+            val tokenPair = jwtTokenProvider.generateTokenPair(findMember)
+            params["access"] = tokenPair.accessToken
+            params["refresh"] = tokenPair.refreshToken
         } else {
-            String accessToken =
-                    jwtTokenProvider.issueAccessToken(principal.getId(), principal.getRole());
-            params.put("access", accessToken);
-            params.put("refresh", refreshTokenOptional.get().getRefreshToken());
+            val accessToken =
+                jwtTokenProvider.issueAccessToken(principal.id!!, principal.role!!)
+            params["access"] = accessToken
+            params["refresh"] = refreshTokenOptional.refreshToken
         }
 
-        String urlStr = genUrlStr(params);
-        getRedirectStrategy().sendRedirect(request, response, urlStr);
+        val urlStr = genUrlStr(params)
+        redirectStrategy.sendRedirect(request, response, urlStr)
     }
 
-    private String genUrlStr(HashMap<String, String> params) {
-        return UriComponentsBuilder.fromUriString(baseUrl)
-                .queryParam("accessToken", params.get("access"))
-                .queryParam("refreshToken", params.get("refresh"))
-                .build()
-                .toUri()
-                .toString();
+    private fun genUrlStr(params: HashMap<String, String>): String {
+        return UriComponentsBuilder.fromUriString(baseUrl!!)
+            .queryParam("accessToken", params["access"])
+            .queryParam("refreshToken", params["refresh"])
+            .build()
+            .toUri()
+            .toString()
     }
 }

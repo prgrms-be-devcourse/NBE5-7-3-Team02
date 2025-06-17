@@ -1,29 +1,22 @@
-package io.twogether.nbe_5_7_2_02team.oauth.jwt;
+package io.twogether.nbe_5_7_2_02team.oauth.jwt
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter
+import lombok.RequiredArgsConstructor
+import org.springframework.boot.context.properties.ConfigurationProperties
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-@Getter
-@RequiredArgsConstructor
 @ConfigurationProperties(prefix = "custom.jwt")
-public class JwtConfiguration {
+class JwtConfiguration(
+    val validation: Validation,
+    val secrets: Secrets
+) {
 
-    private final Validation validation;
-    private final Secrets secrets;
+    data class Validation(
+        val access: Long,
+        val refresh: Long
+    )
 
-    @Getter
-    @RequiredArgsConstructor
-    public static class Validation {
-        private final Long access;
-        private final Long refresh;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    public static class Secrets {
-        private final String originKey;
-        private final String appKey;
-    }
+    data class Secrets(
+        val originKey: String,
+        val appKey: String
+    )
 }

@@ -8,10 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class TokenBody {
-    private Long memberId;
-    private Role role;
+    public Long memberId;
+    public Role role;
+
+    public TokenBody(Long memberId, Role role) {
+        this.memberId = memberId;
+        this.role = role;
+    }
 }
