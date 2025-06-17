@@ -12,12 +12,12 @@ interface ChatMemberRepository : JpaRepository<ChatMember, Long> {
         member: Member,
     ): ChatMember?
 
-    fun findByChatRoom(chatRoom: ChatRoom): MutableList<ChatMember>
+    fun findByChatRoom(chatRoom: ChatRoom): List<ChatMember>
 
     fun findByMemberAndChatMemberStatusIn(
         member: Member,
-        chatMemberStatuses: MutableCollection<ChatMemberStatus>,
-    ): MutableList<ChatMember>
+        chatMemberStatuses: Collection<ChatMemberStatus>,
+    ): List<ChatMember>
 
     fun deleteByChatRoom(chatRoom: ChatRoom)
 

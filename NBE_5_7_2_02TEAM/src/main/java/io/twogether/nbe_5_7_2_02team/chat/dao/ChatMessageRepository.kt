@@ -6,7 +6,7 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
-    fun findByChatRoomOrderByCreatedAtAsc(chatroom: ChatRoom): MutableList<ChatMessage>
+    fun findByChatRoomOrderByCreatedAtAsc(chatroom: ChatRoom): List<ChatMessage>
 
     fun findByIdAndChatRoomAndChatMember(
         id: Long,
