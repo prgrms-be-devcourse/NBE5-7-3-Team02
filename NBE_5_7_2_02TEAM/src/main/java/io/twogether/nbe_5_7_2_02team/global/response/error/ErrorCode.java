@@ -66,7 +66,7 @@ public enum ErrorCode {
     CHAT_ROOM_ALREADY_EXISTS(BAD_REQUEST, "CHATROOM-002", "채팅방이 이미 존재합니다."),
     CHAT_ROOM_NOT_FOUND(NOT_FOUND, "CHATROOM-003", "채팅방을 찾을 수 없습니다.");
 
-    private final ErrorStatus errorStatus;
-    private final String code;
-    private final String message;
+    public final ErrorStatus errorStatus;
+    public final String code;
+    public final String message;
 }
