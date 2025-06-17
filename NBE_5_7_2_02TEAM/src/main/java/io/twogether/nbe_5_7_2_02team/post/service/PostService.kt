@@ -138,7 +138,7 @@ class PostService(
                 parseRecruitmentStatus(request.isRecruit),
                 request.isFollowing,
                 request.tags,
-            )
+            ),
         )
     }
 
@@ -152,7 +152,7 @@ class PostService(
                 memberId,
                 request.lastPostId,
                 request.limit,
-            )
+            ),
         )
 
     private fun parseRecruitmentStatus(isRecruit: Boolean?): RecruitmentStatus {
@@ -253,15 +253,13 @@ class PostService(
         field.increaseCount()
     }
 
-    private fun findMember(memberId: Long): Member {
-        return memberRepository
+    private fun findMember(memberId: Long): Member =
+        memberRepository
             .findById(memberId)
             .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
-    }
 
-    private fun findPost(postId: Long): Post {
-        return postRepository
+    private fun findPost(postId: Long): Post =
+        postRepository
             .findById(postId)
             .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
-    }
 }

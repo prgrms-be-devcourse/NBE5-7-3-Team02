@@ -12,11 +12,12 @@ import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository
 import io.twogether.nbe_5_7_2_02team.tag.domain.Tag
 
 fun PostCreateRequest.toEntity(member: Member): Post {
-    val post = Post(
-        title = title,
-        content = content,
-        recruitmentStatus = recruitmentStatus,
-        member = member,
+    val post =
+        Post(
+            title = title,
+            content = content,
+            recruitmentStatus = recruitmentStatus,
+            member = member,
         )
 
     post.recruitmentDeadline = recruitmentDeadline
@@ -27,22 +28,21 @@ fun PostCreateRequest.toEntity(member: Member): Post {
     return post
 }
 
-fun List<RecruitmentFieldRequest>.toRecruitmentFields (post: Post): List<RecruitmentField> {
-    return this.map {
+fun List<RecruitmentFieldRequest>.toRecruitmentFields(post: Post): List<RecruitmentField> =
+    this.map {
         RecruitmentField(
             post = post,
             fieldName = it.fieldName,
             totalCount = it.totalCount,
             currentCount = 0,
-            closed = false
+            closed = false,
         )
     }
-}
 
 fun Post.saveTags(
     tags: List<String>,
     tagRepository: TagRepository,
-    postTagRepository: PostTagRepository
+    postTagRepository: PostTagRepository,
 ) {
     tags.forEach {
         var tag = tagRepository.findByName(it)
@@ -53,11 +53,10 @@ fun Post.saveTags(
     }
 }
 
-fun RecruitmentField.toRecruitmentFieldResponse(): RecruitmentFieldResponse {
-    return RecruitmentFieldResponse(
+fun RecruitmentField.toRecruitmentFieldResponse(): RecruitmentFieldResponse =
+    RecruitmentFieldResponse(
         fieldName = fieldName,
         totalCount = totalCount,
         currentCount = currentCount,
-        closed = closed
+        closed = closed,
     )
-}

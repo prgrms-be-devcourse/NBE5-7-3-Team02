@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 @Component
 class PostBatchScheduler(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) {
     private val log = getLogger(PostBatchScheduler::class.java)
 
@@ -21,7 +21,8 @@ class PostBatchScheduler(
         val today = LocalDate.now()
         val expiredPosts =
             postRepository.findByRecruitmentStatusAndRecruitmentDeadlineBefore(
-                RECRUITING, today
+                RECRUITING,
+                today,
             )
 
         if (expiredPosts.isEmpty()) {
@@ -32,7 +33,6 @@ class PostBatchScheduler(
         expiredPosts.forEach { post ->
             post.recruitmentStatus = RecruitmentStatus.DONE
             log.info("[{}] RECRUITING -> DONE", post.title)
-
         }
     }
 }

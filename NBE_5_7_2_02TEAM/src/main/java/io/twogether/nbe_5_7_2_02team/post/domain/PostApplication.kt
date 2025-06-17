@@ -7,24 +7,22 @@ import jakarta.persistence.*
 class PostApplication(
     @field:JoinColumn(
         name = "member_id",
-        nullable = false
+        nullable = false,
     )
     @field:ManyToOne(fetch = FetchType.LAZY)
     val member: Member,
-
     @field:JoinColumn(
         name = "post_id",
-        nullable = false
+        nullable = false,
     )
     @field:ManyToOne(fetch = FetchType.LAZY)
     val post: Post,
-
     @field:JoinColumn(
         name = "field_id",
-        nullable = false
+        nullable = false,
     )
     @field:ManyToOne(fetch = FetchType.LAZY)
-    val field: RecruitmentField
+    val field: RecruitmentField,
 ) {
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)

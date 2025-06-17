@@ -21,7 +21,10 @@ class ImageUploader {
         private const val MAX_IMAGES_COUNT = 10
     }
 
-    fun saveImages(images: List<MultipartFile>, postId: Long): List<String> {
+    fun saveImages(
+        images: List<MultipartFile>,
+        postId: Long,
+    ): List<String> {
         if (images.size > MAX_IMAGES_COUNT) {
             throw ErrorException(ErrorCode.IMAGE_UPLOAD_LIMIT_EXCEEDED)
         }
@@ -29,7 +32,10 @@ class ImageUploader {
         return images.map { image: MultipartFile -> saveImage(image, postId) }
     }
 
-    private fun saveImage(file: MultipartFile, postId: Long): String {
+    private fun saveImage(
+        file: MultipartFile,
+        postId: Long,
+    ): String {
         try {
             val uploadRootPath = Paths.get(baseUploadDir!!).toAbsolutePath().normalize()
             val postDir = uploadRootPath.resolve("post").resolve(postId.toString())
@@ -48,7 +54,8 @@ class ImageUploader {
 
     fun deletePostImageByFolder(postId: Long) {
         val folderPath =
-            Paths.get(baseUploadDir!!)
+            Paths
+                .get(baseUploadDir!!)
                 .toAbsolutePath()
                 .normalize()
                 .resolve("post")
@@ -56,7 +63,8 @@ class ImageUploader {
 
         try {
             if (Files.exists(folderPath)) {
-                Files.walk(folderPath)
+                Files
+                    .walk(folderPath)
                     .sorted(Comparator.reverseOrder())
                     .map { obj: Path -> obj.toFile() }
                     .forEach { obj: File -> obj.delete() }

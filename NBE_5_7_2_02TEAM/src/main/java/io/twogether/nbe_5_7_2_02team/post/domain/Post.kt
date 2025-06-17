@@ -11,18 +11,15 @@ import java.time.LocalDate
 class Post(
     @field:Column(nullable = false)
     var title: String,
-
     @field:Column(nullable = false)
     @field:Lob
     var content: String,
-
     @field:Enumerated(EnumType.STRING)
     var recruitmentStatus: RecruitmentStatus,
-
     @field:JsonIgnore
     @field:ManyToOne(fetch = FetchType.LAZY)
     @field:JoinColumn(name = "member_id")
-    val member: Member
+    val member: Member,
 ) : BaseEntity() {
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)

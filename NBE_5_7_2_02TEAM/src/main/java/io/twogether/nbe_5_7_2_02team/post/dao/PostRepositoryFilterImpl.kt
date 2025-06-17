@@ -23,12 +23,12 @@ import org.springframework.stereotype.Repository
 @Repository
 @RequiredArgsConstructor
 class PostRepositoryFilterImpl(
-    private val queryFactory: JPAQueryFactory
+    private val queryFactory: JPAQueryFactory,
 ) : PostRepositoryFilter {
     override fun findPostsByMemberId(
         memberId: Long,
         lastPostId: Long?,
-        limit: Int
+        limit: Int,
     ): List<PostGetResult> {
         val limitedPostIds =
             queryFactory
@@ -48,7 +48,7 @@ class PostRepositoryFilterImpl(
         limit: Int,
         recruitmentStatus: RecruitmentStatus,
         isFollowing: Boolean?,
-        tags: List<String>
+        tags: List<String>,
     ): List<PostGetResult> {
         val limitedPostIds =
             queryFactory
@@ -58,9 +58,8 @@ class PostRepositoryFilterImpl(
                     recruitmentStatusCondition(recruitmentStatus),
                     followingCondition(memberId, isFollowing),
                     tagsCondition(tags),
-                    lastPostIdCondition(lastPostId)
-                )
-                .orderBy(post.createdAt.desc())
+                    lastPostIdCondition(lastPostId),
+                ).orderBy(post.createdAt.desc())
                 .limit(limit.toLong())
                 .fetch()
 
@@ -68,9 +67,10 @@ class PostRepositoryFilterImpl(
     }
 
     private fun getPostResultJoinWithChatRoomAndTag(
-        limitedPostIds: List<Long>, memberId: Long?
-    ): List<PostGetResult> {
-        return queryFactory
+        limitedPostIds: List<Long>,
+        memberId: Long?,
+    ): List<PostGetResult> =
+        queryFactory
             .from(post)
             .leftJoin(post.postTags, postTag)
             .leftJoin(postTag.tag, tag)
@@ -79,37 +79,39 @@ class PostRepositoryFilterImpl(
             .where(post.id.`in`(limitedPostIds))
             .orderBy(post.createdAt.desc())
             .transform(
-                GroupBy.groupBy(post.id)
+                GroupBy
+                    .groupBy(post.id)
                     .list(
                         QPostGetResult(
                             post,
                             likeCount(),
                             chatRoom.id,
                             GroupBy.list(tag.name),
-                            isLike(memberId)
-                        )
-                    )
+                            isLike(memberId),
+                        ),
+                    ),
             )
-    }
 
-    private fun likeCount(): Expression<Long> {
-        return ExpressionUtils.`as`(
-            JPAExpressions.select(likes.count()).from(likes)
+    private fun likeCount(): Expression<Long> =
+        ExpressionUtils.`as`(
+            JPAExpressions
+                .select(likes.count())
+                .from(likes)
                 .where(likes.post.id.eq(post.id)),
-            "likeCount"
+            "likeCount",
         )
-    }
 
     private fun isLike(memberId: Long?): Expression<Boolean> {
         if (memberId == null) {
             return Expressions.FALSE
         }
         return ExpressionUtils.`as`(
-            JPAExpressions.selectOne()
+            JPAExpressions
+                .selectOne()
                 .from(likes)
                 .where(likes.post.id.eq(post.id), likes.member.id.eq(memberId))
                 .exists(),
-            "isLike"
+            "isLike",
         )
     }
 
@@ -133,13 +135,16 @@ class PostRepositoryFilterImpl(
         return if (lastCreatedAt != null) post.createdAt.lt(lastCreatedAt) else null
     }
 
-    private fun followingCondition(memberId: Long?, isFollowing: Boolean?): BooleanExpression? {
+    private fun followingCondition(
+        memberId: Long?,
+        isFollowing: Boolean?,
+    ): BooleanExpression? {
         if (BooleanUtils.isTrue(isFollowing) && memberId != null) {
             return post.member.id.`in`(
                 queryFactory
                     .select(follow.following.id)
                     .from(follow)
-                    .where(follow.follower.id.eq(memberId))
+                    .where(follow.follower.id.eq(memberId)),
             )
         }
 
@@ -152,14 +157,14 @@ class PostRepositoryFilterImpl(
         for (tagName in tags) {
             condition =
                 condition.and(
-                    JPAExpressions.selectOne()
+                    JPAExpressions
+                        .selectOne()
                         .from(post.postTags, postTag)
                         .join(postTag.tag, tag)
                         .where(
                             postTag.post.id.eq(post.id),
-                            tag.name.eq(tagName)
-                        )
-                        .exists()
+                            tag.name.eq(tagName),
+                        ).exists(),
                 )
         }
         return condition

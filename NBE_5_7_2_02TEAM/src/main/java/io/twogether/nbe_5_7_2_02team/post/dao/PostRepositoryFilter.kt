@@ -7,7 +7,7 @@ interface PostRepositoryFilter {
     fun findPostsByMemberId(
         memberId: Long,
         lastPostId: Long?,
-        limit: Int
+        limit: Int,
     ): List<PostGetResult>
 
     fun findFilteredPosts(
@@ -16,6 +16,6 @@ interface PostRepositoryFilter {
         limit: Int,
         recruitmentStatus: RecruitmentStatus,
         isFollowing: Boolean?,
-        tags: List<String>
+        tags: List<String>,
     ): List<PostGetResult>
 }

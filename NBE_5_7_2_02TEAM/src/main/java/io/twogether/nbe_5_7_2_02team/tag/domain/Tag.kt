@@ -1,10 +1,9 @@
 package io.twogether.nbe_5_7_2_02team.tag.domain
 
-import io.twogether.nbe_5_7_2_02team.post.domain.PostTag
 import jakarta.persistence.*
 
 @Entity
-class Tag (
+class Tag(
     @field:Column(nullable = false)
     var name: String,
 ) {
