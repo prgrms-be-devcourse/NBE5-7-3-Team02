@@ -7,9 +7,11 @@ import io.twogether.nbe_5_7_2_02team.oauth.jwt.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,9 +34,12 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
 
+    @Value("${management.endpoints.web.base-path}")
+    private String actuatorBasePath;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.httpBasic(httpB -> httpB.disable())
+        return http.httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(form -> form.disable())
@@ -49,6 +54,8 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers(CorsUtils::isPreFlightRequest)
                                         .permitAll()
+                                        .requestMatchers(actuatorBasePath + "/**")
+                                        .hasRole("PROMETHEUS")
                                         .requestMatchers("/api/chatroom/entered")
                                         .authenticated()
                                         .requestMatchers(

@@ -68,16 +68,11 @@ public class PostMapper {
         return tags.stream()
                 .map(
                         name -> {
-                            Tag tag =
-                                    tagRepository
-                                            .findByName(name)
-                                            .orElseGet(
-                                                    () ->
-                                                            tagRepository.save(
-                                                                    Tag.builder()
-                                                                            .name(name)
-                                                                            .build()));
-                            return PostTag.builder().post(post).tag(tag).build();
+                            Tag tag = tagRepository.findByName(name);
+                            if (tag == null) {
+                                tag = tagRepository.save(new Tag(name));
+                            }
+                            return new PostTag(post, tag);
                         })
                 .toList();
     }

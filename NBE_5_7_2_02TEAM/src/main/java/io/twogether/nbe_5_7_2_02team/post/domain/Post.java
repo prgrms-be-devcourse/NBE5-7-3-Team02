@@ -5,9 +5,7 @@ import io.twogether.nbe_5_7_2_02team.member.domain.Member;
 
 import jakarta.persistence.*;
 
-import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -15,8 +13,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
+
+    protected Post() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public RecruitmentStatus getRecruitmentStatus() {
+        return recruitmentStatus;
+    }
+
+    public LocalDate getRecruitmentDeadline() {
+        return recruitmentDeadline;
+    }
+
+    public List<RecruitmentField> getRecruitmentFields() {
+        return recruitmentFields;
+    }
+
+    public List<PostTag> getPostTags() {
+        return postTags;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public Member getMember() {
+        return member;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
