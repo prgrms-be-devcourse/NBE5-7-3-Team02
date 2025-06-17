@@ -23,13 +23,10 @@ import java.util.function.Supplier
 @RequiredArgsConstructor
 class FollowService(
     private val followRepository: FollowRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
 ) {
-
     @Transactional
-    fun createFollow(
-        followRequest: @Valid FollowRequest
-    ): FollowCreateResponse {
+    fun createFollow(followRequest: @Valid FollowRequest): FollowCreateResponse {
         val follower =
             memberRepository
                 .findById(followRequest.followerId)
@@ -81,7 +78,10 @@ class FollowService(
     }
 
     @Transactional(readOnly = true)
-    fun getFollowers(memberId: Long, pageable: Pageable): Page<MemberCreateResponse> {
+    fun getFollowers(
+        memberId: Long,
+        pageable: Pageable,
+    ): Page<MemberCreateResponse> {
         val member = findMember(memberId)
         return followRepository
             .findFollowerMembers(member, pageable)
@@ -89,15 +89,18 @@ class FollowService(
     }
 
     @Transactional(readOnly = true)
-    fun getFollowings(memberId: Long, pageable: Pageable): Page<MemberCreateResponse> {
+    fun getFollowings(
+        memberId: Long,
+        pageable: Pageable,
+    ): Page<MemberCreateResponse> {
         val member = findMember(memberId)
         return followRepository
             .findFollowingMembers(member, pageable)
             .map { it.toMemberCreateResponse() }
     }
 
-    private fun findMember(memberId: Long): Member {
-        return memberRepository.findById(memberId)
+    private fun findMember(memberId: Long): Member =
+        memberRepository
+            .findById(memberId)
             .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
-    }
 }
