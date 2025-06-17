@@ -8,8 +8,6 @@ import io.twogether.nbe_5_7_2_02team.oauth.service.OAuthService
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import lombok.RequiredArgsConstructor
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
@@ -22,9 +20,8 @@ import java.io.IOException
 class OAuth2SuccessHandler(
     private val memberRepository: MemberRepository,
     private val oAuthService: OAuthService,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
 ) : SimpleUrlAuthenticationSuccessHandler() {
-
     @Value("\${custom.jwt.redirection.base}")
     private val baseUrl: String? = null
 
@@ -32,11 +29,14 @@ class OAuth2SuccessHandler(
 
     @Throws(IOException::class, ServletException::class)
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        authentication: Authentication,
     ) {
         val principal = authentication.principal as MemberDetails
-        val findMember = memberRepository.findById(principal.id!!)
-            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+        val findMember =
+            memberRepository.findById(principal.id!!)
+                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val params = HashMap<String, String>()
 
@@ -58,12 +58,12 @@ class OAuth2SuccessHandler(
         redirectStrategy.sendRedirect(request, response, urlStr)
     }
 
-    private fun genUrlStr(params: HashMap<String, String>): String {
-        return UriComponentsBuilder.fromUriString(baseUrl!!)
+    private fun genUrlStr(params: HashMap<String, String>): String =
+        UriComponentsBuilder
+            .fromUriString(baseUrl!!)
             .queryParam("accessToken", params["access"])
             .queryParam("refreshToken", params["refresh"])
             .build()
             .toUri()
             .toString()
-    }
 }

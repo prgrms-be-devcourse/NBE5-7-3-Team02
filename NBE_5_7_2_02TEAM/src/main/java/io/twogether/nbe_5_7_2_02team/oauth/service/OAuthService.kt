@@ -33,7 +33,6 @@ class OAuthService(
     private val jwtTokenProvider: JwtTokenProvider,
     private val memberRepository: MemberRepository,
 ) : DefaultOAuth2UserService() {
-
     private val log = LoggerFactory.getLogger(OAuthService::class.java)
     private val restTemplate = RestTemplate()
 
@@ -53,11 +52,12 @@ class OAuthService(
 
         val memberDetails = MemberDetailsFactory.memberDetails(providerId, oAuth2User)
 
-        val member = memberRepository.findById(loginResponse.memberId)
-            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+        val member =
+            memberRepository.findById(loginResponse.memberId)
+                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
-        memberDetails.id=member.id
-        memberDetails.role=member.role
+        memberDetails.id = member.id
+        memberDetails.role = member.role
 
         return memberDetails
     }
@@ -67,22 +67,27 @@ class OAuthService(
         val accessTokenUrl = "https://github.com/login/oauth/access_token"
 
         val builder =
-            UriComponentsBuilder.fromHttpUrl(accessTokenUrl)
+            UriComponentsBuilder
+                .fromHttpUrl(accessTokenUrl)
                 .queryParam("client_id", clientId)
                 .queryParam("client_secret", clientSecret)
                 .queryParam("code", code)
 
-        val headers = HttpHeaders().apply {
-            accept =
-                listOf(MediaType.APPLICATION_JSON)
-            contentType = MediaType.APPLICATION_JSON
-        }
+        val headers =
+            HttpHeaders().apply {
+                accept =
+                    listOf(MediaType.APPLICATION_JSON)
+                contentType = MediaType.APPLICATION_JSON
+            }
 
         return try {
             val entity = HttpEntity<String>(headers)
             val response =
                 restTemplate.exchange(
-                    builder.toUriString(), HttpMethod.POST, entity, JSONObject::class.java
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    JSONObject::class.java,
                 )
 
             val body = response.body
@@ -103,8 +108,9 @@ class OAuthService(
     fun getUserInfo(accessToken: String): GitHubUserInfoResponse {
         val entity = HttpEntity<String>(createAuthHeaders(accessToken))
 
-        val userInfo = getForObject("https://api.github.com/user", entity)
-            ?: throw ErrorException(ErrorCode.OAUTH_USER_INFO_ERROR)
+        val userInfo =
+            getForObject("https://api.github.com/user", entity)
+                ?: throw ErrorException(ErrorCode.OAUTH_USER_INFO_ERROR)
 
         // GitHub 사용자 ID
         val login = userInfo.getAsString("login")
@@ -123,7 +129,7 @@ class OAuthService(
                 "https://api.github.com/user/emails",
                 HttpMethod.GET,
                 entity,
-                Array<Any>::class.java
+                Array<Any>::class.java,
             )
 
         response.body?.let { emails ->
@@ -147,7 +153,10 @@ class OAuthService(
     private fun fetchOrganizations(entity: HttpEntity<String>): List<String> {
         val response =
             restTemplate.exchange(
-                "https://api.github.com/user/orgs", HttpMethod.GET, entity, Array<Any>::class.java
+                "https://api.github.com/user/orgs",
+                HttpMethod.GET,
+                entity,
+                Array<Any>::class.java,
             )
 
         val organizations = mutableListOf<String>()
@@ -170,7 +179,7 @@ class OAuthService(
         validatePrgrmsOrganization(userInfo.organizations)
 
         val member =
-            Member( Role.MEMBER,  userInfo.email, userInfo.avatarUrl, userInfo.githubId)
+            Member(Role.MEMBER, userInfo.email, userInfo.avatarUrl, userInfo.githubId)
 
         return memberRepository.save(member)
     }
@@ -183,14 +192,21 @@ class OAuthService(
                 .findByEmail(userInfo.email)
                 ?: saveUserInfo(userInfo)
         val tokenPair = jwtTokenProvider.generateTokenPair(member)
-        return LoginResponse(tokenPair, member.role, member.id,
+        return LoginResponse(
+            tokenPair,
+            member.role,
+            member.id,
         )
     }
 
     // 추가 회원 가입 정보 등록
-    fun signup(request: SignUpRequest, id: Long): SignUpResponse {
-        val member = memberRepository.findById(id)
-            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+    fun signup(
+        request: SignUpRequest,
+        id: Long,
+    ): SignUpResponse {
+        val member =
+            memberRepository.findById(id)
+                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         member.name = request.name
         member.job = request.job
@@ -200,10 +216,10 @@ class OAuthService(
     }
 
     private fun validatePrgrmsOrganization(organizations: List<String>) {
-
-        val hasPrgrms = organizations
-            .map { it.lowercase() }
-            .any { it in ALLOWED_ORGS }
+        val hasPrgrms =
+            organizations
+                .map { it.lowercase() }
+                .any { it in ALLOWED_ORGS }
 
         if (!hasPrgrms) {
             throw OAuth2AuthenticationException("프로그래머스 교육 과정에 등록된 사용자만 가입할 수 있습니다.")
@@ -211,37 +227,41 @@ class OAuthService(
     }
 
     fun getMemberDetailsById(id: Long): MemberDetails {
-        val member = memberRepository.findById(id)
-            ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+        val member =
+            memberRepository.findById(id)
+                ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
         return MemberDetails.from(member)
     }
 
     // 인증 헤더 생성
-    private fun createAuthHeaders(accessToken: String): HttpHeaders {
-        return HttpHeaders().apply {
+    private fun createAuthHeaders(accessToken: String): HttpHeaders =
+        HttpHeaders().apply {
             accept = listOf(MediaType.APPLICATION_JSON)
             contentType = MediaType.APPLICATION_JSON
             set("Authorization", "token $accessToken")
         }
-    }
 
     // 요청 URL에서 JSON 객체 받기
-    private fun getForObject(url: String, entity: HttpEntity<String>): JSONObject? {
+    private fun getForObject(
+        url: String,
+        entity: HttpEntity<String>,
+    ): JSONObject? {
         val response =
             restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject::class.java)
         return response.body
     }
 
     companion object {
-        private val ALLOWED_ORGS = setOf(
-            "prgrms-web-devcourse",
-            "prgrms-be-devcourse",
-            "prgrms-fe-devcourse",
-            "prgrms-ad-devcourse",
-            "prgrms-aibe-devcourse",
-            "prgrms-app-devcourse",
-            "prgrms-linux-devcourse",
-            "prgrms-fullcycle-devcourse"
-        )
+        private val ALLOWED_ORGS =
+            setOf(
+                "prgrms-web-devcourse",
+                "prgrms-be-devcourse",
+                "prgrms-fe-devcourse",
+                "prgrms-ad-devcourse",
+                "prgrms-aibe-devcourse",
+                "prgrms-app-devcourse",
+                "prgrms-linux-devcourse",
+                "prgrms-fullcycle-devcourse",
+            )
     }
 }

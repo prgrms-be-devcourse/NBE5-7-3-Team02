@@ -16,8 +16,6 @@ import io.twogether.nbe_5_7_2_02team.oauth.dao.TokenRepository
 import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenBody
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair
-import lombok.RequiredArgsConstructor
-import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,16 +28,15 @@ class JwtTokenProvider(
     private val jwtConfiguration: JwtConfiguration,
     private val tokenRepository: TokenRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val refreshTokenBlackListRepository: RefreshTokenBlackListRepository
-
+    private val refreshTokenBlackListRepository: RefreshTokenBlackListRepository,
 ) {
     private val log = LoggerFactory.getLogger(JwtTokenProvider::class.java)
 
     fun generateTokenPair(member: Member): TokenPair {
-        val token = refreshTokenRepository.findByMemberId(member.id);
+        val token = refreshTokenRepository.findByMemberId(member.id)
         if (token != null) {
-            refreshTokenBlackListRepository.deleteByRefreshToken(token);
-            refreshTokenRepository.delete(token);
+            refreshTokenBlackListRepository.deleteByRefreshToken(token)
+            refreshTokenRepository.delete(token)
         }
 
         val accessToken = issueAccessToken(member.id, member.role)
@@ -50,25 +47,30 @@ class JwtTokenProvider(
         return TokenPair(accessToken, refreshToken)
     }
 
-    fun findRefreshToken(memberId: Long): RefreshToken? {
-        return tokenRepository.findValidRefToken(memberId)
-    }
+    fun findRefreshToken(memberId: Long): RefreshToken? = tokenRepository.findValidRefToken(memberId)
 
     fun addBlackList(refreshToken: RefreshToken) {
         tokenRepository.addBlackList(refreshToken)
     }
 
-    fun issueAccessToken(id: Long, role: Role): String {
-        return issue(id, role, jwtConfiguration.validation.access)
-    }
+    fun issueAccessToken(
+        id: Long,
+        role: Role,
+    ): String = issue(id, role, jwtConfiguration.validation.access)
 
-    fun issueRefreshToken(id: Long, role: Role): String {
-        return issue(id, role, jwtConfiguration.validation.refresh)
-    }
+    fun issueRefreshToken(
+        id: Long,
+        role: Role,
+    ): String = issue(id, role, jwtConfiguration.validation.refresh)
 
-    private fun issue(id: Long, role: Role, expTime: Long): String {
+    private fun issue(
+        id: Long,
+        role: Role,
+        expTime: Long,
+    ): String {
         val now = Date()
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .subject(id.toString())
             .claim("role", role)
             .issuedAt(Date())
@@ -79,7 +81,11 @@ class JwtTokenProvider(
 
     fun validate(token: String): Boolean {
         try {
-            Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token)
+            Jwts
+                .parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
             return true
         } catch (e: SecurityException) {
             throw ErrorException(ErrorCode.INVALID_ACCESS_SIGNATURE)
@@ -96,7 +102,11 @@ class JwtTokenProvider(
 
     fun refreshValidate(token: String) {
         try {
-            Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token)
+            Jwts
+                .parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
         } catch (e: SecurityException) {
             throw ErrorException(ErrorCode.INVALID_REFRESH_SIGNATURE)
         } catch (e: MalformedJwtException) {
@@ -110,7 +120,11 @@ class JwtTokenProvider(
 
     fun parseJwt(token: String?): TokenBody {
         val parsed =
-            Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token)
+            Jwts
+                .parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
 
         val sub = parsed.payload.subject
         val role = parsed.payload["role"].toString()
@@ -118,7 +132,5 @@ class JwtTokenProvider(
         return TokenBody(sub.toLong(), Role.valueOf(role))
     }
 
-    private fun getSecretKey(): SecretKey{
-        return Keys.hmacShaKeyFor(jwtConfiguration.secrets.appKey.toByteArray())
-    }
+    private fun getSecretKey(): SecretKey = Keys.hmacShaKeyFor(jwtConfiguration.secrets.appKey.toByteArray())
 }

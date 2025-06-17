@@ -6,5 +6,6 @@ import java.util.*
 
 interface MemberRepository : JpaRepository<Member?, Long?> {
     fun findByEmail(email: String?): Member?
+
     fun findById(id: Long): Member?
 }

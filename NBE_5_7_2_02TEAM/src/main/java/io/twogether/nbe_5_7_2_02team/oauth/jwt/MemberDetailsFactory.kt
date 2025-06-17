@@ -7,7 +7,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import java.util.*
 
 object MemberDetailsFactory {
-    fun memberDetails(provider: String, oAuth2User: OAuth2User): MemberDetails {
+    fun memberDetails(
+        provider: String,
+        oAuth2User: OAuth2User,
+    ): MemberDetails {
         val attributes = oAuth2User.attributes
 
         when (provider.uppercase().trim()) {

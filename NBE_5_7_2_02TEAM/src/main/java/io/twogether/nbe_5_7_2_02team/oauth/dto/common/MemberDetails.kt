@@ -14,14 +14,12 @@ class MemberDetails(
     var role: Role? = null,
     private var _attributes: Map<String, Any>? = null,
     var githubId: String? = null,
-    var avatarUrl: String? = null
-) : OAuth2User, UserDetails {
+    var avatarUrl: String? = null,
+) : OAuth2User,
+    UserDetails {
+    constructor(name: String?, attribute: Map<String, Any>?) : this()
 
-    constructor(name: String?, attribute: Map<String,Any>?) : this()
-
-    override fun getAuthorities(): Collection<GrantedAuthority> {
-        return role?.let { listOf(SimpleGrantedAuthority(it.name)) } ?: emptyList()
-    }
+    override fun getAuthorities(): Collection<GrantedAuthority> = role?.let { listOf(SimpleGrantedAuthority(it.name)) } ?: emptyList()
 
     override fun getPassword(): String? = null
 
@@ -33,13 +31,12 @@ class MemberDetails(
     override fun getAttributes(): Map<String, Any> = _attributes ?: emptyMap()
 
     companion object {
-        fun from(member: Member): MemberDetails {
-            return MemberDetails(
+        fun from(member: Member): MemberDetails =
+            MemberDetails(
                 id = member.id,
                 _name = member.name,
                 email = member.email,
-                role = member.role
+                role = member.role,
             )
-        }
     }
 }
