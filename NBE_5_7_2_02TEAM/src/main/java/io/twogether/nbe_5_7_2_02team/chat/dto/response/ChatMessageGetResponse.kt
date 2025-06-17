@@ -4,7 +4,7 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage
 import java.time.LocalDateTime
 
 data class ChatMessageGetResponse(
-    val id: Long?,
+    val id: Long,
     val memberId: Long,
     val memberName: String,
     val content: String,
