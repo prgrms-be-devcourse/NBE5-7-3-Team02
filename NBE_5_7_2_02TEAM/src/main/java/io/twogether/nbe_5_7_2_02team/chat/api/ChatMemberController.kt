@@ -18,19 +18,19 @@ class ChatMemberController(
     @GetMapping("/entered")
     fun getChatRoomListByUser(
         @AuthenticationPrincipal userDetails: UserDetails,
-    ): ResponseEntity<List<ChatRoomGetResponse>?> {
+    ): ResponseEntity<List<ChatRoomGetResponse>> {
         val chatRoomGetResponse = chatMemberService.getChatRoomListByUser(userDetails)
 
-        return ResponseEntity.ok<List<ChatRoomGetResponse>?>(chatRoomGetResponse)
+        return ResponseEntity.ok(chatRoomGetResponse)
     }
 
     @GetMapping("/{chatroomId}/member")
     fun getChatMemberList(
         @PathVariable("chatroomId") chatroomId: Long,
-    ): ResponseEntity<List<ChatMemberGetResponse>?> {
+    ): ResponseEntity<List<ChatMemberGetResponse>> {
         val chatMemberGetResponse = chatMemberService.getChatMember(chatroomId)
 
-        return ResponseEntity.ok<List<ChatMemberGetResponse>?>(chatMemberGetResponse)
+        return ResponseEntity.ok(chatMemberGetResponse)
     }
 
     @PostMapping("/{chatroomId}/member")

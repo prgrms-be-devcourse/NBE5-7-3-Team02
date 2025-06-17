@@ -23,10 +23,10 @@ class ChatMessageController(
     @GetMapping("/{chatroomId}/message")
     fun getChatMessageList(
         @PathVariable chatroomId: Long,
-    ): ResponseEntity<List<ChatMessageGetResponse>?> {
+    ): ResponseEntity<List<ChatMessageGetResponse>> {
         val chatMessage = chatMessageService.getChatMessage(chatroomId)
 
-        return ResponseEntity.ok<List<ChatMessageGetResponse>?>(chatMessage)
+        return ResponseEntity.ok(chatMessage)
     }
 
     @MessageMapping("/{chatroomId}/message")

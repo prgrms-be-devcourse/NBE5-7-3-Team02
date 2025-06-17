@@ -12,10 +12,10 @@ class ChatRoomController(
     private val chatRoomService: ChatRoomService,
 ) {
     @GetMapping
-    fun getChatRoomList(): ResponseEntity<List<ChatRoomGetResponse>?> {
+    fun getChatRoomList(): ResponseEntity<List<ChatRoomGetResponse>> {
         val chatRoomGetResponse = chatRoomService.getChatRoomList()
 
-        return ResponseEntity.ok<List<ChatRoomGetResponse>?>(chatRoomGetResponse)
+        return ResponseEntity.ok(chatRoomGetResponse)
     }
 
     @GetMapping("/{postId}")

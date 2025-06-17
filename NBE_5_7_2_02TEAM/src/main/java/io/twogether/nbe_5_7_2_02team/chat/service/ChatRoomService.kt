@@ -17,7 +17,7 @@ class ChatRoomService(
     private val postRepository: PostRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getChatRoomList(): List<ChatRoomGetResponse>? {
+    fun getChatRoomList(): List<ChatRoomGetResponse> {
         val chatRoomList = chatRoomRepository.findAll()
 
         return chatRoomList.map { chatRoom -> chatRoom.toGetResponse() }
@@ -38,7 +38,7 @@ class ChatRoomService(
     }
 
     @Transactional
-    fun createChatroom(postId: Long): Long? {
+    fun createChatroom(postId: Long): Long {
         val post =
             postRepository
                 .findById(postId)

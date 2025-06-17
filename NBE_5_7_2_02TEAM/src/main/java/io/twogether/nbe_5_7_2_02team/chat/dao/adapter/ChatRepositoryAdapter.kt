@@ -6,11 +6,9 @@ import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRepository
 import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRoomRepository
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom
 import io.twogether.nbe_5_7_2_02team.post.domain.Post
-import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Repository
 
 @Repository
-@RequiredArgsConstructor
 class ChatRepositoryAdapter(
     private val chatRoomRepository: ChatRoomRepository,
     private val chatMemberRepository: ChatMemberRepository,

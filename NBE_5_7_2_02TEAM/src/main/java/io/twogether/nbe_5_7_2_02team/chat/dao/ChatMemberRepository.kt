@@ -5,7 +5,6 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom
 import io.twogether.nbe_5_7_2_02team.member.domain.Member
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.Optional
 
 interface ChatMemberRepository : JpaRepository<ChatMember, Long> {
     fun findByChatRoomAndMember(
