@@ -9,12 +9,14 @@ import io.twogether.nbe_5_7_2_02team.chat.dto.response.toGetResponse
 import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
 import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import lombok.RequiredArgsConstructor
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@RequiredArgsConstructor
 class ChatMemberService(
     private val chatRoomService: ChatRoomService,
     private val chatMemberRepository: ChatMemberRepository,
@@ -23,37 +25,37 @@ class ChatMemberService(
     @Transactional(readOnly = true)
     fun getChatRoomListByUser(
         @AuthenticationPrincipal userDetails: UserDetails?,
-    ): List<ChatRoomGetResponse> {
+    ): List<ChatRoomGetResponse>? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
-        val joinedChatRoomList: List<ChatMember> =
+        val joinedChatRoomList: List<ChatMember?> =
             chatMemberRepository.findByMemberAndChatMemberStatusIn(
                 member,
                 listOf(ChatMemberStatus.ONLINE, ChatMemberStatus.OFFLINE),
             )
 
-        return joinedChatRoomList.map { chatMember -> chatMember.chatRoom!!.toGetResponse() }
+        return joinedChatRoomList.map { chatMember -> chatMember?.chatRoom!!.toGetResponse() }
     }
 
     @Transactional(readOnly = true)
-    fun getChatMember(chatroomId: Long): List<ChatMemberGetResponse> {
+    fun getChatMember(chatroomId: Long): List<ChatMemberGetResponse>? {
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        val chatMemberList: List<ChatMember> =
+        val chatMemberList: List<ChatMember?> =
             chatMemberRepository.findByChatRoom(chatRoom)
 
         if (chatMemberList.isEmpty()) {
             throw ErrorException(ErrorCode.CHAT_ROOM_EMPTY)
         }
 
-        return chatMemberList.map { chatMember -> chatMember.toGetResponse() }
+        return chatMemberList.map { chatMember -> chatMember!!.toGetResponse() }
     }
 
     @Transactional
     fun createChatMember(
         chatroomId: Long,
         userDetails: UserDetails?,
-    ): Long {
+    ): Long? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
@@ -66,10 +68,12 @@ class ChatMemberService(
             return chatMember.id
         }
 
+
+
         val id =
             chatMemberRepository
                 .save(
-                    ChatMember(chatRoom, member, ChatMemberStatus.ONLINE),
+                    ChatMember(chatRoom, member ,ChatMemberStatus.ONLINE)
                 ).id
 
         val size = chatMemberRepository.countByChatRoom(chatRoom)
@@ -84,13 +88,12 @@ class ChatMemberService(
         chatroomId: Long,
         userDetails: UserDetails?,
         chatMemberStatus: ChatMemberStatus,
-    ): Long {
+    ): Long? {
         val member = checkUserLogin.checkUserLogin(userDetails)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        val chatMember =
-            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
+        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         chatMember.chatMemberStatus = chatMemberStatus
 
