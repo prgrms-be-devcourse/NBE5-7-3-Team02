@@ -19,6 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecruitmentField {
 
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

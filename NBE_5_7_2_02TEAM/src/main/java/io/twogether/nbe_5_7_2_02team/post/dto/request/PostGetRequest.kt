@@ -1,16 +1,9 @@
-package io.twogether.nbe_5_7_2_02team.post.dto.request;
+package io.twogether.nbe_5_7_2_02team.post.dto.request
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.List;
-
-@Getter
-@AllArgsConstructor
-public class PostGetRequest {
-    private Long lastPostId;
-    private Integer limit;
-    private Boolean isRecruit;
-    private Boolean isFollowing;
-    private List<String> tags;
-}
+data class PostGetRequest(
+    val lastPostId: Long?,
+    val limit: Int,
+    val isRecruit: Boolean?,
+    val isFollowing: Boolean?,
+    val tags: List<String> = listOf(),
+)

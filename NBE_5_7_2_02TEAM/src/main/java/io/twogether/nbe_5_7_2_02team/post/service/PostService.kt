@@ -1,269 +1,282 @@
-package io.twogether.nbe_5_7_2_02team.post.service;
+package io.twogether.nbe_5_7_2_02team.post.service
 
-import static io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus.DONE;
-import static io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus.NONE;
-import static io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus.RECRUITING;
-
-import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRepository;
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode;
-import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-import io.twogether.nbe_5_7_2_02team.post.dao.LikesRepository;
-import io.twogether.nbe_5_7_2_02team.post.dao.PostApplicationRepository;
-import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
-import io.twogether.nbe_5_7_2_02team.post.dao.PostTagRepository;
-import io.twogether.nbe_5_7_2_02team.post.domain.Likes;
-import io.twogether.nbe_5_7_2_02team.post.domain.Post;
-import io.twogether.nbe_5_7_2_02team.post.domain.PostApplication;
-import io.twogether.nbe_5_7_2_02team.post.domain.PostTag;
-import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentField;
-import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus;
-import io.twogether.nbe_5_7_2_02team.post.dto.request.PostCreateRequest;
-import io.twogether.nbe_5_7_2_02team.post.dto.request.PostGetRequest;
-import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
-import io.twogether.nbe_5_7_2_02team.post.dto.response.PostDetailResponse;
-import io.twogether.nbe_5_7_2_02team.post.dto.response.PostGetResponse;
-import io.twogether.nbe_5_7_2_02team.post.dto.response.PostResponse;
-import io.twogether.nbe_5_7_2_02team.post.util.ImageUploader;
-import io.twogether.nbe_5_7_2_02team.post.util.PostMapper;
-import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-import java.util.Optional;
+import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRepository
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
+import io.twogether.nbe_5_7_2_02team.post.dao.LikesRepository
+import io.twogether.nbe_5_7_2_02team.post.dao.PostApplicationRepository
+import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository
+import io.twogether.nbe_5_7_2_02team.post.dao.PostTagRepository
+import io.twogether.nbe_5_7_2_02team.post.domain.*
+import io.twogether.nbe_5_7_2_02team.post.dto.request.PostCreateRequest
+import io.twogether.nbe_5_7_2_02team.post.dto.request.PostGetRequest
+import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest
+import io.twogether.nbe_5_7_2_02team.post.dto.response.PostDetailResponse
+import io.twogether.nbe_5_7_2_02team.post.dto.response.PostGetResponse
+import io.twogether.nbe_5_7_2_02team.post.dto.response.PostResponse
+import io.twogether.nbe_5_7_2_02team.post.util.ImageUploader
+import io.twogether.nbe_5_7_2_02team.post.util.PostMapper
+import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository
+import org.apache.commons.collections4.CollectionUtils
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
-public class PostService {
-
-    private final PostRepository postRepository;
-    private final PostTagRepository postTagRepository;
-    private final MemberRepository memberRepository;
-    private final PostMapper postMapper;
-    private final ImageUploader imageUploader;
-    private final ChatRepository chatRepository;
-    private final LikesRepository likesRepository;
-    private final PostApplicationRepository postApplicationRepository;
-    private final TagRepository tagRepository;
-
+class PostService(
+    private val postRepository: PostRepository,
+    private val postTagRepository: PostTagRepository,
+    private val memberRepository: MemberRepository,
+    private val postMapper: PostMapper,
+    private val imageUploader: ImageUploader,
+    private val chatRepository: ChatRepository,
+    private val likesRepository: LikesRepository,
+    private val postApplicationRepository: PostApplicationRepository,
+    private val tagRepository: TagRepository,
+) {
     @Transactional
-    public PostResponse createPost(PostCreateRequest request, Long memberId) {
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_MEMBER));
+    fun createPost(
+        request: PostCreateRequest,
+        memberId: Long,
+    ): PostResponse {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
 
-        Post post = postMapper.toEntity(request, member);
-        postRepository.save(post);
+        val post = postMapper.toEntity(request, member)
+        postRepository.save(post)
 
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            List<String> savedPaths = imageUploader.saveImages(request.getImages(), post.getId());
-            post.setImageUrls(savedPaths);
+        if (CollectionUtils.isNotEmpty(request.images)) {
+            val savedPaths = imageUploader.saveImages(request.images, post.id)
+            post.imageUrls = savedPaths
         }
 
-        List<PostTag> postTags = postMapper.toPostTags(post, request.getTags());
-        postTagRepository.saveAll(postTags);
+        val postTags = postMapper.toPostTags(post, request.tags)
+        postTagRepository.saveAll(postTags)
 
-        return new PostResponse(post.getId());
+        return PostResponse(post.id)
     }
 
     @Transactional
-    public PostResponse updatePost(Long postId, PostUpdateRequest request, Long memberId) {
-        Post updatePost =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
+    fun updatePost(
+        postId: Long,
+        request: PostUpdateRequest,
+        memberId: Long,
+    ): PostResponse {
+        val updatePost =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        if (!updatePost.getMember().getId().equals(memberId)) {
-            throw new ErrorException(ErrorCode.UNAUTHORIZED_POST_ACCESS);
+        if (updatePost.member.id != memberId) {
+            throw ErrorException(ErrorCode.UNAUTHORIZED_POST_ACCESS)
         }
 
-        postMapper.updateFromRequest(updatePost, request);
+        postMapper.updateFromRequest(updatePost, request)
 
-        if (!CollectionUtils.isEmpty(request.getImages())) {
-            imageUploader.deletePostImageByFolder(postId);
-            List<String> savedPaths = imageUploader.saveImages(request.getImages(), postId);
-            updatePost.setImageUrls(savedPaths);
+        if (CollectionUtils.isNotEmpty(request.images)) {
+            imageUploader.deletePostImageByFolder(postId)
+            val savedPaths = imageUploader.saveImages(request.images, postId)
+            updatePost.imageUrls = savedPaths
         }
 
-        postTagRepository.deleteAllByPost(updatePost);
-        if (request.getTags() != null) {
-            List<PostTag> newTags = postMapper.toPostTags(updatePost, request.getTags());
-            postTagRepository.saveAll(newTags);
+        postTagRepository.deleteAllByPost(updatePost)
+        if (CollectionUtils.isNotEmpty(request.tags)) {
+            val newTags = postMapper.toPostTags(updatePost, request.tags)
+            postTagRepository.saveAll(newTags)
         }
-        deleteUnusedTags();
+        deleteUnusedTags()
 
-        if (request.getRecruitmentFields() != null) {
-            updatePost.getRecruitmentFields().clear();
-            List<RecruitmentField> newFields =
-                    postMapper.toRecruitmentFields(updatePost, request.getRecruitmentFields());
-            updatePost.getRecruitmentFields().addAll(newFields);
+        if (CollectionUtils.isNotEmpty(request.recruitmentFields)) {
+            updatePost.recruitmentFields.clear()
+            val newFields =
+                postMapper.toRecruitmentFields(updatePost, request.recruitmentFields)
+            updatePost.recruitmentFields.addAll(newFields)
         }
 
-        return new PostResponse(updatePost.getId());
+        return PostResponse(updatePost.id)
     }
 
     @Transactional
-    public void deletePost(Long postId, Long memberId) {
+    fun deletePost(
+        postId: Long,
+        memberId: Long,
+    ) {
+        val deletePost =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        Post deletePost =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
-
-        if (!deletePost.getMember().getId().equals(memberId)) {
-            throw new ErrorException(ErrorCode.UNAUTHORIZED_POST_ACCESS);
+        if (deletePost.member.id != memberId) {
+            throw ErrorException(ErrorCode.UNAUTHORIZED_POST_ACCESS)
         }
 
-        likesRepository.deleteByPost(deletePost);
-        chatRepository.deleteByPost(deletePost);
-        imageUploader.deletePostImageByFolder(deletePost.getId());
-        postRepository.delete(deletePost);
-        deleteUnusedTags();
+        likesRepository.deleteByPost(deletePost)
+        chatRepository.deleteByPost(deletePost)
+        imageUploader.deletePostImageByFolder(deletePost.id)
+        postRepository.delete(deletePost)
+        deleteUnusedTags()
     }
 
-    private void deleteUnusedTags() {
-        List<Long> referredTagIds = postTagRepository.findAllTagIds();
-        tagRepository.deleteUnusedTags(referredTagIds);
+    private fun deleteUnusedTags() {
+        val referredTagIds: List<Long> = postTagRepository.findAllTagIds()
+        tagRepository.deleteUnusedTags(referredTagIds)
     }
 
     @Transactional(readOnly = true)
-    public PostGetResponse getFilteredPosts(PostGetRequest request, UserDetails userDetails) {
-        Long memberId = userDetails != null ? Long.valueOf(userDetails.getUsername()) : null;
+    fun getFilteredPosts(
+        request: PostGetRequest,
+        userDetails: UserDetails?,
+    ): PostGetResponse {
+        val memberId = userDetails?.username?.toLong()
 
         return PostGetResponse.from(
-                postRepository.findFilteredPosts(
-                        memberId,
-                        request.getLastPostId(),
-                        request.getLimit(),
-                        parseRecruitmentStatus(request.getIsRecruit()),
-                        request.getIsFollowing(),
-                        request.getTags()));
+            postRepository.findFilteredPosts(
+                memberId,
+                request.lastPostId,
+                request.limit,
+                parseRecruitmentStatus(request.isRecruit),
+                request.isFollowing,
+                request.tags,
+            ),
+        )
     }
 
     @Transactional(readOnly = true)
-    public PostGetResponse getPostsByMember(PostGetRequest request, Long memberId) {
-        return PostGetResponse.from(
-                postRepository.findPostsByMemberId(
-                        memberId, request.getLastPostId(), request.getLimit()));
-    }
+    fun getPostsByMember(
+        request: PostGetRequest,
+        memberId: Long?,
+    ): PostGetResponse =
+        PostGetResponse.from(
+            postRepository.findPostsByMemberId(
+                memberId,
+                request.lastPostId,
+                request.limit,
+            ),
+        )
 
-    private RecruitmentStatus parseRecruitmentStatus(Boolean isRecruit) {
+    private fun parseRecruitmentStatus(isRecruit: Boolean?): RecruitmentStatus {
         if (isRecruit != null) {
-            return isRecruit ? RECRUITING : DONE;
+            return if (isRecruit) RecruitmentStatus.RECRUITING else RecruitmentStatus.DONE
         }
-        return NONE;
+        return RecruitmentStatus.NONE
     }
 
     @Transactional(readOnly = true)
-    public PostDetailResponse getPostById(Long postId) {
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
+    fun getPostById(postId: Long): PostDetailResponse {
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        List<String> tagNames =
-                post.getPostTags().stream().map(tag -> tag.getTag().getName()).toList();
+        val tagNames =
+            post.postTags
+                .map { postTag: PostTag -> postTag.tag.name }
+                .toList()
 
-        return new PostDetailResponse(
-                post.getTitle(),
-                post.getContent(),
-                post.getRecruitmentStatus(),
-                tagNames,
-                post.getImageUrls());
+        return PostDetailResponse(
+            post.title,
+            post.content,
+            post.recruitmentStatus,
+            tagNames,
+            post.imageUrls,
+        )
     }
 
     @Transactional
-    public void likePost(Long postId, Long memberId) {
+    fun likePost(
+        postId: Long,
+        memberId: Long,
+    ) {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_MEMBER));
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
-
-        Optional<Likes> existingLike = likesRepository.findByPostAndMember(post, member);
-        if (existingLike.isPresent()) {
-            throw new ErrorException(ErrorCode.LIKE_ALREADY_EXIST);
+        val existingLike: Boolean = likesRepository.existsByPostAndMember(post, member)
+        if (existingLike) {
+            throw ErrorException(ErrorCode.LIKE_ALREADY_EXIST)
         }
 
-        Likes likes = Likes.builder().member(member).post(post).build();
-        likesRepository.save(likes);
+        val likes = Likes(member, post)
+        likesRepository.save(likes)
     }
 
     @Transactional
-    public void unlikePost(Long postId, Long memberId) {
+    fun unlikePost(
+        postId: Long,
+        memberId: Long,
+    ) {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_MEMBER));
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
-
-        Optional<Likes> likes = likesRepository.findByPostAndMember(post, member);
-        if (likes.isPresent()) {
-            likesRepository.delete(likes.get());
-        } else {
-            throw new ErrorException(ErrorCode.NOT_FOUND_LIKE);
-        }
+        val likes: Likes = likesRepository.findByPostAndMember(post, member) ?: throw ErrorException(ErrorCode.NOT_FOUND_LIKE)
+        likesRepository.delete(likes)
     }
 
     @Transactional
-    public void apply(Long postId, String fieldName, Long memberId) {
+    fun apply(
+        postId: Long,
+        fieldName: String,
+        memberId: Long,
+    ) {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_MEMBER));
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_POST) })
 
-        Post post =
-                postRepository
-                        .findById(postId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_POST));
-
-        if (post.getRecruitmentStatus() != RECRUITING) {
-            throw new ErrorException(ErrorCode.RECRUITMENT_NOT_AVAILABLE);
+        if (post.recruitmentStatus != RecruitmentStatus.RECRUITING) {
+            throw ErrorException(ErrorCode.RECRUITMENT_NOT_AVAILABLE)
         }
 
-        if (post.getMember().getId().equals(memberId)) {
-            throw new ErrorException(ErrorCode.CANNOT_APPLY_TO_OWN_POST);
+        if (post.member.id == memberId) {
+            throw ErrorException(ErrorCode.CANNOT_APPLY_TO_OWN_POST)
         }
 
-        RecruitmentField field =
-                post.getRecruitmentFields().stream()
-                        .filter(f -> f.getFieldName().trim().equalsIgnoreCase(fieldName.trim()))
-                        .findFirst()
-                        .orElseThrow(
-                                () -> new ErrorException(ErrorCode.NOT_FOUND_RECRUITMENT_FIELD));
+        val field =
+            post.recruitmentFields
+                .stream()
+                .filter { f: RecruitmentField ->
+                    f.fieldName
+                        .trim()
+                        .equals(fieldName.trim(), ignoreCase = true)
+                }.findFirst()
+                .orElseThrow(
+                    Supplier { ErrorException(ErrorCode.NOT_FOUND_RECRUITMENT_FIELD) },
+                )
 
-        if (field.isClosed()) {
-            throw new ErrorException(ErrorCode.RECRUITMENT_CLOSED);
+        if (field.isClosed) {
+            throw ErrorException(ErrorCode.RECRUITMENT_CLOSED)
         }
 
-        boolean alreadyApplied = postApplicationRepository.existsByMemberAndField(member, field);
+        val alreadyApplied = postApplicationRepository.existsByMemberAndField(member, field)
         if (alreadyApplied) {
-            throw new ErrorException(ErrorCode.ALREADY_APPLIED);
+            throw ErrorException(ErrorCode.ALREADY_APPLIED)
         }
 
-        PostApplication application =
-                PostApplication.builder().member(member).post(post).field(field).build();
-        postApplicationRepository.save(application);
+        val application = PostApplication(member, post, field)
+        postApplicationRepository.save(application)
 
-        field.increaseCount();
+        field.increaseCount()
     }
 }
