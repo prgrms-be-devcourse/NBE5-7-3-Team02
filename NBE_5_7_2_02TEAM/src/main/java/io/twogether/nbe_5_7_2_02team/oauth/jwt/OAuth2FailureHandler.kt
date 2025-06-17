@@ -1,40 +1,32 @@
-package io.twogether.nbe_5_7_2_02team.oauth.jwt;
+package io.twogether.nbe_5_7_2_02team.oauth.jwt
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.web.authentication.AuthenticationFailureHandler
+import org.springframework.stereotype.Component
+import java.io.IOException
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-
-@Slf4j
 @Component
-@RequiredArgsConstructor
-public class OAuth2FailureHandler implements AuthenticationFailureHandler {
+class OAuth2FailureHandler : AuthenticationFailureHandler {
+    @Value("\${custom.jwt.redirection.base}")
+    private lateinit var baseUrl: String
 
-    @Value("${custom.jwt.redirection.base}")
-    private String baseUrl;
+    private val objectMapper = ObjectMapper()
+    private val log = LoggerFactory.getLogger(OAuth2FailureHandler::class.java)
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Throws(IOException::class, ServletException::class)
+    override fun onAuthenticationFailure(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        exception: AuthenticationException,
+    ) {
+        log.error("OAuth 인증 실패: {}", exception.message)
 
-    @Override
-    public void onAuthenticationFailure(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException exception)
-            throws IOException, ServletException {
-
-        log.error("OAuth 인증 실패: {}", exception.getMessage());
-
-        response.sendRedirect(baseUrl + "?error=org");
+        response.sendRedirect("$baseUrl?error=org")
     }
 }

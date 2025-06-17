@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface LikesRepository : JpaRepository<Likes, Long> {
+    fun existsByPostAndMember(
+        post: Post,
+        member: Member,
+    ): Boolean
+
     fun findByPostAndMember(
         post: Post,
         member: Member,
-    ): Optional<Likes>
+    ): Likes?
 
     fun deleteByPost(post: Post)
 }

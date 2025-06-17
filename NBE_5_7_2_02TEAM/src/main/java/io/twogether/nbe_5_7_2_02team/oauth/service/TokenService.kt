@@ -1,62 +1,53 @@
-package io.twogether.nbe_5_7_2_02team.oauth.service;
+package io.twogether.nbe_5_7_2_02team.oauth.service
 
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode;
-import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-import io.twogether.nbe_5_7_2_02team.oauth.domain.RefreshToken;
-import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenBody;
-import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair;
-import io.twogether.nbe_5_7_2_02team.oauth.jwt.JwtTokenProvider;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
+import io.twogether.nbe_5_7_2_02team.oauth.dto.common.TokenPair
+import io.twogether.nbe_5_7_2_02team.oauth.jwt.JwtTokenProvider
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-@RequiredArgsConstructor
-public class TokenService {
-
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
-
+class TokenService(
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val memberRepository: MemberRepository,
+) {
     // RefreshToken으로 AccessToken과 RefreshToken 재발급
     @Transactional
-    public TokenPair refreshToken(String refreshTokenValue) {
+    fun refreshToken(refreshTokenValue: String): TokenPair {
+        jwtTokenProvider.refreshValidate(refreshTokenValue)
 
-        jwtTokenProvider.refreshValidate(refreshTokenValue);
-
-        TokenBody tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue);
-        Long memberId = tokenBody.getMemberId();
+        val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
+        val memberId = tokenBody.memberId
 
         jwtTokenProvider
-                .findRefreshToken(memberId)
-                .filter(rt -> rt.getRefreshToken().equals(refreshTokenValue))
-                .orElseThrow(() -> new ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN));
+            .findRefreshToken(memberId)
+            ?.takeIf { it.refreshToken == refreshTokenValue }
+            ?: throw ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN)
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(ErrorCode.NOT_FOUND_MEMBER));
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow { ErrorException(ErrorCode.NOT_FOUND_MEMBER) }
 
-        return jwtTokenProvider.generateTokenPair(member);
+        return jwtTokenProvider.generateTokenPair(member)
     }
 
     // RefreshToken을 무효화해서 로그아웃
     @Transactional
-    public void invalidateRefreshToken(String refreshTokenValue) {
-        jwtTokenProvider.refreshValidate(refreshTokenValue);
+    fun invalidateRefreshToken(refreshTokenValue: String) {
+        jwtTokenProvider.refreshValidate(refreshTokenValue)
 
-        TokenBody tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue);
-        Long memberId = tokenBody.getMemberId();
+        val tokenBody = jwtTokenProvider.parseJwt(refreshTokenValue)
+        val memberId = tokenBody.memberId
 
-        RefreshToken refreshToken =
-                jwtTokenProvider
-                        .findRefreshToken(memberId)
-                        .filter(rt -> rt.getRefreshToken().equals(refreshTokenValue))
-                        .orElseThrow(() -> new ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN));
+        val refreshToken =
+            jwtTokenProvider
+                .findRefreshToken(memberId)
+                ?.takeIf { it.refreshToken == refreshTokenValue }
+                ?: throw ErrorException(ErrorCode.EXPIRED_REFRESH_TOKEN)
 
-        jwtTokenProvider.addBlackList(refreshToken);
+        jwtTokenProvider.addBlackList(refreshToken)
     }
 }

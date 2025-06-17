@@ -1,79 +1,42 @@
-package io.twogether.nbe_5_7_2_02team.oauth.dto.common;
+package io.twogether.nbe_5_7_2_02team.oauth.dto.common
 
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-import io.twogether.nbe_5_7_2_02team.member.domain.Role;
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
+import io.twogether.nbe_5_7_2_02team.member.domain.Role
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.oauth2.core.user.OAuth2User
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+class MemberDetails(
+    var id: Long? = null,
+    private val name: String? = null,
+    var email: String? = null,
+    var role: Role? = null,
+    private var attributes: Map<String, Any>? = null,
+    var githubId: String? = null,
+    var avatarUrl: String? = null,
+) : OAuth2User,
+    UserDetails {
+    constructor(name: String?, attribute: Map<String, Any>?) : this()
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+    override fun getAuthorities(): Collection<GrantedAuthority> = role?.let { listOf(SimpleGrantedAuthority(it.name)) } ?: emptyList()
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+    override fun getPassword(): String? = null
 
-@Getter
-@Accessors(chain = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberDetails implements OAuth2User, UserDetails {
+    override fun getUsername(): String = id?.toString() ?: ""
 
-    @Setter private Long id;
+    // OAuth2User interface methods
+    override fun getName(): String? = name
 
-    private String name;
-    @Setter private String email;
+    override fun getAttributes(): Map<String, Any> = attributes ?: emptyMap()
 
-    @Setter private Role role;
-
-    @Setter private Map<String, Object> attributes;
-
-    private String githubId;
-
-    private String avatarUrl;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return String.valueOf(id);
-    }
-
-    public static MemberDetails from(Member member) {
-        MemberDetails memberDetails = new MemberDetails();
-
-        memberDetails.id = member.getId();
-        memberDetails.name = member.getName();
-        memberDetails.email = member.getEmail();
-        memberDetails.role = member.getRole();
-
-        return memberDetails;
-    }
-
-    @Builder
-    public MemberDetails(
-            String name,
-            String email,
-            Map<String, Object> attributes,
-            String githubId,
-            String avatarUrl) {
-        this.name = name;
-        this.email = email;
-        this.attributes = attributes;
-        this.githubId = githubId;
-        this.avatarUrl = avatarUrl;
+    companion object {
+        fun from(member: Member): MemberDetails =
+            MemberDetails(
+                id = member.id,
+                name = member.name,
+                email = member.email,
+                role = member.role,
+            )
     }
 }
