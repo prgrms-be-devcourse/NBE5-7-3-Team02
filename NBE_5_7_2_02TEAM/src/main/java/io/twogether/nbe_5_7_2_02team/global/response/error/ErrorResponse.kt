@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 data class ErrorResponse<T>(
     val code: String,
     val message: String,
-
     // 추가적인 오류 세부 정보를 담기 위한 필드
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    val errors: T? = null
+    val errors: T? = null,
 )

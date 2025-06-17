@@ -3,7 +3,7 @@ package io.twogether.nbe_5_7_2_02team.global.response.error
 enum class ErrorCode(
     val errorStatus: ErrorStatus,
     val code: String,
-    val message: String
+    val message: String,
 ) {
     // MEMBER
     NOT_FOUND_MEMBER(ErrorStatus.NOT_FOUND, "MEMBER-001", "존재하지 않는 사용자 입니다."),
@@ -22,7 +22,7 @@ enum class ErrorCode(
     OAUTH_PRGRMS_ORG_REQUIRED(
         ErrorStatus.BAD_REQUEST,
         "OAUTH-005",
-        "프로그래머스 교육 과정에 등록된 사용자만 가입할 수 있습니다."
+        "프로그래머스 교육 과정에 등록된 사용자만 가입할 수 있습니다.",
     ),
 
     // JWT
@@ -39,7 +39,7 @@ enum class ErrorCode(
     IMAGE_UPLOAD_LIMIT_EXCEEDED(
         ErrorStatus.BAD_REQUEST,
         "IMAGE-001",
-        "이미지는 최대 10장까지만 업로드할 수 있습니다."
+        "이미지는 최대 10장까지만 업로드할 수 있습니다.",
     ),
     IMAGE_UPLOAD_FAILED(ErrorStatus.BAD_REQUEST, "IMAGE-002", "이미지 저장 중 오류가 발생했습니다."),
     IMAGE_DELETE_FAILED(ErrorStatus.BAD_REQUEST, "IMAGE-003", "기존 이미지 삭제 중 오류가 발생했습니다."),
@@ -69,5 +69,5 @@ enum class ErrorCode(
     // CHATROOM
     CHAT_ROOM_LIST_EMPTY(ErrorStatus.NOT_FOUND, "CHATROOM-001", "목록에 채팅창이 존재하지 않습니다."),
     CHAT_ROOM_ALREADY_EXISTS(ErrorStatus.BAD_REQUEST, "CHATROOM-002", "채팅방이 이미 존재합니다."),
-    CHAT_ROOM_NOT_FOUND(ErrorStatus.NOT_FOUND, "CHATROOM-003", "채팅방을 찾을 수 없습니다.");
+    CHAT_ROOM_NOT_FOUND(ErrorStatus.NOT_FOUND, "CHATROOM-003", "채팅방을 찾을 수 없습니다."),
 }

@@ -12,29 +12,30 @@ import org.springframework.web.method.HandlerMethod
 
 @ControllerAdvice
 class ExceptionAdvice {
-
     private val log = LoggerFactory.getLogger(ExceptionAdvice::class.java)
 
     @ExceptionHandler(ErrorException::class)
     @ResponseBody
     fun handleException(
         e: ErrorException,
-        handlerMethod: HandlerMethod?
+        handlerMethod: HandlerMethod?,
     ): ResponseEntity<ErrorResponse<Any?>> {
         val errorCode = e.errorCode
         val httpStatus = errorCode.errorStatus.toHttpStatus()
 
         log.error("[ExceptionAdvice] ${errorCode.code}, ${errorCode.message}", e)
 
-        return ResponseEntity.status(httpStatus)
+        return ResponseEntity
+            .status(httpStatus)
             .body(ErrorResponse(errorCode.code, errorCode.message))
     }
 
-    private fun ErrorStatus.toHttpStatus(): HttpStatus = when (this) {
-        ErrorStatus.BAD_REQUEST -> HttpStatus.BAD_REQUEST
-        ErrorStatus.NOT_FOUND -> HttpStatus.NOT_FOUND
-        ErrorStatus.CONFLICT -> HttpStatus.CONFLICT
-        ErrorStatus.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
-        ErrorStatus.FORBIDDEN -> HttpStatus.FORBIDDEN
-    }
+    private fun ErrorStatus.toHttpStatus(): HttpStatus =
+        when (this) {
+            ErrorStatus.BAD_REQUEST -> HttpStatus.BAD_REQUEST
+            ErrorStatus.NOT_FOUND -> HttpStatus.NOT_FOUND
+            ErrorStatus.CONFLICT -> HttpStatus.CONFLICT
+            ErrorStatus.UNAUTHORIZED -> HttpStatus.UNAUTHORIZED
+            ErrorStatus.FORBIDDEN -> HttpStatus.FORBIDDEN
+        }
 }

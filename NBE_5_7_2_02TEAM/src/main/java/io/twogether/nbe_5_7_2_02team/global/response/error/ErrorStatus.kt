@@ -5,5 +5,5 @@ enum class ErrorStatus {
     UNAUTHORIZED,
     FORBIDDEN,
     NOT_FOUND,
-    CONFLICT
+    CONFLICT,
 }
