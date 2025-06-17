@@ -13,8 +13,7 @@ import java.util.*;
 @Entity
 public class Member extends BaseEntity {
 
-    public Member() {
-    }
+    public Member() {}
 
     public Long getId() {
         return id;
