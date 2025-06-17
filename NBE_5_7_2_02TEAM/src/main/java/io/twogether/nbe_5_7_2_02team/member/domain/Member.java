@@ -8,15 +8,40 @@ import lombok.*;
 
 import org.springframework.util.StringUtils;
 
-import java.util.*;
-
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Id

@@ -12,7 +12,9 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMember;
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus;
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponse;
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponseKt;
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse;
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponseKt;
 import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin;
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
 import io.twogether.nbe_5_7_2_02team.member.domain.Member;
@@ -46,7 +48,7 @@ public class ChatMemberService {
                         member, Arrays.asList(ONLINE, OFFLINE));
 
         return chatMemberList.stream()
-                .map(chatMember -> ChatRoomGetResponse.from(chatMember.getChatRoom()))
+                .map(chatMember -> ChatRoomGetResponseKt.toGetResponse(chatMember.getChatRoom()))
                 .toList();
     }
 
@@ -60,7 +62,7 @@ public class ChatMemberService {
             throw new ErrorException(CHAT_ROOM_EMPTY);
         }
 
-        return chatMemberList.stream().map(ChatMemberGetResponse::from).toList();
+        return chatMemberList.stream().map(ChatMemberGetResponseKt::toGetResponse).toList();
     }
 
     @Transactional

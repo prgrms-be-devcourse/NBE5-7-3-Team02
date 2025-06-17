@@ -7,6 +7,7 @@ import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.NOT_
 import io.twogether.nbe_5_7_2_02team.chat.dao.ChatRoomRepository;
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse;
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponseKt;
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
 import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
@@ -29,7 +30,7 @@ public class ChatRoomService {
     public List<ChatRoomGetResponse> getChatRoomList() {
         List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
 
-        return chatRoomList.stream().map(ChatRoomGetResponse::from).toList();
+        return chatRoomList.stream().map(ChatRoomGetResponseKt::toGetResponse).toList();
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +45,7 @@ public class ChatRoomService {
                         .findByPost(post)
                         .orElseThrow(() -> new ErrorException(CHAT_ROOM_NOT_FOUND));
 
-        return ChatRoomGetResponse.from(chatRoom);
+        return ChatRoomGetResponseKt.toGetResponse(chatRoom);
     }
 
     @Transactional

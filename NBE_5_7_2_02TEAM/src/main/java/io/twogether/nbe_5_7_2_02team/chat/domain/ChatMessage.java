@@ -12,11 +12,9 @@ import jakarta.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage extends BaseEntity {
 
@@ -40,5 +38,21 @@ public class ChatMessage extends BaseEntity {
         this.chatRoom = chatRoom;
         this.chatMember = chatMember;
         this.content = content;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public ChatMember getChatMember() {
+        return chatMember;
+    }
+
+    public String getContent() {
+        return content;
     }
 }
