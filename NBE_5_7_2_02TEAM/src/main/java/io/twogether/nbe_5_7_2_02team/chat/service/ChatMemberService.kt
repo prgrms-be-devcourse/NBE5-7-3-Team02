@@ -1,121 +1,101 @@
-package io.twogether.nbe_5_7_2_02team.chat.service;
+package io.twogether.nbe_5_7_2_02team.chat.service
 
-import static io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus.LEFT;
-import static io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus.OFFLINE;
-import static io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus.ONLINE;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MEMBER_NOT_ENTER;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MEMBER_UNDEFINED_STATUS;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_ROOM_EMPTY;
-
-import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMemberRepository;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMember;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponse;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponseKt;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponseKt;
-import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin;
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
+import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMemberRepository
+import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMember
+import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.toGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import lombok.RequiredArgsConstructor
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 @RequiredArgsConstructor
-public class ChatMemberService {
-
-    private final ChatRoomService chatRoomService;
-
-    private final ChatMemberRepository chatMemberRepository;
-    private final CheckUserLogin checkUserLogin;
-
+class ChatMemberService(
+    private val chatRoomService: ChatRoomService,
+    private val chatMemberRepository: ChatMemberRepository,
+    private val checkUserLogin: CheckUserLogin,
+) {
     @Transactional(readOnly = true)
-    public List<ChatRoomGetResponse> getChatRoomListByUser(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Member member = checkUserLogin.checkUserLogin(userDetails);
+    fun getChatRoomListByUser(
+        @AuthenticationPrincipal userDetails: UserDetails?,
+    ): List<ChatRoomGetResponse>? {
+        val member = checkUserLogin.checkUserLogin(userDetails)
 
-        List<ChatMember> chatMemberList =
-                chatMemberRepository.findByMemberAndChatMemberStatusIn(
-                        member, Arrays.asList(ONLINE, OFFLINE));
+        val joinedChatRoomList: List<ChatMember?> =
+            chatMemberRepository.findByMemberAndChatMemberStatusIn(
+                member,
+                listOf(ChatMemberStatus.ONLINE, ChatMemberStatus.OFFLINE),
+            )
 
-        return chatMemberList.stream()
-                .map(chatMember -> ChatRoomGetResponseKt.toGetResponse(chatMember.getChatRoom()))
-                .toList();
+        return joinedChatRoomList.map { chatMember -> chatMember?.chatRoom!!.toGetResponse() }
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMemberGetResponse> getChatMember(Long chatroomId) {
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatroomId);
+    fun getChatMember(chatroomId: Long): List<ChatMemberGetResponse>? {
+        val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        List<ChatMember> chatMemberList = chatMemberRepository.findByChatRoom(chatRoom);
+        val chatMemberList: List<ChatMember?> =
+            chatMemberRepository.findByChatRoom(chatRoom)
 
         if (chatMemberList.isEmpty()) {
-            throw new ErrorException(CHAT_ROOM_EMPTY);
+            throw ErrorException(ErrorCode.CHAT_ROOM_EMPTY)
         }
 
-        return chatMemberList.stream().map(ChatMemberGetResponseKt::toGetResponse).toList();
+        return chatMemberList.map { chatMember -> chatMember!!.toGetResponse() }
     }
 
     @Transactional
-    public Long createChatMember(Long chatroomId, UserDetails userDetails) {
-        Member member = checkUserLogin.checkUserLogin(userDetails);
+    fun createChatMember(
+        chatroomId: Long,
+        userDetails: UserDetails?,
+    ): Long? {
+        val member = checkUserLogin.checkUserLogin(userDetails)
 
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatroomId);
+        val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        ChatMember chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member);
-
-        if (chatMember != null) {
-            if (chatMember.getChatMemberStatus() == LEFT) {
-                chatMember.setChatMemberStatus(ONLINE);
+        chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?.let { chatMember ->
+            if (chatMember.chatMemberStatus == ChatMemberStatus.LEFT) {
+                chatMember.chatMemberStatus = ChatMemberStatus.ONLINE
             }
 
-            return chatMember.getId();
+            return chatMember.id
         }
 
-        Long id =
-                chatMemberRepository
-                        .save(
-                                ChatMember.builder()
-                                        .chatRoom(chatRoom)
-                                        .member(member)
-                                        .chatMemberStatus(ONLINE)
-                                        .build())
-                        .getId();
+        val id =
+            chatMemberRepository
+                .save(
+                    ChatMember(chatRoom, member, ChatMemberStatus.ONLINE),
+                ).id
 
-        long size = chatMemberRepository.countByChatRoom(chatRoom);
+        val size = chatMemberRepository.countByChatRoom(chatRoom)
 
-        chatRoom.setMemberCount(size);
+        chatRoom.memberCount = size
 
-        return id;
+        return id
     }
 
     @Transactional
-    public Long updateChatMember(
-            Long chatroomId, UserDetails userDetails, ChatMemberStatus chatMemberStatus) {
-        Member member = checkUserLogin.checkUserLogin(userDetails);
+    fun updateChatMember(
+        chatroomId: Long,
+        userDetails: UserDetails?,
+        chatMemberStatus: ChatMemberStatus,
+    ): Long? {
+        val member = checkUserLogin.checkUserLogin(userDetails)
 
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatroomId);
+        val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        ChatMember chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member);
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
-        if (chatMember == null) {
-            throw new ErrorException(CHAT_MEMBER_NOT_ENTER);
-        }
+        chatMember.chatMemberStatus = chatMemberStatus
 
-        if (chatMemberStatus == null) {
-            throw new ErrorException(CHAT_MEMBER_UNDEFINED_STATUS);
-        }
-
-        chatMember.setChatMemberStatus(chatMemberStatus);
-        return chatMemberRepository.save(chatMember).getId();
+        return chatMemberRepository.save(chatMember).id
     }
 }

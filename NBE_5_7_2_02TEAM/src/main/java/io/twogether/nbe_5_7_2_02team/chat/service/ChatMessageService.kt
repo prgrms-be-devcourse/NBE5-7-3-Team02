@@ -1,114 +1,97 @@
-package io.twogether.nbe_5_7_2_02team.chat.service;
+package io.twogether.nbe_5_7_2_02team.chat.service
 
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MEMBER_NOT_ENTER;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MESSAGE_CONTENT_BLANK;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MESSAGE_NOT_FOUND;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.NOT_FOUND_MEMBER;
-
-import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMemberRepository;
-import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMessageRepository;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMember;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage;
-import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
-import io.twogether.nbe_5_7_2_02team.chat.dto.request.ChatMessagePostRequest;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponse;
-import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponseKt;
-import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin;
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
-import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMemberRepository
+import io.twogether.nbe_5_7_2_02team.chat.dao.ChatMessageRepository
+import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMessage
+import io.twogether.nbe_5_7_2_02team.chat.dto.request.ChatMessagePostRequest
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.dto.response.toGetResponse
+import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin
+import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
+import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
+import lombok.RequiredArgsConstructor
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.function.Supplier
 
 @Service
 @RequiredArgsConstructor
-public class ChatMessageService {
-
-    private final ChatRoomService chatRoomService;
-
-    private final ChatMessageRepository chatMessageRepository;
-    private final ChatMemberRepository chatMemberRepository;
-    private final CheckUserLogin checkUserLogin;
-    private final MemberRepository memberRepository;
-
+class ChatMessageService(
+    private val chatRoomService: ChatRoomService,
+    private val chatMessageRepository: ChatMessageRepository,
+    private val chatMemberRepository: ChatMemberRepository,
+    private val memberRepository: MemberRepository,
+    private val checkUserLogin: CheckUserLogin,
+) {
     @Transactional(readOnly = true)
-    public List<ChatMessageGetResponse> getChatMessage(Long chatRoomId) {
+    fun getChatMessage(chatRoomId: Long): List<ChatMessageGetResponse>? {
+        val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatRoomId);
+        val chatMessageList: List<ChatMessage?> =
+            chatMessageRepository.findByChatRoomOrderByCreatedAtAsc(chatRoom)
 
-        List<ChatMessage> chatMessageList =
-                chatMessageRepository.findByChatRoomOrderByCreatedAtAsc(chatRoom);
-
-        return chatMessageList.stream().map(ChatMessageGetResponseKt::toGetResponse).toList();
+        return chatMessageList.map { chatMessage -> chatMessage!!.toGetResponse() }
     }
 
     @Transactional
-    public ChatMessageGetResponse createChatMessage(
-            Long chatRoomId, ChatMessagePostRequest chatMessagePostRequest, Long memberId) {
+    fun createChatMessage(
+        chatRoomId: Long,
+        chatMessagePostRequest: ChatMessagePostRequest,
+        memberId: Long?,
+    ): ChatMessageGetResponse {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
+//                TODO: MemberRepository.java가 마이그레이션 된 후 적용 예정
+//                ?: ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new ErrorException(NOT_FOUND_MEMBER));
+        val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatRoomId);
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
-        ChatMember chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member);
-
-        if (chatMember == null) {
-            throw new ErrorException(CHAT_MEMBER_NOT_ENTER);
-        }
-
-        String content = chatMessagePostRequest.getContent();
+        val content = chatMessagePostRequest.content
 
         if (content.isBlank()) {
-            throw new ErrorException(CHAT_MESSAGE_CONTENT_BLANK);
+            throw ErrorException(ErrorCode.CHAT_MESSAGE_CONTENT_BLANK)
         }
 
-        Long chatMessageId =
-                chatMessageRepository
-                        .save(
-                                ChatMessage.builder()
-                                        .chatRoom(chatRoom)
-                                        .chatMember(chatMember)
-                                        .content(content)
-                                        .build())
-                        .getId();
+        val chatMessageId =
+            chatMessageRepository
+                .save(
+                    ChatMessage(chatRoom, chatMember, content),
+                ).id
 
-        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow();
+        val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()
 
-        chatRoom.setLastChatId(chatMessageId);
+        chatRoom.lastChatId = chatMessageId
 
-        return ChatMessageGetResponseKt.toGetResponse(chatMessage);
+        return chatMessage.toGetResponse()
     }
 
     @Transactional
-    public void deleteChatMessage(Long chatMessageId, Long chatRoomId, UserDetails userDetails) {
+    fun deleteChatMessage(
+        chatMessageId: Long,
+        chatRoomId: Long,
+        userDetails: UserDetails?,
+    ) {
+        val member = checkUserLogin.checkUserLogin(userDetails)
 
-        Member member = checkUserLogin.checkUserLogin(userDetails);
+        val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        ChatRoom chatRoom = chatRoomService.checkChatRoomExists(chatRoomId);
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
-        ChatMember chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member);
+        val chatMessage =
+            chatMessageRepository.findByIdAndChatRoomAndChatMember(
+                chatMessageId,
+                chatRoom,
+                chatMember,
+            ) ?: throw ErrorException(ErrorCode.CHAT_MESSAGE_NOT_FOUND)
 
-        if (chatMember == null) {
-            throw new ErrorException(CHAT_MEMBER_NOT_ENTER);
-        }
-
-        ChatMessage chatMessage =
-                chatMessageRepository.findByIdAndChatRoomAndChatMember(
-                        chatMessageId, chatRoom, chatMember);
-
-        if (chatMessage == null) {
-            throw new ErrorException(CHAT_MESSAGE_NOT_FOUND);
-        }
-
-        chatMessageRepository.deleteById(chatMessage.getId());
+        chatMessageRepository.deleteById(chatMessage.id)
     }
 }
