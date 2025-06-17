@@ -1,7 +1,6 @@
 package io.twogether.nbe_5_7_2_02team.chat.util;
 
 import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.CHAT_MEMBER_NOT_LOGIN;
-import static io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode.NOT_FOUND_MEMBER;
 
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
@@ -23,7 +22,6 @@ public class CheckUserLogin {
             throw new ErrorException(CHAT_MEMBER_NOT_LOGIN);
         }
 
-        return memberRepository
-                .findById(Long.parseLong(userDetails.getUsername()));
+        return memberRepository.findById(Long.parseLong(userDetails.getUsername()));
     }
 }
