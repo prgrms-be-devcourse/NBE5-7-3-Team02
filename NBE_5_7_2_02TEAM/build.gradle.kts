@@ -52,6 +52,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.21")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")
