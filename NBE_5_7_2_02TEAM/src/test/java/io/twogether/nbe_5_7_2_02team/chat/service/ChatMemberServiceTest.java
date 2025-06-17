@@ -96,11 +96,12 @@ class ChatMemberServiceTest {
                         .authorities(Collections.emptyList())
                         .build();
         post =
-                Post.builder()
-                        .title("제목")
-                        .content("내용")
-                        .recruitmentStatus(RecruitmentStatus.NONE)
-                        .build();
+                new Post(
+                        "제목",
+                        "내용",
+                        RecruitmentStatus.NONE,
+                        member1
+                        );
 
         postRepository.save(post);
 
