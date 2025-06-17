@@ -27,7 +27,4 @@ data class PostCreateRequest(
     val recruitmentFieldsJson: String?,
     @field:JsonIgnore
     var recruitmentFields: List<RecruitmentFieldRequest> = listOf(),
-) {
-    override fun toString(): String =
-        "PostCreateRequest(title='$title', content='$content', recruitmentStatus=$recruitmentStatus, recruitmentDeadline=$recruitmentDeadline, images=$images, tags=$tags, recruitmentFieldsJson=$recruitmentFieldsJson, recruitmentFields=$recruitmentFields)"
-}
+)
