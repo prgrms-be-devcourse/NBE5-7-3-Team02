@@ -66,12 +66,10 @@ class ChatMemberService(
             return chatMember.id
         }
 
-
-
         val id =
             chatMemberRepository
                 .save(
-                    ChatMember(chatRoom, member ,ChatMemberStatus.ONLINE)
+                    ChatMember(chatRoom, member, ChatMemberStatus.ONLINE),
                 ).id
 
         val size = chatMemberRepository.countByChatRoom(chatRoom)
@@ -91,7 +89,8 @@ class ChatMemberService(
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatroomId)
 
-        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         chatMember.chatMemberStatus = chatMemberStatus
 

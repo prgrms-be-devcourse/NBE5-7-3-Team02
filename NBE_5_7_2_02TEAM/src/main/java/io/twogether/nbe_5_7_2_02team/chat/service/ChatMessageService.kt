@@ -48,7 +48,8 @@ class ChatMessageService(
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         val content = chatMessagePostRequest.content
 
@@ -59,7 +60,7 @@ class ChatMessageService(
         val chatMessageId =
             chatMessageRepository
                 .save(
-                    ChatMessage(chatRoom, chatMember, content)
+                    ChatMessage(chatRoom, chatMember, content),
                 ).id
 
         val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()
@@ -79,7 +80,8 @@ class ChatMessageService(
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        val chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
+        val chatMember =
+            chatMemberRepository.findByChatRoomAndMember(chatRoom, member) ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_ENTER)
 
         val chatMessage =
             chatMessageRepository.findByIdAndChatRoomAndChatMember(
