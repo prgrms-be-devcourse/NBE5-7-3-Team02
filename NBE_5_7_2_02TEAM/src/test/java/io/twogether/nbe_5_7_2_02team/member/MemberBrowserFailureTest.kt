@@ -3,7 +3,6 @@ package io.twogether.nbe_5_7_2_02team.member
 import com.github.database.rider.core.api.dataset.DataSet
 import io.twogether.nbe_5_7_2_02team.browser.template.BrowserTestTemplate
 import io.twogether.nbe_5_7_2_02team.global.annotation.FlywayReset
-import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
