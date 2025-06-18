@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface RefreshTokenBlackListRepository : JpaRepository<RefreshTokenBlackList, Long> {
     fun deleteByRefreshToken(refreshToken: RefreshToken)
 
-    fun findByRefreshTokenId(refreshTokenId: Long): RefreshTokenBlackList?
+    fun findByRefreshTokenId(refreshTokenId: Long?): RefreshTokenBlackList?
 }
