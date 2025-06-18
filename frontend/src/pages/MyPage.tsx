@@ -79,7 +79,7 @@ const handleFollowToggle = async () => {
           ...prev,
           following: true,
           followerCount: data.follower_count,
-          followingCount: data.following_count,
+          
         }
       );
     }
