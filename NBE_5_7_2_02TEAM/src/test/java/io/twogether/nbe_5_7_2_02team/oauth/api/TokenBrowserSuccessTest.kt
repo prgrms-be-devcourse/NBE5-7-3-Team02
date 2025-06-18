@@ -82,7 +82,7 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
         val tokenPair = genTokenPair(memberId)
 
         val request =
-            SignUpRequest ("신규가입자", "DEVELOPER", "SPRING")
+            SignUpRequest("신규가입자", "DEVELOPER", "SPRING")
 
         // when & then
         mockMvc
