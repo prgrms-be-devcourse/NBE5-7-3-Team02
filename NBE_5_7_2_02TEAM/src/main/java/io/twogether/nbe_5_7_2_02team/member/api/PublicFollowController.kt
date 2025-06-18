@@ -44,7 +44,7 @@ class PublicFollowController(
     }
 
     @GetMapping("/{memberId}/followers/count")
-    fun getFollwersCount(
+    fun getFollowersCount(
         @PathVariable memberId: Long,
     ): ResponseEntity<Long> {
         val count = followService.getFollowerCount(memberId)
@@ -52,7 +52,7 @@ class PublicFollowController(
     }
 
     @GetMapping("/{memberId}/followings/count")
-    fun getFollwingsCount(
+    fun getFollowingsCount(
         @PathVariable memberId: Long,
     ): ResponseEntity<Long> {
         val count = followService.getFollowingCount(memberId)

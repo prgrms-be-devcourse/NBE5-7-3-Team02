@@ -71,7 +71,7 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followers/count"])
-    fun getFollwersCount(
+    fun getFollowersCount(
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
         val count = followService.getFollowerCount(userDetails.username.toLong())
@@ -79,7 +79,7 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followings/count"])
-    fun getFollwingsCount(
+    fun getFollowingsCount(
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
         val count = followService.getFollowingCount(userDetails.username.toLong())
