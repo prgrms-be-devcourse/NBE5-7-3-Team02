@@ -50,12 +50,12 @@ export default function FollowSummary({
 
       <div className="flex justify-center gap-8 text-center pt-2">
         <div className="cursor-pointer" onClick={onShowFollowers}>
-          <p className="text-lg font-semibold">{followerCount}</p>
           <p className="text-sm text-gray-400">팔로워</p>
+          <p className="text-lg font-semibold">{followerCount}</p>
         </div>
         <div className="cursor-pointer" onClick={onShowFollowings}>
-          <p className="text-lg font-semibold">{followingCount}</p>
           <p className="text-sm text-gray-400">팔로잉</p>
+          <p className="text-lg font-semibold">{followingCount}</p>
         </div>
       </div>
     </div>

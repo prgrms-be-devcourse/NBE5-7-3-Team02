@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 // API 기본 설정
 const api = axios.create({
@@ -8,16 +9,13 @@ const api = axios.create({
   },
 });
 
-// 요청 인터셉터
-api.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
+// ✅ 응답 인터셉터 – ErrorCode 기반 메시지 추출
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    const message =
+      (error.response?.data as any)?.message || "알 수 없는 오류가 발생했습니다.";
+    toast.error(message); // 또는 alert(message);
     return Promise.reject(error);
   }
 );

@@ -24,9 +24,9 @@ class Member(
         nickname: String,
         profileImageUrl: String?,
     ) {
-        if (nickname.isNotBlank()) {
-            this.name = nickname
+        if (this.name != nickname) this.name = nickname
+        if (profileImageUrl != null && this.profileImage != profileImageUrl) {
+            this.profileImage = profileImageUrl
         }
-        this.profileImage = profileImageUrl
     }
 }

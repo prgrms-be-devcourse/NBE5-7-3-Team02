@@ -45,7 +45,7 @@ class MemberController(
     fun updateMyProfile(
         @AuthenticationPrincipal userDetails: UserDetails,
         @RequestPart("nickname") nickname: String,
-        @RequestPart(value = "image", required = false) image: MultipartFile,
+        @RequestPart(value = "image", required = false) image: MultipartFile?,
     ): ResponseEntity<MemberUpdateResponse> {
         val request = UpdateProfileRequest(image, nickname)
         val memberId = userDetails.username.toLong()

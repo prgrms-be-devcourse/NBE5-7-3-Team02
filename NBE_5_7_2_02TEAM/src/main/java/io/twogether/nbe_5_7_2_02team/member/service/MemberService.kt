@@ -61,14 +61,15 @@ class MemberService(
     ): MemberUpdateResponse {
         val member = findMember(memberId)
 
-        val imageUrl = imageUpload.saveProfileImage(request.image, memberId)
+        val newImageUrl =
+            request.image?.let { imageUpload.saveProfileImage(it, memberId) }
+                ?: member.profileImage
 
-        member.updateProfile(request.nickname, imageUrl)
+        val newNickname = request.nickname.ifBlank { member.name }
 
-        val followerCount = followRepository.countByFollowing(member)
-        val followingCount = followRepository.countByFollower(member)
+        member.updateProfile(newNickname, newImageUrl)
 
-        return member.toMemberUpdateResponse(followerCount, followingCount)
+        return member.toMemberUpdateResponse(followRepository.countByFollowing(member), followRepository.countByFollower(member))
     }
 
     private fun findMember(id: Long): Member =

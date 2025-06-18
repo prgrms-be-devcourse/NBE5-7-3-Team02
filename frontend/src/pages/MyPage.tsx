@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { InfiniteScroll } from "../components/InfiniteScroll";
 import CardList from "../components/CardList";
@@ -10,25 +10,28 @@ import ProfileEditorModal from "../components/mypage/ProfileEditorModal";
 import api from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
 
-
-export default function MyPage() {
+const MyPage: React.FC = () => {
   const navigate = useNavigate();
+  const { postMemberId } = useParams<{ postMemberId?: string }>();
   const { setUser: setAuthUser } = useAuth();
-  const [memberId, setMemberId] = useState<string | null>(null);
-  const { postMemberId } = useParams();
-  const [limit] = useState<number>(10);
+
   const [user, setUser] = useState<Member | null>(null);
+  const [memberId, setMemberId] = useState<string | null>(null);
+
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowings, setShowFollowings] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
+
   const [followers, setFollowers] = useState<Follow[]>([]);
   const [followings, setFollowings] = useState<Follow[]>([]);
 
-// ✅ 사용자 정보 조회
-  const fetchUser = async () => {
+  const limit = 10;
+
+  /** 사용자 정보 조회 */
+  const fetchUser = useCallback(async () => {
     try {
-      const res = await api.get(`/member/${postMemberId || "me"}`);
-      const raw = res.data;
+      const res = await api.get(`/member/${postMemberId ?? "me"}`);
+      const raw = res.data?.data ?? res.data;
 
       const fetchedUser: Member = {
         id: raw.id,
@@ -37,108 +40,128 @@ export default function MyPage() {
         followerCount: raw.follower_count,
         followingCount: raw.following_count,
         following: raw.following,
-        owner: raw.owner
+        owner: raw.owner,
       };
-      
-      setUser(fetchedUser);
-      setMemberId(raw.id?.toString()); // 여기가 InfiniteScroll에 들어감
 
+      setUser(fetchedUser);
+      setMemberId(String(raw.id));
     } catch (e) {
       console.error("사용자 정보 조회 실패", e);
     }
-  };
+  }, [postMemberId]);
 
   useEffect(() => {
     fetchUser();
-  }, [postMemberId]);
+  }, [fetchUser]);
 
-  // ✅ 팔로우 / 언팔로우 요청 및 수치 반영
-  const handleFollowToggle = async () => {
-    if (!user) return;
-    try {
-      let res;
-      if (user.following) {
-        await api.delete(`/follow/${user.id}`);
-        // 팔로우 취소 시 count는 줄여줌
-        setUser((prev) => prev && {
+  /** 팔로우 / 언팔로우 토글 */
+const handleFollowToggle = async () => {
+  if (!user) return;
+
+  try {
+    if (user.following) {
+      // 언팔로우 요청
+      await api.delete(`/follow/${user.id}`);
+      setUser((prev) =>
+        prev && {
           ...prev,
           following: false,
-          followerCount: prev.followerCount - 1
-        });
-      } else {
-        res = await api.post(`/follow/${user.id}`);
-        const data = res.data;
-        setUser((prev) => prev && {
+          followerCount: prev.followerCount - 1,
+        }
+      );
+    } else {
+      // 팔로우 요청
+      const res = await api.post(`/follow/${user.id}`);
+      const data = res.data?.data || res.data;
+
+      setUser((prev) =>
+        prev && {
           ...prev,
           following: true,
-          followerCount: data.updated_follower_count,
-        });
-      }
-    } catch (e) {
-      console.error("팔로우 상태 변경 실패", e);
+          followerCount: data.follower_count,
+          
+        }
+      );
     }
-  };
-
-const handleSaveProfile = async (nickname: string, image: File | null) => {
-  try {
-    const formData = new FormData();
-    formData.append("nickname", nickname);
-    if (image) formData.append("image", image);
-
-    const res = await api.patch(`/member/me`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    const raw = res.data;
-    const updatedUser: Member = {
-      id: raw.id,
-      username: raw.name,
-      profileImage: raw.profile_image,
-      followerCount: raw.follower_count,
-      followingCount: raw.following_count,
-      following: raw.following,
-      owner: raw.owner
-    };
-
-    setUser(updatedUser);
-    setAuthUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    setShowProfileEdit(false);
   } catch (e) {
-    console.error("프로필 저장 실패", e);
+    console.error("팔로우 상태 변경 실패", e);
   }
 };
 
-  // ✅ 팔로워 목록 조회
-  const fetchFollowers = async () => {
-    if (!user) return;
-    const res = await api.get(
-      user.owner ? `/follow/me/followers` : `/follow/public/${user.id}/followers`
-    );
-    const list: Follow[] = res.data.content.map((f: any) => ({
-      id: f.id,
-      username: f.name,
-      profileImage: f.profile_image,
-    }));
-    setFollowers(list);
-    setShowFollowers(true);
+  /** 프로필 저장 */
+  const handleSaveProfile = async (nickname: string, image: File | null) => {
+    try {
+      const formData = new FormData();
+      formData.append("nickname", nickname);
+      if (image) formData.append("image", image);
+
+      const res = await api.patch("/member/me", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const raw = res.data?.data ?? res.data;
+
+      const updatedUser: Member = {
+        id: raw.id,
+        username: raw.name,
+        profileImage: raw.profile_image,
+        followerCount: raw.follower_count,
+        followingCount: raw.following_count,
+        following: raw.following,
+        owner: raw.owner,
+      };
+
+      setUser(updatedUser);
+      setAuthUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setShowProfileEdit(false);
+    } catch (e) {
+      console.error("프로필 저장 실패", e);
+    }
   };
 
-  // ✅ 팔로잉 목록 조회
+  /** 팔로워 목록 조회 */
+  const fetchFollowers = async () => {
+    if (!user) return;
+    const endpoint = user.owner
+      ? "/follow/me/followers"
+      : `/follow/public/${user.id}/followers`;
+
+    try {
+      const res = await api.get(endpoint);
+      const list: Follow[] = res.data.content.map((f: any) => ({
+        id: f.id,
+        username: f.name,
+        profileImage: f.profile_image,
+      }));
+      setFollowers(list);
+      setShowFollowers(true);
+    } catch (e) {
+      console.error("팔로워 목록 조회 실패", e);
+    }
+  };
+
+  /** 팔로잉 목록 조회 */
   const fetchFollowings = async () => {
     if (!user) return;
-    const res = await api.get(
-      user.owner ? `/follow/me/followings` : `/follow/public/${user.id}/followings`
-    );
-    const list: Follow[] = res.data.content.map((f: any) => ({
-      id: f.id,
-      username: f.name,
-      profileImage: f.profile_image,
-    }));
-    setFollowings(list);
-    setShowFollowings(true);
+    const endpoint = user.owner
+      ? "/follow/me/followings"
+      : `/follow/public/${user.id}/followings`;
+
+    try {
+      const res = await api.get(endpoint);
+      const list: Follow[] = res.data.content.map((f: any) => ({
+        id: f.id,
+        username: f.name,
+        profileImage: f.profile_image,
+      }));
+      setFollowings(list);
+      setShowFollowings(true);
+    } catch (e) {
+      console.error("팔로잉 목록 조회 실패", e);
+    }
   };
-  
+
   if (!user) {
     return <p className="text-center mt-10 text-gray-500">로딩 중...</p>;
   }
@@ -159,46 +182,53 @@ const handleSaveProfile = async (nickname: string, image: File | null) => {
           onShowFollowings={fetchFollowings}
         />
 
+        {/* 팔로워 모달 */}
         <FollowListModal
           show={showFollowers}
           onClose={() => setShowFollowers(false)}
           title="팔로워"
           users={followers}
           onProfileClick={(id) => {
-          setShowFollowers(false); // ✅ 추가
-          navigate(`/mypage/${id}`);}}
+            setShowFollowers(false);
+            navigate(`/mypage/${id}`);
+          }}
         />
 
+        {/* 팔로잉 모달 */}
         <FollowListModal
           show={showFollowings}
           onClose={() => setShowFollowings(false)}
           title="팔로잉"
           users={followings}
           onProfileClick={(id) => {
-          setShowFollowings(false); // ✅ 추가
-          navigate(`/mypage/${id}`);}}
+            setShowFollowings(false);
+            navigate(`/mypage/${id}`);
+          }}
         />
 
+        {/* 프로필 편집 모달 */}
         <ProfileEditorModal
           show={showProfileEdit}
           onClose={() => setShowProfileEdit(false)}
-          username={user?.username || ""}
-          profileImage={user?.profileImage || ""}
+          username={user.username}
+          profileImage={user.profileImage}
           onSave={handleSaveProfile}
         />
       </div>
-      
+
       <div className="p-4 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">My Posts</h2>
         <InfiniteScroll
-              apiEndpoint={`/posts/member/${memberId}`}
-              limit={limit}
-              fetchKey={`member-${memberId}`} 
-              renderPosts={(posts, lastPostRef) => (
-                  <CardList posts={posts} lastPostRef={lastPostRef} />
+          apiEndpoint={`/posts/member/${memberId}`}
+          limit={limit}
+          fetchKey={`member-${memberId}`}
+          renderPosts={(posts, lastPostRef) => (
+            <CardList posts={posts} lastPostRef={lastPostRef} />
           )}
         />
       </div>
     </div>
   );
-}
+};
+
+export default MyPage;
