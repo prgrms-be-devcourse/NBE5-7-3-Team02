@@ -9,7 +9,7 @@ class RefreshToken(
     var refreshToken: String,
     @field:JoinColumn(name = "member_id")
     @field:ManyToOne
-    var member: Member
+    var member: Member,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
