@@ -30,7 +30,7 @@ class JwtTokenProvider(
     private val refreshTokenBlackListRepository: RefreshTokenBlackListRepository,
 ) {
     fun generateTokenPair(member: Member): TokenPair {
-        val token = refreshTokenRepository.findByMemberId(member.id)
+        val token = refreshTokenRepository.findByMemberId(member.id!!)
         if (token != null) {
             refreshTokenBlackListRepository.deleteByRefreshToken(token)
             refreshTokenRepository.delete(token)

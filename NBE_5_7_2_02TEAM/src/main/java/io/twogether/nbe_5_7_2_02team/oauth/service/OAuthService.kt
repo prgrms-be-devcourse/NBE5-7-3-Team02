@@ -8,6 +8,7 @@ import io.twogether.nbe_5_7_2_02team.member.domain.Role
 import io.twogether.nbe_5_7_2_02team.member.dto.request.SignUpRequest
 import io.twogether.nbe_5_7_2_02team.member.dto.response.LoginResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.SignUpResponse
+import io.twogether.nbe_5_7_2_02team.member.util.mapper.toSignUpResponse
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails
 import io.twogether.nbe_5_7_2_02team.oauth.dto.response.GitHubLoginResponse
 import io.twogether.nbe_5_7_2_02team.oauth.dto.response.GitHubUserInfoResponse
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
 
 @Service
 @Transactional
@@ -180,7 +180,7 @@ class OAuthService(
         validatePrgrmsOrganization(userInfo.organizations)
 
         val member =
-            Member(Role.MEMBER, userInfo.email, userInfo.avatarUrl, userInfo.githubId)
+            Member( role = Role.MEMBER, email = userInfo.email, profileImage = userInfo.avatarUrl, githubId = userInfo.githubId)
 
         return memberRepository.save(member)
     }
@@ -196,7 +196,7 @@ class OAuthService(
         return LoginResponse(
             tokenPair,
             member.role,
-            member.id,
+            member.id!!,
         )
     }
 
@@ -214,7 +214,7 @@ class OAuthService(
         member.job = request.job
         member.course = request.course
 
-        return SignUpResponse.from(memberRepository.save(member))
+        return memberRepository.save(member).toSignUpResponse()
     }
 
     private fun validatePrgrmsOrganization(organizations: List<String>) {

@@ -5,6 +5,7 @@ import io.twogether.nbe_5_7_2_02team.member.dto.response.MemberCreateResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MemberUpdateResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MyPageResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MyPageResponse.PostSummary
+import io.twogether.nbe_5_7_2_02team.member.dto.response.SignUpResponse
 import io.twogether.nbe_5_7_2_02team.post.domain.Post
 
 fun Member.toMemberCreateResponse(): MemberCreateResponse =
@@ -57,4 +58,14 @@ fun Post.toPostSummary(): PostSummary =
     PostSummary(
         postId = this.id!!,
         title = this.title,
+    )
+
+fun Member.toSignUpResponse(): SignUpResponse =
+    SignUpResponse(
+        id = this.id!!,
+        email = this.email,
+        name = this.name,
+        job = this.job,
+        course = this.course,
+        role = this.role
     )

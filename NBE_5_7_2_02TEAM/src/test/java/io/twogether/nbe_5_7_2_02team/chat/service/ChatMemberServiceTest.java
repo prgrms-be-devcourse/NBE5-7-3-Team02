@@ -66,20 +66,10 @@ class ChatMemberServiceTest {
         postRepository.deleteAll();
         memberRepository.deleteAll();
 
-        member1 =
-                Member.builder()
-                        .email("test1@example.com")
-                        .name("testuser1")
-                        .githubId("123")
-                        .role(Role.MEMBER)
-                        .build();
-        member2 =
-                Member.builder()
-                        .email("test2@example.com")
-                        .name("testuser2")
-                        .githubId("456")
-                        .role(Role.MEMBER)
-                        .build();
+        member1 = new Member( "test1@example.com", "testuser1", "test1.png", "123", "3기","dev",Role.MEMBER);
+
+        member2 = new Member( "test2@example.com", "testuser2", "test2.png", "456", "3기","dev",Role.MEMBER);
+
         memberRepository.save(member1);
         memberRepository.save(member2);
 
