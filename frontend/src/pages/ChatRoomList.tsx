@@ -100,6 +100,7 @@ function ChatRoomList() {
   const handleCloseRoom = () => {
     setSelectedRoom(null);
     setSelectedRoomTitle("");
+    fetchData();
   };
 
   return (
