@@ -12,7 +12,7 @@ data class ChatMemberGetResponse(
 
 fun ChatMember.toGetResponse(): ChatMemberGetResponse =
     ChatMemberGetResponse(
-        memberId = this.member.id,
+        memberId = this.member.id!!,
         memberName = this.member.name,
         memberImage = this.member.profileImage,
         chatMemberStatus = this.chatMemberStatus,

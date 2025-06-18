@@ -11,8 +11,8 @@ fun Follow.toFollowCreateResponse(
     followingCount: Long,
 ): FollowCreateResponse =
     FollowCreateResponse(
-        followerId = this.follower.id,
-        followingId = this.following.id,
+        followerId = this.follower.id!!,
+        followingId = this.following.id!!,
         followerCount = followerCount,
         followingCount = followingCount,
     )

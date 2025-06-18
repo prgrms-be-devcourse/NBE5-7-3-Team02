@@ -93,8 +93,8 @@ class FollowServiceTest
             val request = FollowRequest(follower1.id!!, following1.id!!)
             val response = followService.createFollow(request)
 
-            Assertions.assertThat(response.followerId).isEqualTo(follower1.getId())
-            Assertions.assertThat(response.followingId).isEqualTo(following1.getId())
+            Assertions.assertThat(response.followerId).isEqualTo(follower1.id)
+            Assertions.assertThat(response.followingId).isEqualTo(following1.id)
         }
 
         @Test
@@ -139,7 +139,7 @@ class FollowServiceTest
             followService.createFollow(FollowRequest(follower1.id!!, following1.id!!))
             followService.createFollow(FollowRequest(follower2.id!!, following1.id!!))
 
-            val count = followService.getFollowerCount(following1.id)
+            val count = followService.getFollowerCount(following1.id!!)
 
             Assertions.assertThat(count).isEqualTo(2L)
         }

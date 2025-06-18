@@ -43,7 +43,7 @@ class ChatMessageService(
     ): ChatMessageGetResponse {
         val member =
             memberRepository
-                .findById(memberId)
+                .findById(memberId!!)
                 .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
 //                TODO: MemberRepository.java가 마이그레이션 된 후 적용 예정
 //                ?: ErrorException(ErrorCode.NOT_FOUND_MEMBER)
