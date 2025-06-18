@@ -6,6 +6,7 @@ plugins {
     kotlin("kapt") version "2.1.21"
     kotlin("plugin.spring") version "2.1.21"
     kotlin("plugin.jpa") version "2.1.21"
+    kotlin("plugin.allopen") version "2.1.21"
 }
 
 group = "io.twogether"
@@ -68,6 +69,7 @@ dependencies {
     implementation("org.apache.commons:commons-collections4:4.5.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")
@@ -86,4 +88,10 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
