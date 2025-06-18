@@ -30,14 +30,8 @@ class FollowService(
     fun createFollow(
         followRequest: @Valid FollowRequest
     ): FollowCreateResponse {
-        val follower =
-            memberRepository
-                .findById(followRequest.followerId)
-                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_FOLLOWER) })
-        val following =
-            memberRepository
-                .findById(followRequest.followingId)
-                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_FOLLOWING) })
+        val follower = findMemberOrThrow(followRequest.followerId, ErrorCode.NOT_FOUND_FOLLOWER)
+        val following = findMemberOrThrow(followRequest.followingId, ErrorCode.NOT_FOUND_FOLLOWING)
 
         if (follower == following) {
             throw ErrorException(ErrorCode.NOT_YOURSELF_FOLLOW)
@@ -56,14 +50,8 @@ class FollowService(
 
     @Transactional
     fun deleteFollow(followRequest: FollowRequest) {
-        val follower =
-            memberRepository
-                .findById(followRequest.followerId)
-                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_FOLLOWER) })
-        val following =
-            memberRepository
-                .findById(followRequest.followingId)
-                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_FOLLOWING) })
+        val follower = findMemberOrThrow(followRequest.followerId, ErrorCode.NOT_FOUND_FOLLOWER)
+        val following = findMemberOrThrow(followRequest.followingId, ErrorCode.NOT_FOUND_FOLLOWING)
 
         followRepository.deleteByFollowerAndFollowing(follower, following)
     }
@@ -100,4 +88,7 @@ class FollowService(
         return memberRepository.findById(memberId)
             .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
     }
+
+    private fun findMemberOrThrow(id: Long, errorCode: ErrorCode): Member =
+        memberRepository.findById(id).orElseThrow { ErrorException(errorCode) }
 }

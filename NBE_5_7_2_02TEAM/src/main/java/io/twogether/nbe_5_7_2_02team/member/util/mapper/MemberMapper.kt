@@ -48,7 +48,7 @@ fun Member.toMyPageResponse(
         job = this.job,
         course = this.course,
         profileImage = this.profileImage,
-        posts = posts.map { it.toPostSummary() }.toMutableList(),
+        posts = posts.map { it.toPostSummary() },
         followerCount = followerCount,
         followingCount = followingCount,
         following = following,
