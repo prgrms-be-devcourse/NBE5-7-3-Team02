@@ -20,7 +20,10 @@ class Member(
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun updateProfile(nickname: String, profileImageUrl: String?) {
+    fun updateProfile(
+        nickname: String,
+        profileImageUrl: String?,
+    ) {
         if (this.name != nickname) this.name = nickname
         if (profileImageUrl != null && this.profileImage != profileImageUrl) {
             this.profileImage = profileImageUrl
