@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class RefreshTokenBlackList(@field:JoinColumn(name = "refresh_token_id") @field:ManyToOne private var refreshToken: RefreshToken) :
-    BaseEntity() {
+class RefreshTokenBlackList(
+    @field:JoinColumn(name = "refresh_token_id") @field:ManyToOne private var refreshToken: RefreshToken,
+) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
