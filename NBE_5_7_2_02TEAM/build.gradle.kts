@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "2.1.21"
+    kotlin("kapt") version "2.1.21"
     kotlin("plugin.spring") version "2.1.21"
     kotlin("plugin.jpa") version "2.1.21"
 }
@@ -50,7 +51,7 @@ dependencies {
 
     // QUERYDSL
     implementation("io.github.openfeign.querydsl:querydsl-jpa:6.11")
-    annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
+    kapt("io.github.openfeign.querydsl:querydsl-apt:6.11:jpa")
 
     // MONITORING
     implementation("io.micrometer:micrometer-registry-prometheus")
