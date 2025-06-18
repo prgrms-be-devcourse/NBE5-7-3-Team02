@@ -1,5 +1,7 @@
 package io.twogether.nbe_5_7_2_02team.chat.api
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import io.twogether.nbe_5_7_2_02team.chat.dto.request.ChatMessagePostRequest
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMessageGetResponse
 import io.twogether.nbe_5_7_2_02team.chat.service.ChatMessageService
@@ -17,10 +19,15 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("/api/chatroom")
+@Tag(name = "ChatMessage", description = "채팅 메시지 API")
 class ChatMessageController(
     private val chatMessageService: ChatMessageService,
 ) {
     @GetMapping("/{chatroomId}/message")
+    @Operation(
+        summary = "채팅 메시지 목록 조회",
+        description = "지정한 채팅방에 저장된 모든 채팅 메시지를 시간순으로 조회합니다."
+    )
     fun getChatMessageList(
         @PathVariable chatroomId: Long,
     ): ResponseEntity<List<ChatMessageGetResponse>> {
@@ -31,6 +38,13 @@ class ChatMessageController(
 
     @MessageMapping("/{chatroomId}/message")
     @SendTo("/sub/{chatroomId}/message")
+    @Operation(
+        summary = "채팅 메시지 전송 (WebSocket)",
+        description = """
+            지정한 채팅방으로 메시지를 전송합니다.
+            WebSocket 통신을 사용하며, 해당 채팅방 구독자에게 메시지를 브로드캐스팅합니다.
+        """
+    )
     fun createChatMessage(
         @DestinationVariable chatroomId: Long,
         @Payload chatMessagePostRequest: ChatMessagePostRequest,
@@ -56,6 +70,10 @@ class ChatMessageController(
     }
 
     @DeleteMapping("/{chatroomId}/message")
+    @Operation(
+        summary = "채팅 메시지 삭제",
+        description = "지정한 채팅방의 특정 메시지를 삭제합니다."
+    )
     fun deleteChatMessage(
         @PathVariable chatroomId: Long,
         @RequestParam chatMessageId: Long,

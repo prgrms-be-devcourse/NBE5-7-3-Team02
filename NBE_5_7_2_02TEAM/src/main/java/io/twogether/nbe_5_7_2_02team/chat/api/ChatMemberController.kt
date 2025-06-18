@@ -1,5 +1,7 @@
 package io.twogether.nbe_5_7_2_02team.chat.api
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import io.twogether.nbe_5_7_2_02team.chat.dto.request.ChatMemberUpdateRequest
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatMemberGetResponse
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse
@@ -12,10 +14,15 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/chatroom")
+@Tag(name = "Chat", description = "채팅 멤버 API")
 class ChatMemberController(
     private val chatMemberService: ChatMemberService,
 ) {
     @GetMapping("/entered")
+    @Operation(
+        summary = "내가 참여한 채팅방 목록 조회",
+        description = "현재 로그인된 사용자가 참여 중인 모든 채팅방 목록을 반환합니다."
+    )
     fun getChatRoomListByUser(
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<List<ChatRoomGetResponse>> {
@@ -25,6 +32,10 @@ class ChatMemberController(
     }
 
     @GetMapping("/{chatroomId}/member")
+    @Operation(
+        summary = "채팅방 멤버 목록 조회",
+        description = "지정한 채팅방에 참여하고 있는 모든 멤버의 정보를 조회합니다."
+    )
     fun getChatMemberList(
         @PathVariable("chatroomId") chatroomId: Long,
     ): ResponseEntity<List<ChatMemberGetResponse>> {
@@ -34,6 +45,10 @@ class ChatMemberController(
     }
 
     @PostMapping("/{chatroomId}/member")
+    @Operation(
+        summary = "채팅방 참여",
+        description = "로그인한 사용자가 지정한 채팅방에 참여합니다."
+    )
     fun createChatMember(
         @PathVariable("chatroomId") chatroomId: Long,
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -44,6 +59,10 @@ class ChatMemberController(
     }
 
     @PutMapping("/{chatroomId}/member")
+    @Operation(
+        summary = "채팅 멤버 상태 수정",
+        description = "지정한 채팅방에서 현재 사용자의 채팅 멤버 상태(예: OFFLINE/ONLINE 등)를 변경합니다."
+    )
     fun updateChatMember(
         @PathVariable("chatroomId") chatroomId: Long,
         @AuthenticationPrincipal userDetails: UserDetails,

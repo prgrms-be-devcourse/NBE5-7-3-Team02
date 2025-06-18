@@ -67,6 +67,7 @@ dependencies {
     implementation("org.apache.commons:commons-collections4:4.5.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")
