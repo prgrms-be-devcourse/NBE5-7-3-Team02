@@ -78,8 +78,8 @@ const handleFollowToggle = async () => {
         prev && {
           ...prev,
           following: true,
-          followerCount: data.followerCount,
-          followingCount: data.followingCount,
+          followerCount: data.follower_count,
+          followingCount: data.following_count,
         }
       );
     }
