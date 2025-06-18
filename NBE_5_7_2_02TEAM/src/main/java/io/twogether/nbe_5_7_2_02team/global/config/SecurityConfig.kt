@@ -30,29 +30,36 @@ class SecurityConfig(
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
     private val oAuth2FailureHandler: OAuth2FailureHandler,
     @Value("\${management.endpoints.web.base-path}")
-    private val actuatorBasePath: String
+    private val actuatorBasePath: String,
 ) {
-
     companion object {
         private val log = KotlinLogging.logger {}
 
-        private val ALLOWED_ORIGINS = listOf(
-            "http://localhost:5173",
-            "http://localhost:8080"
-        )
+        private val ALLOWED_ORIGINS =
+            listOf(
+                "http://localhost:5173",
+                "http://localhost:8080",
+            )
 
-        private val ALLOWED_METHODS = listOf(
-            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
-        )
+        private val ALLOWED_METHODS =
+            listOf(
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS",
+            )
 
-        private val PUBLIC_ENDPOINTS = arrayOf(
-            "/ws/chatroom/**",
-            "/api/chatroom/**",
-            "/api/tags/**",
-            "/api/oauth2/**",
-            "/api/tags",
-            "/api/token/**"
-        )
+        private val PUBLIC_ENDPOINTS =
+            arrayOf(
+                "/ws/chatroom/**",
+                "/api/chatroom/**",
+                "/api/tags/**",
+                "/api/oauth2/**",
+                "/api/tags",
+                "/api/token/**",
+            )
 
         private const val CACHE_PERIOD = 3600
     }
@@ -75,15 +82,24 @@ class SecurityConfig(
                 it.authenticationEntryPoint(customAuthenticationEntryPoint())
             }
             authorizeHttpRequests { auth ->
-                auth.requestMatchers(RequestMatcher { request ->
-                    CorsUtils.isPreFlightRequest(request)
-                }).permitAll()
-                    .requestMatchers("$actuatorBasePath/**").hasRole("PROMETHEUS")
-                    .requestMatchers("/api/chatroom/entered").authenticated()
-                    .requestMatchers(*PUBLIC_ENDPOINTS).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
-                    .requestMatchers("/api/**").hasAnyAuthority("MEMBER")
-                    .anyRequest().permitAll()
+                auth
+                    .requestMatchers(
+                        RequestMatcher { request ->
+                            CorsUtils.isPreFlightRequest(request)
+                        },
+                    ).permitAll()
+                    .requestMatchers("$actuatorBasePath/**")
+                    .hasRole("PROMETHEUS")
+                    .requestMatchers("/api/chatroom/entered")
+                    .authenticated()
+                    .requestMatchers(*PUBLIC_ENDPOINTS)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/posts")
+                    .permitAll()
+                    .requestMatchers("/api/**")
+                    .hasAnyAuthority("MEMBER")
+                    .anyRequest()
+                    .permitAll()
             }
             addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             build()
@@ -91,12 +107,13 @@ class SecurityConfig(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val config = CorsConfiguration().apply {
-            allowCredentials = true
-            allowedOrigins = ALLOWED_ORIGINS
-            allowedMethods = ALLOWED_METHODS
-            allowedHeaders = listOf("*")
-        }
+        val config =
+            CorsConfiguration().apply {
+                allowCredentials = true
+                allowedOrigins = ALLOWED_ORIGINS
+                allowedMethods = ALLOWED_METHODS
+                allowedHeaders = listOf("*")
+            }
 
         log.info { "CORS 설정 동작: ${config.allowedOrigins}" }
 
@@ -106,8 +123,8 @@ class SecurityConfig(
     }
 
     @Bean
-    fun customAuthenticationEntryPoint(): AuthenticationEntryPoint {
-        return AuthenticationEntryPoint { request, response, _ ->
+    fun customAuthenticationEntryPoint(): AuthenticationEntryPoint =
+        AuthenticationEntryPoint { request, response, _ ->
             // API 요청은 401, 그 외는 기존처럼 GitHub 로그인 페이지 리다이렉트
             if (request.requestURI.startsWith("/api/")) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
@@ -115,5 +132,4 @@ class SecurityConfig(
                 response.sendRedirect("/oauth2/authorization/github")
             }
         }
-    }
 }
