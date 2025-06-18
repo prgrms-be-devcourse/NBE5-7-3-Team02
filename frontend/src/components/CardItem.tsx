@@ -56,6 +56,78 @@ export const CardItem = ({ post }: CardItemProps) => {
     }
   };
 
+  const handleChatJoin = async () => {
+    if (!isAuthenticated) {
+      alert("채팅에 참여하려면 로그인이 필요합니다.");
+      return;
+    }
+
+    let resRoomId;
+
+    try {
+      const getChatroomResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chatroom/${post.post_id}`);
+
+      if (getChatroomResponse.ok) {
+        const res = await getChatroomResponse.json();
+        if (res && res.id) {
+          resRoomId = res.id;
+        } else {
+          console.error("채팅방 조회 성공했으나, 응답 데이터에 ID가 없습니다:", res);
+          alert("채팅방 정보를 가져오는 중 오류가 발생했습니다. (데이터 형식 오류)");
+          return;
+        }
+      } else if (getChatroomResponse.status === 404) {
+        const createResponse = await api.post(`/chatroom/${post.post_id}`);
+
+        if (createResponse.status === 201 || createResponse.status === 200) {
+          const getNewChatroomResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chatroom/${post.post_id}`);
+
+          if (getNewChatroomResponse.ok) {
+            const newRes = await getNewChatroomResponse.json();
+            if (newRes && newRes.id) {
+              resRoomId = newRes.id;
+            } else {
+              console.error("채팅방 생성 후 조회했으나, 응답 데이터에 ID가 없습니다:", newRes);
+              alert("채팅방 생성 후 정보를 가져오는 중 오류가 발생했습니다. (데이터 형식 오류)");
+              return;
+            }
+          } else {
+            console.error(`채팅방 생성 후 조회 실패. 상태: ${getNewChatroomResponse.status}`);
+            alert("채팅방 생성 후 정보를 가져오는 중 오류가 발생했습니다.");
+            return;
+          }
+        } else {
+          console.error(`채팅방 생성 요청 실패. 상태: ${createResponse.status}`, createResponse.data);
+          alert("채팅방 생성 중 오류가 발생했습니다.");
+          return;
+        }
+      } else {
+        const errorText = await getChatroomResponse.text();
+        console.error(`채팅방 조회 중 예상치 못한 HTTP 상태 코드: ${getChatroomResponse.status}`, errorText);
+        alert(`채팅방 정보를 가져오는 중 오류가 발생했습니다. (상태: ${getChatroomResponse.status})`);
+        return;
+      }
+
+      if (!resRoomId) {
+        console.error("최종적으로 resRoomId를 가져오지 못했습니다.");
+        alert("채팅방 ID를 가져오지 못했습니다. 다시 시도해주세요.");
+        return;
+      }
+
+      try {
+        await api.post(`/chatroom/${resRoomId}/member`);
+      } catch (err) {
+        // TODO: 채팅방에 이미 멤버로 참여 중이면 post 요청 보내지 않도록 설정 필요
+        console.log("채팅방에 이미 멤버로 참여 중이면 post 요청 보내지 않도록 설정 필요");
+      }
+
+      navigate("/chats");
+    } catch (error: any) { // error 타입 명시
+      console.error("채팅방 참여 처리 중 전체 오류 발생:", error);
+      navigate(`/ChatRoomList`)
+    }
+  };
+
   const handleToggleLike = async () => {
     if (!isAuthenticated) {
       setAlertMessage("로그인이 필요합니다.");
@@ -142,11 +214,8 @@ export const CardItem = ({ post }: CardItemProps) => {
 
           <BsChatDots
             className="cursor-pointer text-lg hover:text-gray-900 dark:hover:text-white"
+            onClick={handleChatJoin}
             title="채팅 참여"
-            onClick={() => {
-              setAlertMessage("채팅은 별도 구현 필요");
-              setShowAlertModal(true);
-            }}
           />
 
           {user?.id === post.member_id && (
