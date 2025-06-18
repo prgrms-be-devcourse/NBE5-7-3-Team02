@@ -18,7 +18,7 @@ class TagController(
     @GetMapping
     @Operation(
         summary = "모든 태그 조회",
-        description = "전체 태그 목록을 조회합니다."
+        description = "전체 태그 목록을 조회합니다.",
     )
     fun getTags(): ResponseEntity<TagGetResponse> {
         val tags = tagService.getAllTags()

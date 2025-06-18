@@ -23,7 +23,7 @@ class MemberController(
     @GetMapping(value = ["/me"])
     @Operation(
         summary = "내 프로필 조회",
-        description = "현재 로그인한 사용자의 마이페이지(프로필) 정보를 조회합니다."
+        description = "현재 로그인한 사용자의 마이페이지(프로필) 정보를 조회합니다.",
     )
     fun getMyProfile(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -40,7 +40,7 @@ class MemberController(
     @PatchMapping(value = ["/me"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
         summary = "내 프로필 수정",
-        description = "현재 로그인한 사용자의 닉네임 또는 프로필 이미지를 수정합니다."
+        description = "현재 로그인한 사용자의 닉네임 또는 프로필 이미지를 수정합니다.",
     )
     fun updateMyProfile(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -58,7 +58,7 @@ class MemberController(
     @GetMapping(value = ["/{memberId}"])
     @Operation(
         summary = "상대방 프로필 조회",
-        description = "지정한 회원의 마이페이지(프로필) 정보를 조회합니다."
+        description = "지정한 회원의 마이페이지(프로필) 정보를 조회합니다.",
     )
     fun getOtherProfile(
         @AuthenticationPrincipal userDetails: UserDetails,

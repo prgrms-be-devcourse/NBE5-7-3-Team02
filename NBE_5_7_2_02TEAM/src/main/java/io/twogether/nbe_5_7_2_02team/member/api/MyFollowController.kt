@@ -25,7 +25,7 @@ class MyFollowController(
     @PostMapping(value = ["/{targetId}"])
     @Operation(
         summary = "팔로우 하기",
-        description = "특정 사용자를 팔로우합니다."
+        description = "특정 사용자를 팔로우합니다.",
     )
     fun follow(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -40,7 +40,7 @@ class MyFollowController(
     @DeleteMapping(value = ["/{targetId}"])
     @Operation(
         summary = "언팔로우 하기",
-        description = "특정 사용자를 언팔로우합니다."
+        description = "특정 사용자를 언팔로우합니다.",
     )
     fun unfollow(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -55,7 +55,7 @@ class MyFollowController(
     @GetMapping(value = ["/me/followers"])
     @Operation(
         summary = "내 팔로워 목록 조회",
-        description = "현재 로그인한 사용자를 팔로우하는 사용자 목록을 페이징하여 조회합니다."
+        description = "현재 로그인한 사용자를 팔로우하는 사용자 목록을 페이징하여 조회합니다.",
     )
     fun getFollowers(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -74,7 +74,7 @@ class MyFollowController(
     @GetMapping(value = ["/me/followings"])
     @Operation(
         summary = "내 팔로잉 목록 조회",
-        description = "현재 로그인한 사용자가 팔로우한 사용자 목록을 페이징하여 조회합니다."
+        description = "현재 로그인한 사용자가 팔로우한 사용자 목록을 페이징하여 조회합니다.",
     )
     fun getFollowings(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -92,7 +92,7 @@ class MyFollowController(
     @GetMapping(value = ["/me/followers/count"])
     @Operation(
         summary = "내 팔로워 수 조회",
-        description = "현재 로그인한 사용자의 팔로워 수를 조회합니다."
+        description = "현재 로그인한 사용자의 팔로워 수를 조회합니다.",
     )
     fun getFollowersCount(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -104,7 +104,7 @@ class MyFollowController(
     @GetMapping(value = ["/me/followings/count"])
     @Operation(
         summary = "내 팔로잉 수 조회",
-        description = "현재 로그인한 사용자가 팔로우한 사용자 수를 조회합니다."
+        description = "현재 로그인한 사용자가 팔로우한 사용자 수를 조회합니다.",
     )
     fun getFollowingsCount(
         @AuthenticationPrincipal userDetails: UserDetails,

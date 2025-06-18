@@ -21,7 +21,7 @@ class ChatMemberController(
     @GetMapping("/entered")
     @Operation(
         summary = "내가 참여한 채팅방 목록 조회",
-        description = "현재 로그인된 사용자가 참여 중인 모든 채팅방 목록을 반환합니다."
+        description = "현재 로그인된 사용자가 참여 중인 모든 채팅방 목록을 반환합니다.",
     )
     fun getChatRoomListByUser(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -34,7 +34,7 @@ class ChatMemberController(
     @GetMapping("/{chatroomId}/member")
     @Operation(
         summary = "채팅방 멤버 목록 조회",
-        description = "지정한 채팅방에 참여하고 있는 모든 멤버의 정보를 조회합니다."
+        description = "지정한 채팅방에 참여하고 있는 모든 멤버의 정보를 조회합니다.",
     )
     fun getChatMemberList(
         @PathVariable("chatroomId") chatroomId: Long,
@@ -47,7 +47,7 @@ class ChatMemberController(
     @PostMapping("/{chatroomId}/member")
     @Operation(
         summary = "채팅방 참여",
-        description = "로그인한 사용자가 지정한 채팅방에 참여합니다."
+        description = "로그인한 사용자가 지정한 채팅방에 참여합니다.",
     )
     fun createChatMember(
         @PathVariable("chatroomId") chatroomId: Long,
@@ -61,7 +61,7 @@ class ChatMemberController(
     @PutMapping("/{chatroomId}/member")
     @Operation(
         summary = "채팅 멤버 상태 수정",
-        description = "지정한 채팅방에서 현재 사용자의 채팅 멤버 상태(예: OFFLINE/ONLINE 등)를 변경합니다."
+        description = "지정한 채팅방에서 현재 사용자의 채팅 멤버 상태(예: OFFLINE/ONLINE 등)를 변경합니다.",
     )
     fun updateChatMember(
         @PathVariable("chatroomId") chatroomId: Long,

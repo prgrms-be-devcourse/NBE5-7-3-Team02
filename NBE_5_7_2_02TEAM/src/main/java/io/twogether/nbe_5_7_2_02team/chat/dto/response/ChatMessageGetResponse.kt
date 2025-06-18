@@ -8,16 +8,12 @@ import java.time.LocalDateTime
 data class ChatMessageGetResponse(
     @field:Schema(description = "메시지 ID", example = "1")
     val id: Long,
-
     @field:Schema(description = "회원 ID", example = "1")
     val memberId: Long,
-
     @field:Schema(description = "회원 이름", example = "홍길동")
     val memberName: String,
-
     @field:Schema(description = "메시지 내용", example = "안녕하세요!")
     val content: String,
-
     @field:Schema(description = "메시지 생성 시간", example = "2025-06-18T15:30:00")
     val createdAt: LocalDateTime,
 )
@@ -30,4 +26,3 @@ fun ChatMessage.toGetResponse(): ChatMessageGetResponse =
         content = this.content,
         createdAt = this.createdAt,
     )
-

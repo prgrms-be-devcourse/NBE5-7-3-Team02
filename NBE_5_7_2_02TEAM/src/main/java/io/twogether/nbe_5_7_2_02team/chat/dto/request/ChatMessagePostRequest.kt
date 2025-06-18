@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class ChatMessagePostRequest(
     @field:Schema(description = "회원 ID", example = "1")
     val memberId: Long = 0L,
-
     @field:Schema(description = "메시지 내용", example = "안녕하세요!")
     val content: String = "",
 )
