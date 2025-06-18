@@ -13,6 +13,8 @@ export default function ProfileEditor({ username, profileImage, onSave, onCancel
   const [preview, setPreview] = useState(profileImage);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // 파일 상태 추가
 
+  
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setSelectedFile(file);
