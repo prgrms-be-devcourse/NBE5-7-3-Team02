@@ -14,7 +14,7 @@ data class ChatMessageGetResponse(
 fun ChatMessage.toGetResponse(): ChatMessageGetResponse =
     ChatMessageGetResponse(
         id = this.id!!,
-        memberId = this.chatMember.member.id,
+        memberId = this.chatMember.member.id!!,
         memberName = this.chatMember.member.name,
         content = this.content,
         createdAt = this.createdAt,
