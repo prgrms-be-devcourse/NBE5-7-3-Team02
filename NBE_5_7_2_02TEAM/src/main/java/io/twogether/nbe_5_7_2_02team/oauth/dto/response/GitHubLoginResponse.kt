@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class GitHubLoginResponse(
     @Schema(
         description = "발급된 액세스 토큰 (JWT)",
-        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     )
     val accessToken: String,
 )

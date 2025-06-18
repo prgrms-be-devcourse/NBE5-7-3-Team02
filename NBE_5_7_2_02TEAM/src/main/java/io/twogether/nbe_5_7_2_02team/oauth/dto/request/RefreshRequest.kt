@@ -8,7 +8,7 @@ data class RefreshRequest(
     @field:NotBlank
     @Schema(
         description = "재발급에 사용할 리프레시 토큰",
-        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     )
     val refreshToken: String,
 )

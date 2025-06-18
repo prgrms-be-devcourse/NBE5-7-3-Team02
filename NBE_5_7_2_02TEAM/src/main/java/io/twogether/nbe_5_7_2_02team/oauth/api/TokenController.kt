@@ -1,6 +1,7 @@
 package io.twogether.nbe_5_7_2_02team.oauth.api
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import io.twogether.nbe_5_7_2_02team.member.dto.request.SignUpRequest
 import io.twogether.nbe_5_7_2_02team.member.dto.response.SignUpResponse
 import io.twogether.nbe_5_7_2_02team.oauth.dto.common.MemberDetails
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import io.swagger.v3.oas.annotations.tags.Tag
-
 
 @RestController
 @RequestMapping("/api")

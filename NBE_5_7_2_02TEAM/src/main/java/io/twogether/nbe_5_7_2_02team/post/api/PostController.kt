@@ -30,7 +30,7 @@ class PostController(
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
         summary = "게시글 생성",
-        description = "게시글을 생성합니다."
+        description = "게시글을 생성합니다.",
     )
     fun createPost(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -59,7 +59,7 @@ class PostController(
     @PatchMapping(value = ["/{postId}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
         summary = "게시글 수정",
-        description = "기존 게시글의 내용을 수정합니다."
+        description = "기존 게시글의 내용을 수정합니다.",
     )
     fun updatePost(
         @PathVariable postId: Long,
@@ -76,7 +76,7 @@ class PostController(
     @DeleteMapping(value = ["/{postId}"])
     @Operation(
         summary = "게시글 삭제",
-        description = "게시글을 삭제합니다."
+        description = "게시글을 삭제합니다.",
     )
     fun deletePost(
         @PathVariable postId: Long,
@@ -89,7 +89,7 @@ class PostController(
     @GetMapping
     @Operation(
         summary = "게시글 목록 조회 (필터 포함)",
-        description = "필터 조건에 따라 게시글 목록을 조회합니다."
+        description = "필터 조건에 따라 게시글 목록을 조회합니다.",
     )
     fun findFilteredPosts(
         @ModelAttribute request: PostGetRequest,
@@ -105,7 +105,7 @@ class PostController(
     @GetMapping("/member/{memberId}")
     @Operation(
         summary = "특정 사용자의 게시글 목록 조회",
-        description = "사용자 ID를 기반으로 해당 사용자가 작성한 게시글 목록을 조회합니다."
+        description = "사용자 ID를 기반으로 해당 사용자가 작성한 게시글 목록을 조회합니다.",
     )
     fun findPosts(
         @ModelAttribute request: PostGetRequest,
@@ -121,7 +121,7 @@ class PostController(
     @GetMapping("/{postId}")
     @Operation(
         summary = "게시글 상세 조회",
-        description = "게시글 ID를 기반으로 상세 정보를 조회합니다."
+        description = "게시글 ID를 기반으로 상세 정보를 조회합니다.",
     )
     fun getPost(
         @PathVariable postId: Long,
@@ -133,7 +133,7 @@ class PostController(
     @PostMapping("/{postId}/likes")
     @Operation(
         summary = "게시글 좋아요",
-        description = "게시글에 좋아요를 누릅니다."
+        description = "게시글에 좋아요를 누릅니다.",
     )
     fun likePost(
         @PathVariable postId: Long,
@@ -146,7 +146,7 @@ class PostController(
     @DeleteMapping("/{postId}/likes")
     @Operation(
         summary = "게시글 좋아요 취소",
-        description = "게시글의 좋아요를 취소합니다."
+        description = "게시글의 좋아요를 취소합니다.",
     )
     fun unlikePost(
         @PathVariable postId: Long,
@@ -159,7 +159,7 @@ class PostController(
     @PostMapping("/{postId}/apply")
     @Operation(
         summary = "게시글 모집 분야 지원",
-        description = "게시글의 특정 모집 분야에 지원합니다."
+        description = "게시글의 특정 모집 분야에 지원합니다.",
     )
     fun applyToField(
         @PathVariable postId: Long,

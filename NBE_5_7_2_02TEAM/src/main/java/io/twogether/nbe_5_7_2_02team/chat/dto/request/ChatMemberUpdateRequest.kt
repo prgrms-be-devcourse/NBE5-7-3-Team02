@@ -7,9 +7,9 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus
 
 @Schema(description = "채팅 멤버 상태 수정 요청 DTO")
 data class ChatMemberUpdateRequest
-@JsonCreator
-constructor(
-    @field:Schema(description = "채팅 멤버 상태", example = "ACTIVE")
-    @JsonProperty("chatMemberStatus")
-    val chatMemberStatus: ChatMemberStatus,
-)
+    @JsonCreator
+    constructor(
+        @field:Schema(description = "채팅 멤버 상태", example = "ACTIVE")
+        @JsonProperty("chatMemberStatus")
+        val chatMemberStatus: ChatMemberStatus,
+    )

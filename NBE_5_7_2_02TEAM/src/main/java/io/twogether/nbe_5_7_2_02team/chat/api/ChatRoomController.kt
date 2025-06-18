@@ -17,7 +17,7 @@ class ChatRoomController(
     @GetMapping
     @Operation(
         summary = "전체 채팅방 목록 조회",
-        description = "현재 존재하는 모든 채팅방 목록을 조회합니다."
+        description = "현재 존재하는 모든 채팅방 목록을 조회합니다.",
     )
     fun getChatRoomList(): ResponseEntity<List<ChatRoomGetResponse>> {
         val chatRoomGetResponse = chatRoomService.getChatRoomList()
@@ -28,7 +28,7 @@ class ChatRoomController(
     @GetMapping("/{postId}")
     @Operation(
         summary = "게시글 ID로 채팅방 조회",
-        description = "특정 게시글에 연관된 채팅방 정보를 조회합니다."
+        description = "특정 게시글에 연관된 채팅방 정보를 조회합니다.",
     )
     fun getChatRoomByPost(
         @PathVariable("postId") postId: Long,
@@ -41,7 +41,7 @@ class ChatRoomController(
     @PostMapping("/{postId}")
     @Operation(
         summary = "채팅방 생성",
-        description = "특정 게시글(postId)을 기반으로 새로운 채팅방을 생성합니다."
+        description = "특정 게시글(postId)을 기반으로 새로운 채팅방을 생성합니다.",
     )
     fun createChatRoom(
         @PathVariable("postId") postId: Long,

@@ -8,7 +8,7 @@ data class LogoutRequest(
     @field:NotBlank
     @Schema(
         description = "재발급용 리프레시 토큰",
-        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     )
     var refreshToken: String,
 )

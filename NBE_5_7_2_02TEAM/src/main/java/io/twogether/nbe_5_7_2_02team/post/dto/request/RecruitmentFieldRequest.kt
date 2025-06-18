@@ -9,7 +9,6 @@ data class RecruitmentFieldRequest(
     @field:NotBlank
     @Schema(description = "모집 분야명", example = "Backend", required = true)
     val fieldName: String,
-
     @field:Min(1)
     @Schema(description = "모집 인원 수", example = "3", minimum = "1", required = true)
     val totalCount: Int,

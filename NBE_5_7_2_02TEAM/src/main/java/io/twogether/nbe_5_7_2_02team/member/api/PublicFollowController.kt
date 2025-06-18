@@ -23,7 +23,7 @@ class PublicFollowController(
     @GetMapping(value = ["/{memberId}/followers"])
     @Operation(
         summary = "사용자의 팔로워 목록 조회",
-        description = "특정 사용자를 팔로우하는 사람들의 목록을 페이징하여 조회합니다."
+        description = "특정 사용자를 팔로우하는 사람들의 목록을 페이징하여 조회합니다.",
     )
     fun getFollowers(
         @PathVariable memberId: Long,
@@ -40,7 +40,7 @@ class PublicFollowController(
     @GetMapping("/{memberId}/followings")
     @Operation(
         summary = "사용자의 팔로잉 목록 조회",
-        description = "특정 사용자가 팔로우한 사람들의 목록을 페이징하여 조회합니다."
+        description = "특정 사용자가 팔로우한 사람들의 목록을 페이징하여 조회합니다.",
     )
     fun getFollowings(
         @PathVariable memberId: Long,
@@ -57,7 +57,7 @@ class PublicFollowController(
     @GetMapping("/{memberId}/followers/count")
     @Operation(
         summary = "사용자의 팔로워 수 조회",
-        description = "특정 사용자의 팔로워 수를 조회합니다."
+        description = "특정 사용자의 팔로워 수를 조회합니다.",
     )
     fun getFollowersCount(
         @PathVariable memberId: Long,
@@ -69,7 +69,7 @@ class PublicFollowController(
     @GetMapping("/{memberId}/followings/count")
     @Operation(
         summary = "사용자의 팔로잉 수 조회",
-        description = "특정 사용자가 팔로우한 사람들의 수를 조회합니다."
+        description = "특정 사용자가 팔로우한 사람들의 수를 조회합니다.",
     )
     fun getFollowingsCount(
         @PathVariable memberId: Long,

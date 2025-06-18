@@ -8,16 +8,12 @@ import java.time.LocalDateTime
 data class ChatRoomGetResponse(
     @field:Schema(description = "채팅방 ID", example = "1")
     val id: Long,
-
     @field:Schema(description = "게시글 ID", example = "10")
     val postId: Long,
-
     @field:Schema(description = "게시글 제목", example = "서버 개발 스터디 모집")
     val title: String,
-
     @field:Schema(description = "채팅방 참가자 수", example = "5")
     val memberCount: Long,
-
     @field:Schema(description = "채팅방 최근 수정 시간", example = "2025-06-18T15:30:00")
     val updatedAt: LocalDateTime,
 )
