@@ -7,7 +7,6 @@ import java.nio.file.Paths
 
 @Configuration
 class WebConfig : WebMvcConfigurer {
-
     companion object {
         private const val UPLOAD_PATH = "/uploads/**"
         private const val UPLOAD_DIR = "uploads"
@@ -17,7 +16,8 @@ class WebConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         val uploadLocation = "file:${Paths.get(UPLOAD_DIR).toAbsolutePath()}/"
 
-        registry.addResourceHandler(UPLOAD_PATH)
+        registry
+            .addResourceHandler(UPLOAD_PATH)
             .addResourceLocations(uploadLocation)
             .setCachePeriod(CACHE_PERIOD)
     }

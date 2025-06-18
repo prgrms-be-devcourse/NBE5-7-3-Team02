@@ -11,7 +11,6 @@ import java.time.LocalDateTime
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity {
-
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     lateinit var createdAt: LocalDateTime
