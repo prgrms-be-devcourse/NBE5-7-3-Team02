@@ -180,7 +180,7 @@ class OAuthService(
         validatePrgrmsOrganization(userInfo.organizations)
 
         val member =
-            Member( role = Role.MEMBER, email = userInfo.email, profileImage = userInfo.avatarUrl, githubId = userInfo.githubId)
+            Member(role = Role.MEMBER, email = userInfo.email, profileImage = userInfo.avatarUrl, githubId = userInfo.githubId)
 
         return memberRepository.save(member)
     }

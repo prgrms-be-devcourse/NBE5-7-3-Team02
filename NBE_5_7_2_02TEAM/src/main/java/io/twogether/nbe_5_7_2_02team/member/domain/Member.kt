@@ -14,19 +14,19 @@ class Member(
     var job: String = "",
     var course: String = "",
     @field:Enumerated(EnumType.STRING)
-    var role: Role = Role.MEMBER
+    var role: Role = Role.MEMBER,
 ) : BaseEntity() {
-
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun updateProfile(nickname: String, profileImageUrl: String?) {
+    fun updateProfile(
+        nickname: String,
+        profileImageUrl: String?,
+    ) {
         if (nickname.isNotBlank()) {
             this.name = nickname
         }
         this.profileImage = profileImageUrl
     }
 }
-
-

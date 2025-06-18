@@ -67,5 +67,5 @@ fun Member.toSignUpResponse(): SignUpResponse =
         name = this.name,
         job = this.job,
         course = this.course,
-        role = this.role
+        role = this.role,
     )
