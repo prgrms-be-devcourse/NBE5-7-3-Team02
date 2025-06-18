@@ -10,17 +10,28 @@ import org.springframework.data.repository.query.Param
 
 interface FollowRepository : JpaRepository<Follow, Long> {
     @Query("SELECT f.follower FROM Follow f where f.following = :member")
-    fun findFollowerMembers(@Param("member") member: Member, pageable: Pageable): Page<Member>
+    fun findFollowerMembers(
+        @Param("member") member: Member,
+        pageable: Pageable,
+    ): Page<Member>
 
     @Query("select f.following from Follow f where f.follower = :member")
-    fun findFollowingMembers(@Param("member") member: Member, pageable: Pageable): Page<Member>
+    fun findFollowingMembers(
+        @Param("member") member: Member,
+        pageable: Pageable,
+    ): Page<Member>
 
-    fun existsByFollowerAndFollowing(follower: Member, following: Member): Boolean
+    fun existsByFollowerAndFollowing(
+        follower: Member,
+        following: Member,
+    ): Boolean
 
     fun countByFollower(follower: Member): Long
 
     fun countByFollowing(following: Member): Long
 
-    fun deleteByFollowerAndFollowing(follower: Member, following: Member): Long
-
+    fun deleteByFollowerAndFollowing(
+        follower: Member,
+        following: Member,
+    ): Long
 }

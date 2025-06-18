@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/follow")
 class MyFollowController(
-    private val followService: FollowService
+    private val followService: FollowService,
 ) {
-
     @PostMapping(value = ["/{targetId}"])
     fun follow(
-        @AuthenticationPrincipal userDetails: UserDetails, @PathVariable targetId: Long
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @PathVariable targetId: Long,
     ): ResponseEntity<FollowCreateResponse> {
         val followRequest =
             userDetails.username.toLong().toFollowRequest(targetId)
@@ -32,10 +32,11 @@ class MyFollowController(
 
     @DeleteMapping(value = ["/{targetId}"])
     fun unfollow(
-        @AuthenticationPrincipal userDetails: UserDetails, @PathVariable targetId: Long
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @PathVariable targetId: Long,
     ): ResponseEntity<Void> {
         followService.deleteFollow(
-            userDetails.username.toLong().toFollowRequest(targetId)
+            userDetails.username.toLong().toFollowRequest(targetId),
         )
         return ResponseEntity.ok().build()
     }
@@ -46,11 +47,12 @@ class MyFollowController(
         @PageableDefault(
             size = 20,
             sort = ["id"],
-            direction = Sort.Direction.DESC
-        ) pageable: Pageable
+            direction = Sort.Direction.DESC,
+        ) pageable: Pageable,
     ): ResponseEntity<Page<MemberCreateResponse>> {
-        val followers = followService
-            .getFollowers(userDetails.username.toLong(), pageable)
+        val followers =
+            followService
+                .getFollowers(userDetails.username.toLong(), pageable)
         return ResponseEntity.ok(followers)
     }
 
@@ -60,8 +62,8 @@ class MyFollowController(
         @PageableDefault(
             size = 20,
             sort = ["id"],
-            direction = Sort.Direction.DESC
-        ) pageable: Pageable
+            direction = Sort.Direction.DESC,
+        ) pageable: Pageable,
     ): ResponseEntity<Page<MemberCreateResponse>> {
         val followings =
             followService.getFollowings(userDetails.username.toLong(), pageable)
@@ -69,14 +71,16 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followers/count"])
-    fun getFollwersCount(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<Long> {
+    fun getFollwersCount(
+        @AuthenticationPrincipal userDetails: UserDetails,
+    ): ResponseEntity<Long> {
         val count = followService.getFollowerCount(userDetails.username.toLong())
         return ResponseEntity.ok(count)
     }
 
     @GetMapping(value = ["/me/followings/count"])
     fun getFollwingsCount(
-        @AuthenticationPrincipal userDetails: UserDetails
+        @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
         val count = followService.getFollowingCount(userDetails.username.toLong())
         return ResponseEntity.ok(count)

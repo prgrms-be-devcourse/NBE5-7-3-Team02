@@ -11,10 +11,10 @@ data class MyPageResponse(
     val followerCount: Long,
     val followingCount: Long,
     val following: Boolean,
-    val owner: Boolean
+    val owner: Boolean,
 ) {
     data class PostSummary(
         val postId: Long,
-        val title: String
+        val title: String,
     )
 }

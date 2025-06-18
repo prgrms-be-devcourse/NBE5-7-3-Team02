@@ -66,6 +66,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.17.0")
     implementation("org.apache.commons:commons-collections4:4.5.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")
@@ -77,6 +78,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("com.github.database-rider:rider-spring:1.44.0")
     testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
 tasks.test {

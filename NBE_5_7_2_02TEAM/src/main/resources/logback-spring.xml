@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property name="LOG_PATH" value="/logs" />
+  <property name="LOG_FILE" value="${LOG_PATH}/spring.log" />
+
+  <springProfile name="!prod">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <root level="INFO">
+      <appender-ref ref="CONSOLE" />
+    </root>
+  </springProfile>
+
+  <springProfile name="prod">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${LOG_FILE}</file>
+
+      <encoder>
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      </encoder>
+
+      <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <fileNamePattern>${LOG_PATH}/spring.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+        <maxFileSize>100MB</maxFileSize>
+        <maxHistory>30</maxHistory>
+        <totalSizeCap>10GB</totalSizeCap>
+      </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+      <appender-ref ref="ROLLING" />
+    </root>
+  </springProfile>
+</configuration>

@@ -8,6 +8,7 @@ import io.twogether.nbe_5_7_2_02team.oauth.dto.request.LogoutRequest
 import io.twogether.nbe_5_7_2_02team.oauth.dto.request.RefreshRequest
 import io.twogether.nbe_5_7_2_02team.oauth.service.OAuthService
 import io.twogether.nbe_5_7_2_02team.oauth.service.TokenService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -24,7 +25,7 @@ class TokenController(
 ) {
     @PostMapping("/token/refresh")
     fun refresh(
-        @RequestBody request: RefreshRequest,
+        @Valid @RequestBody request: RefreshRequest,
     ): ResponseEntity<TokenPair> {
         val newToken = tokenService.refreshToken(request.refreshToken)
         return ResponseEntity.ok(newToken)
@@ -32,7 +33,7 @@ class TokenController(
 
     @PostMapping("/logout")
     fun logout(
-        @RequestBody request: LogoutRequest,
+        @Valid @RequestBody request: LogoutRequest,
     ): ResponseEntity<Void> {
         tokenService.invalidateRefreshToken(request.refreshToken)
         return ResponseEntity.ok().build()
@@ -40,7 +41,7 @@ class TokenController(
 
     @PostMapping("/signup")
     fun signUp(
-        @RequestBody request: SignUpRequest,
+        @Valid @RequestBody request: SignUpRequest,
         @AuthenticationPrincipal memberDetails: MemberDetails,
     ): ResponseEntity<SignUpResponse> {
         val response = memberDetails.id?.let { oAuthService.signup(request, it) }

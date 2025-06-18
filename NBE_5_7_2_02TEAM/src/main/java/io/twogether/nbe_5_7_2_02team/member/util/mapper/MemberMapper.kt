@@ -7,7 +7,6 @@ import io.twogether.nbe_5_7_2_02team.member.dto.response.MyPageResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MyPageResponse.PostSummary
 import io.twogether.nbe_5_7_2_02team.post.domain.Post
 
-
 fun Member.toMemberCreateResponse(): MemberCreateResponse =
     MemberCreateResponse(
         id = this.id!!,
@@ -16,9 +15,8 @@ fun Member.toMemberCreateResponse(): MemberCreateResponse =
         profileImage = this.profileImage,
         job = this.job,
         course = this.course,
-        githubId = this.githubId
+        githubId = this.githubId,
     )
-
 
 fun Member.toMemberUpdateResponse(
     followerCount: Long,
@@ -31,7 +29,7 @@ fun Member.toMemberUpdateResponse(
         followerCount = followerCount,
         followingCount = followingCount,
         following = false,
-        owner = true
+        owner = true,
     )
 
 fun Member.toMyPageResponse(
@@ -39,7 +37,7 @@ fun Member.toMyPageResponse(
     followerCount: Long,
     followingCount: Long,
     following: Boolean,
-    owner: Boolean
+    owner: Boolean,
 ): MyPageResponse =
     MyPageResponse(
         id = this.id!!,
@@ -52,11 +50,11 @@ fun Member.toMyPageResponse(
         followerCount = followerCount,
         followingCount = followingCount,
         following = following,
-        owner = owner
+        owner = owner,
     )
 
 fun Post.toPostSummary(): PostSummary =
     PostSummary(
         postId = this.id!!,
-        title  = this.title
+        title = this.title,
     )
