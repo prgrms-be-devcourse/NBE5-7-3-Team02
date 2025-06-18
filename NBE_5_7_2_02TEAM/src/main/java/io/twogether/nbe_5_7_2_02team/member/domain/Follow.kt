@@ -14,9 +14,7 @@ class Follow(
     var following: Member
 
 ) : BaseEntity() {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-
 }

@@ -8,6 +8,5 @@ data class SignUpResponse(
     val name: String,
     val job: String,
     val course: String,
-    val role: Role
+    val role: Role,
 )
-
