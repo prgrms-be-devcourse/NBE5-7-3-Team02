@@ -29,7 +29,7 @@ export const CardItem = ({ post }: CardItemProps) => {
   const [isLiked, setIsLiked] = useState(post.is_like);
   const [likeCount, setLikeCount] = useState(post.num_likes);
   const [recruitmentFields, setRecruitmentFields] = useState(
-      post.recruitment_fields || [],
+    post.recruitment_fields || [],
   );
 
   const handleMemberClick = () => {
@@ -53,78 +53,6 @@ export const CardItem = ({ post }: CardItemProps) => {
       console.error("삭제 실패:", err);
     } finally {
       setShowDeleteModal(false);
-    }
-  };
-
-  const handleChatJoin = async () => {
-    if (!isAuthenticated) {
-      alert("채팅에 참여하려면 로그인이 필요합니다.");
-      return;
-    }
-
-    let resRoomId;
-
-    try {
-      const getChatroomResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chatroom/${post.post_id}`);
-
-      if (getChatroomResponse.ok) {
-        const res = await getChatroomResponse.json();
-        if (res && res.id) {
-          resRoomId = res.id;
-        } else {
-          console.error("채팅방 조회 성공했으나, 응답 데이터에 ID가 없습니다:", res);
-          alert("채팅방 정보를 가져오는 중 오류가 발생했습니다. (데이터 형식 오류)");
-          return;
-        }
-      } else if (getChatroomResponse.status === 404) {
-        const createResponse = await api.post(`/chatroom/${post.post_id}`);
-
-        if (createResponse.status === 201 || createResponse.status === 200) {
-          const getNewChatroomResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chatroom/${post.post_id}`);
-
-          if (getNewChatroomResponse.ok) {
-            const newRes = await getNewChatroomResponse.json();
-            if (newRes && newRes.id) {
-              resRoomId = newRes.id;
-            } else {
-              console.error("채팅방 생성 후 조회했으나, 응답 데이터에 ID가 없습니다:", newRes);
-              alert("채팅방 생성 후 정보를 가져오는 중 오류가 발생했습니다. (데이터 형식 오류)");
-              return;
-            }
-          } else {
-            console.error(`채팅방 생성 후 조회 실패. 상태: ${getNewChatroomResponse.status}`);
-            alert("채팅방 생성 후 정보를 가져오는 중 오류가 발생했습니다.");
-            return;
-          }
-        } else {
-          console.error(`채팅방 생성 요청 실패. 상태: ${createResponse.status}`, createResponse.data);
-          alert("채팅방 생성 중 오류가 발생했습니다.");
-          return;
-        }
-      } else {
-        const errorText = await getChatroomResponse.text();
-        console.error(`채팅방 조회 중 예상치 못한 HTTP 상태 코드: ${getChatroomResponse.status}`, errorText);
-        alert(`채팅방 정보를 가져오는 중 오류가 발생했습니다. (상태: ${getChatroomResponse.status})`);
-        return;
-      }
-
-      if (!resRoomId) {
-        console.error("최종적으로 resRoomId를 가져오지 못했습니다.");
-        alert("채팅방 ID를 가져오지 못했습니다. 다시 시도해주세요.");
-        return;
-      }
-
-      try {
-        await api.post(`/chatroom/${resRoomId}/member`);
-      } catch (err) {
-        // TODO: 채팅방에 이미 멤버로 참여 중이면 post 요청 보내지 않도록 설정 필요
-        console.log("채팅방에 이미 멤버로 참여 중이면 post 요청 보내지 않도록 설정 필요");
-      }
-      
-      navigate("/chats");
-    } catch (error: any) { // error 타입 명시
-      console.error("채팅방 참여 처리 중 전체 오류 발생:", error);
-      navigate(`/ChatRoomList`)
     }
   };
 
@@ -153,29 +81,29 @@ export const CardItem = ({ post }: CardItemProps) => {
   const handleApplyField = async (fieldName: string) => {
     try {
       await api.post(
-          `/posts/${post.post_id}/apply`,
-          { fieldName },
-          {
-            headers: { "Content-Type": "application/json" },
-          },
+        `/posts/${post.post_id}/apply`,
+        { fieldName },
+        {
+          headers: { "Content-Type": "application/json" },
+        },
       );
 
       setRecruitmentFields((prev) =>
-          prev.map((field) =>
-              field.field_name === fieldName
-                  ? { ...field, current_count: field.current_count + 1 }
-                  : field,
-          ),
+        prev.map((field) =>
+          field.field_name === fieldName
+            ? { ...field, current_count: field.current_count + 1 }
+            : field,
+        ),
       );
 
       setAlertMessage(`${fieldName} 분야에 지원 완료되었습니다.`);
     } catch (error: any) {
       console.error("지원 실패: ", error);
       const message =
-          error?.response?.data?.message ||
-          (typeof error?.response?.data === "string"
-              ? error.response.data
-              : "지원 중 문제가 발생했습니다.");
+        error?.response?.data?.message ||
+        (typeof error?.response?.data === "string"
+          ? error.response.data
+          : "지원 중 문제가 발생했습니다.");
       setAlertMessage(message);
     } finally {
       setShowAlertModal(true);
@@ -183,63 +111,66 @@ export const CardItem = ({ post }: CardItemProps) => {
   };
 
   return (
-      <>
-        <Card className="dark:!bg-dark relative w-full dark:border-gray-600">
-          {/* 상단 버튼들 */}
-          <div className="absolute top-4 right-2 z-10 flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              {isAuthenticated ? (
-                  isLiked ? (
-                      <FaHeart
-                          className="cursor-pointer text-red-500"
-                          onClick={handleToggleLike}
-                      />
-                  ) : (
-                      <FaRegHeart
-                          className="cursor-pointer"
-                          onClick={handleToggleLike}
-                      />
-                  )
+    <>
+      <Card className="dark:!bg-dark relative w-full dark:border-gray-600">
+        {/* 상단 버튼들 */}
+        <div className="absolute top-4 right-2 z-10 flex items-center space-x-3">
+          <div className="flex items-center space-x-1">
+            {isAuthenticated ? (
+              isLiked ? (
+                <FaHeart
+                  className="cursor-pointer text-red-500"
+                  onClick={handleToggleLike}
+                />
               ) : (
-                  <FaRegHeart
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setAlertMessage("로그인이 필요합니다.");
-                        setShowAlertModal(true);
-                      }}
-                  />
-              )}
-              <span>{likeCount}</span>
-            </div>
-
-            <BsChatDots
-                className="cursor-pointer text-lg hover:text-gray-900 dark:hover:text-white"
-                onClick={handleChatJoin}
-                title="채팅 참여"
-            />
-
-            {user?.id === post.member_id && (
-                <Dropdown
-                    inline
-                    renderTrigger={() => (
-                        <HiOutlineDotsHorizontal className="cursor-pointer text-xl" />
-                    )}
-                >
-                  <button
-                      onClick={handleEdit}
-                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-500"
-                  >
-                    수정
-                  </button>
-                  <button
-                      onClick={() => setShowDeleteModal(true)}
-                      className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-100 dark:hover:bg-red-200"
-                  >
-                    삭제
-                  </button>
-                </Dropdown>
+                <FaRegHeart
+                  className="cursor-pointer"
+                  onClick={handleToggleLike}
+                />
+              )
+            ) : (
+              <FaRegHeart
+                className="cursor-pointer"
+                onClick={() => {
+                  setAlertMessage("로그인이 필요합니다.");
+                  setShowAlertModal(true);
+                }}
+              />
             )}
+            <span>{likeCount}</span>
           </div>
+
+          <BsChatDots
+            className="cursor-pointer text-lg hover:text-gray-900 dark:hover:text-white"
+            title="채팅 참여"
+            onClick={() => {
+              setAlertMessage("채팅은 별도 구현 필요");
+              setShowAlertModal(true);
+            }}
+          />
+
+          {user?.id === post.member_id && (
+            <Dropdown
+              inline
+              renderTrigger={() => (
+                <HiOutlineDotsHorizontal className="cursor-pointer text-xl" />
+              )}
+            >
+              <button
+                onClick={handleEdit}
+                className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-500"
+              >
+                수정
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-100 dark:hover:bg-red-200"
+              >
+                삭제
+              </button>
+            </Dropdown>
+          )}
+        </div>
 
           {/* 작성자 정보 */}
           <div className="mt-2 mb-2 flex items-center justify-between">
@@ -259,116 +190,127 @@ export const CardItem = ({ post }: CardItemProps) => {
             </div>
           </div>
 
-          {/* 제목 & 상태 */}
-          <div className="flex items-center justify-between">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              {post.title}
-            </h5>
-            {post.recruitment_status === "RECRUITING" && (
-                <Badge size="sm" color="success">
-                  모집중
-                </Badge>
-            )}
-            {post.recruitment_status === "DONE" && (
-                <Badge size="sm" color="gray">
-                  모집완료
-                </Badge>
-            )}
-          </div>
+        {/* 제목 & 상태 */}
+        <div className="flex items-center justify-between">
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {post.title}
+          </h5>
+          {post.recruitment_status === "RECRUITING" && (
+            <Badge size="sm" color="success">
+              모집중
+            </Badge>
+          )}
+          {post.recruitment_status === "DONE" && (
+            <Badge size="sm" color="gray">
+              모집완료
+            </Badge>
+          )}
+        </div>
 
           {/* 내용 */}
           <p className="font-normal text-gray-700 dark:text-gray-400 whitespace-pre-wrap break-all">
             {post.content}
           </p>
 
-          {/* 이미지 */}
-          {post.images?.length > 0 && (
-              <div className="mt-2 w-full">
-                <ImageComponent images={post.images} className="mb-2" />
-              </div>
-          )}
+        {/* 이미지 */}
+        {post.images?.length > 0 && (
+          <div className="mt-2 w-full">
+            <ImageComponent images={post.images} className="mb-2" />
+          </div>
+        )}
 
-          {/* 마감일 & 모집 분야 */}
-          {post.recruitment_status !== "NONE" && (
-              <div className="mt-3 text-base text-gray-700 dark:text-gray-300">
-                {post.recruitment_deadline && (
-                    <p>
-                      <span className="font-semibold">마감일 : </span>
-                      {new Intl.DateTimeFormat("ko-KR", {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                      })
-                      .format(new Date(post.recruitment_deadline))
-                      .replace(/\.$/, "")}
-                    </p>
-                )}
-                {recruitmentFields.length > 0 && (
-                    <div className="mt-2">
-                      <p className="font-semibold">모집 분야</p>
-                      <ul className="list-inside list-disc space-y-2 pl-4">
-                        {recruitmentFields.map((field, idx) => {
-                          const isClosed =
-                              field.closed || field.current_count >= field.total_count;
-                          return (
-                              <li
-                                  key={idx}
-                                  className="flex items-center justify-between pl-1 before:mr-2 before:text-gray-500 before:content-['•']"
-                              >
+        {/* 마감일 & 모집 분야 */}
+        {post.recruitment_status !== "NONE" && (
+          <div className="mt-3 text-base text-gray-700 dark:text-gray-300">
+            {post.recruitment_deadline && (
+              <p>
+                <span className="font-semibold">마감일 : </span>
+                {new Intl.DateTimeFormat("ko-KR", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })
+                .format(new Date(post.recruitment_deadline))
+                .replace(/\.$/, "")}
+              </p>
+            )}
+
+            {recruitmentFields.length > 0 && (
+              <div className="mt-2">
+                <p className="font-semibold">모집 분야</p>
+                <ul className="list-inside list-disc space-y-2 pl-4">
+                  {recruitmentFields.map((field, idx) => {
+                    const isDeadlinePassed =
+                      post.recruitment_deadline &&
+                      new Date(post.recruitment_deadline).getTime() <
+                      new Date().getTime();
+
+                    const isClosed = Boolean(
+                      field.current_count >= field.total_count ||
+                      isDeadlinePassed,
+                    );
+
+                    return (
+                      <li
+                        key={idx}
+                        className="flex items-center justify-between pl-1 before:mr-2 before:text-gray-500 before:content-['•']"
+                      >
                         <span className="flex-1">
                           {field.field_name} - {field.current_count} /{" "}
                           {field.total_count}
                         </span>
-                                {isAuthenticated && user?.id !== post.member_id && (
-                                    <button
-                                        className={`ml-4 rounded px-3 py-1 text-sm ${
-                                            isClosed
-                                                ? "cursor-not-allowed bg-gray-400 text-white"
-                                                : "!bg-blue-800 text-white hover:!bg-blue-800"
-                                        }`}
-                                        disabled={isClosed}
-                                        onClick={() => handleApplyField(field.field_name)}
-                                    >
-                                      {isClosed ? "모집 마감" : "지원하기"}
-                                    </button>
-                                )}
-                                {!isAuthenticated && isClosed && (
-                                    <span className="ml-4 cursor-default rounded bg-gray-400 px-3 py-1 text-sm text-white">
+
+                        {isAuthenticated && user?.id !== post.member_id && (
+                          <button
+                            className={`ml-4 rounded px-3 py-1 text-sm ${
+                              isClosed
+                                ? "cursor-not-allowed bg-gray-400 text-white"
+                                : "!bg-blue-800 text-white hover:!bg-blue-800"
+                            }`}
+                            disabled={isClosed}
+                            onClick={() => handleApplyField(field.field_name)}
+                          >
+                            {isClosed ? "모집 마감" : "지원하기"}
+                          </button>
+                        )}
+
+                        {!isAuthenticated && isClosed && (
+                          <span className="ml-4 cursor-default rounded bg-gray-400 px-3 py-1 text-sm text-white">
                             모집 마감
                           </span>
-                                )}
-                              </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                )}
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-          )}
-
-          {/* 태그 */}
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag, index) => (
-                <Badge size="sm" color="gray" key={index}>
-                  {tag}
-                </Badge>
-            ))}
+            )}
           </div>
-        </Card>
+        )}
 
-        {/* 삭제 모달 */}
-        <DeleteConfirmModal
-            show={showDeleteModal}
-            onCancel={() => setShowDeleteModal(false)}
-            onConfirm={handleDelete}
-        />
+        {/* 태그 */}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {post.tags.map((tag, index) => (
+            <Badge size="sm" color="gray" key={index}>
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      </Card>
 
-        {/* 알림 모달 */}
-        <AlertModal
-            show={showAlertModal}
-            onClose={() => setShowAlertModal(false)}
-            message={alertMessage}
-        />
-      </>
+      {/* 삭제 모달 */}
+      <DeleteConfirmModal
+        show={showDeleteModal}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
+
+      {/* 알림 모달 */}
+      <AlertModal
+        show={showAlertModal}
+        onClose={() => setShowAlertModal(false)}
+        message={alertMessage}
+      />
+    </>
   );
 };
