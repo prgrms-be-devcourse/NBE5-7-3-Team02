@@ -1,5 +1,7 @@
 package io.twogether.nbe_5_7_2_02team.member.api
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import io.twogether.nbe_5_7_2_02team.member.dto.response.FollowCreateResponse
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MemberCreateResponse
 import io.twogether.nbe_5_7_2_02team.member.service.FollowService
@@ -16,10 +18,15 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/follow")
+@Tag(name = "Follow", description = "팔로우/언팔로우 및 팔로우 정보 API")
 class MyFollowController(
     private val followService: FollowService,
 ) {
     @PostMapping(value = ["/{targetId}"])
+    @Operation(
+        summary = "팔로우 하기",
+        description = "특정 사용자를 팔로우합니다.",
+    )
     fun follow(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PathVariable targetId: Long,
@@ -31,6 +38,10 @@ class MyFollowController(
     }
 
     @DeleteMapping(value = ["/{targetId}"])
+    @Operation(
+        summary = "언팔로우 하기",
+        description = "특정 사용자를 언팔로우합니다.",
+    )
     fun unfollow(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PathVariable targetId: Long,
@@ -42,6 +53,10 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followers"])
+    @Operation(
+        summary = "내 팔로워 목록 조회",
+        description = "현재 로그인한 사용자를 팔로우하는 사용자 목록을 페이징하여 조회합니다.",
+    )
     fun getFollowers(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PageableDefault(
@@ -57,6 +72,10 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followings"])
+    @Operation(
+        summary = "내 팔로잉 목록 조회",
+        description = "현재 로그인한 사용자가 팔로우한 사용자 목록을 페이징하여 조회합니다.",
+    )
     fun getFollowings(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PageableDefault(
@@ -71,6 +90,10 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followers/count"])
+    @Operation(
+        summary = "내 팔로워 수 조회",
+        description = "현재 로그인한 사용자의 팔로워 수를 조회합니다.",
+    )
     fun getFollowersCount(
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {
@@ -79,6 +102,10 @@ class MyFollowController(
     }
 
     @GetMapping(value = ["/me/followings/count"])
+    @Operation(
+        summary = "내 팔로잉 수 조회",
+        description = "현재 로그인한 사용자가 팔로우한 사용자 수를 조회합니다.",
+    )
     fun getFollowingsCount(
         @AuthenticationPrincipal userDetails: UserDetails,
     ): ResponseEntity<Long> {

@@ -70,6 +70,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     // TEST
     testCompileOnly("org.projectlombok:lombok")
