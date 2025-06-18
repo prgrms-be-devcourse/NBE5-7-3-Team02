@@ -363,7 +363,7 @@ function ChatRoom({ chatRoomId, postTitle, onBack }: ChatRoomProps) {
                     </svg>
                 </button>
                 <div className="flex-grow">
-                    <div className="font-bold text-[16px]">{postTitle || `채팅방 ${chatRoomId}`}</div>
+                    <div className="font-bold text-[16px] text-black">{postTitle || `채팅방 ${chatRoomId}`}</div>
                 </div>
                 <button
                     onClick={toggleParticipantsList}
@@ -519,7 +519,7 @@ function ChatRoom({ chatRoomId, postTitle, onBack }: ChatRoomProps) {
                                                     </div>
                                                 )}
                                                 <div>
-                                                    <span className="text-sm font-medium">{participant.name || "이름 없음"}</span>
+                                                    <span className="text-sm font-medium text-black">{participant.name || "이름 없음"}</span>
                                                     {participant.id === currentMemberId && currentMemberId !== null && (
                                                         <span className="ml-2 text-xs bg-[#e7f3ff] text-[#1877f2] px-1.5 py-0.5 rounded-full">
                                                             나
