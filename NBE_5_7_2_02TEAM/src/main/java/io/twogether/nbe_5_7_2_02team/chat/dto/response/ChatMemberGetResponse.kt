@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMember
 import io.twogether.nbe_5_7_2_02team.chat.domain.ChatMemberStatus
 
-
 @Schema(description = "채팅 멤버 조회 응답 DTO")
 data class ChatMemberGetResponse(
     @field:Schema(description = "회원 ID", example = "1")
