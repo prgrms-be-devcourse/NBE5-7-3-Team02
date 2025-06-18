@@ -82,12 +82,7 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
         val tokenPair = genTokenPair(memberId)
 
         val request =
-            SignUpRequest
-                .builder()
-                .name("신규가입자")
-                .job("DEVELOPER")
-                .course("SPRING")
-                .build()
+            SignUpRequest("신규가입자", "DEVELOPER", "SPRING")
 
         // when & then
         mockMvc
@@ -98,9 +93,9 @@ class TokenBrowserSuccessTest : BrowserTestTemplate() {
             }.andExpect {
                 status { isCreated() }
                 jsonPath("$.id") { value(memberId) }
-                jsonPath("$.name") { value(request.getName()) }
-                jsonPath("$.job") { value(request.getJob()) }
-                jsonPath("$.course") { value(request.getCourse()) }
+                jsonPath("$.name") { value(request.name) }
+                jsonPath("$.job") { value(request.job) }
+                jsonPath("$.course") { value(request.course) }
             }
     }
 
