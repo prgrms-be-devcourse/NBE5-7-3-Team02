@@ -76,14 +76,14 @@ api.interceptors.response.use(
           return Promise.reject(error);
         }
 
-        const response = await api.post("/token/refresh", {
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/token/refresh`, {
           refresh_token
         });
 
-         if (response.data.data?.access_token) {
+         if (response.data.access_token) {
 
-          const newAccessToken = response.data.data.access_token;
-          const newRefreshToken = response.data.data.refresh_token;
+          const newAccessToken = response.data.access_token;
+          const newRefreshToken = response.data.refresh_token;
           localStorage.setItem("accessToken", newAccessToken);
           localStorage.setItem("refreshToken", newRefreshToken);
           api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
@@ -102,6 +102,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰도 만료된 경우 로그아웃
         processQueue(refreshError as AxiosError);
+        alert("로그인이 만료되었습니다.")
         handleLogout();
         return Promise.reject(refreshError);
       } finally {
@@ -115,6 +116,7 @@ api.interceptors.response.use(
       (error.response?.data?.message &&
        error.response?.data?.message.includes("refresh token expired"))
     ) {
+      alert(error.response.data.message)
       handleLogout();
     }
 
