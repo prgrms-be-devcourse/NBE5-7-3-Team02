@@ -8,15 +8,12 @@ data class ChatMessage(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @JoinColumn(name = "chatroom_id")
     @ManyToOne
     val chatRoom: ChatRoom,
-
     @JoinColumn(name = "chatroom_member_id")
     @ManyToOne
     val chatMember: ChatMember,
-
     @Column(name = "content")
-    val content: String
+    val content: String,
 ) : BaseEntity()

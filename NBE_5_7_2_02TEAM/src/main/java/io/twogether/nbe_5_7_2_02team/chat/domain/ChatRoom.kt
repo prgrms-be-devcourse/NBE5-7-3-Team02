@@ -9,7 +9,6 @@ data class ChatRoom(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @JoinColumn(name = "post_id")
     @OneToOne
     val post: Post,
