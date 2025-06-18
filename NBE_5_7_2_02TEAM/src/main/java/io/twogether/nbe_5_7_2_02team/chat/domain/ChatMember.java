@@ -13,12 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMember extends BaseEntity {
 
     @Id
@@ -33,7 +28,6 @@ public class ChatMember extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Setter
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ChatMemberStatus chatMemberStatus;
@@ -43,6 +37,8 @@ public class ChatMember extends BaseEntity {
         this.member = member;
         this.chatMemberStatus = chatMemberStatus;
     }
+
+    protected ChatMember() {}
 
     public Long getId() {
         return id;
