@@ -36,8 +36,8 @@ class JwtTokenProvider(
             refreshTokenRepository.delete(token)
         }
 
-        val accessToken = issueAccessToken(member.id, member.role)
-        val refreshToken = issueRefreshToken(member.id, member.role)
+        val accessToken = issueAccessToken(member.id!!, member.role)
+        val refreshToken = issueRefreshToken(member.id!!, member.role)
 
         tokenRepository.save(member, refreshToken)
 
