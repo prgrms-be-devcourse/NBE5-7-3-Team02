@@ -77,8 +77,6 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("com.github.database-rider:rider-spring:1.44.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
-
 }
 
 tasks.test {
