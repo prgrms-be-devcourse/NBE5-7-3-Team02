@@ -7,7 +7,7 @@ on:
       - dev
 
 concurrency:
-  group: feat-${{ github.head_ref }}
+  group: feat-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -31,6 +31,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.ref }}
 
       - name: Super-Linter
         uses: super-linter/super-linter@v7.4.0
