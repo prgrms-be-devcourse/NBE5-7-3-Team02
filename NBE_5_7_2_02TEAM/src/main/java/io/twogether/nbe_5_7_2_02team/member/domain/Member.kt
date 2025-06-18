@@ -9,10 +9,10 @@ class Member(
     var email: String,
     var name: String = "",
     var profileImage: String?,
-    @field:Column(nullable = false)
-    var githubId: String,
     var job: String = "",
     var course: String = "",
+    @field:Column(nullable = false)
+    var githubId: String,
     @field:Enumerated(EnumType.STRING)
     var role: Role = Role.MEMBER
 ) : BaseEntity() {

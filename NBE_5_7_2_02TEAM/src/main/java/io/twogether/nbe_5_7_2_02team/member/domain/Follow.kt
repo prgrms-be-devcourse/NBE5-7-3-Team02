@@ -5,12 +5,12 @@ import jakarta.persistence.*
 
 @Entity
 class Follow(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "follower_id", nullable = false)
+    @field:ManyToOne(fetch = FetchType.LAZY)
+    @field:JoinColumn(name = "follower_id", nullable = false)
     var follower: Member,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "following_id", nullable = false)
+    @field:ManyToOne(fetch = FetchType.LAZY)
+    @field:JoinColumn(name = "following_id", nullable = false)
     var following: Member
 
 ) : BaseEntity() {
