@@ -13,10 +13,12 @@ import java.util.*
 @Component
 class ImageUpload(
     @Value("\${file.upload-dir}")
-    private val baseUploadDir: String
+    private val baseUploadDir: String,
 ) {
-
-    fun saveProfileImage(file: MultipartFile?, memberId: Long): String? {
+    fun saveProfileImage(
+        file: MultipartFile?,
+        memberId: Long,
+    ): String? {
         if (file == null || file.isEmpty) return null
         return runCatching {
             val uploadRoot: Path = Paths.get(baseUploadDir).toAbsolutePath().normalize()
@@ -27,8 +29,8 @@ class ImageUpload(
             val fileName = "${UUID.randomUUID()}_${file.originalFilename}"
             val filePath = memberDir.resolve(fileName)
 
-            file.transferTo(filePath)                   // MultipartFile 확장
-            "/uploads/member/$memberId/$fileName"              // URL 리턴
+            file.transferTo(filePath) // MultipartFile 확장
+            "/uploads/member/$memberId/$fileName" // URL 리턴
         }.getOrElse {
             throw ErrorException(ErrorCode.IMAGE_UPLOAD_FAILED)
         }

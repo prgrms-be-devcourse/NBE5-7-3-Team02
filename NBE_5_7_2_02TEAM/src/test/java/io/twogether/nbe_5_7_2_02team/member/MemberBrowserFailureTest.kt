@@ -22,7 +22,8 @@ class MemberBrowserFailureTest : BrowserTestTemplate() {
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
     @DisplayName("GET: /api/member/me - 인증 토큰 없음")
     fun `GET api member me - unauthorized`() {
-        mockMvc.perform(get("/api/member/me"))
+        mockMvc
+            .perform(get("/api/member/me"))
             .andExpect(status().isUnauthorized())
     }
 
@@ -36,11 +37,11 @@ class MemberBrowserFailureTest : BrowserTestTemplate() {
 
         val invalidId = 9999L
 
-        mockMvc.perform(
-            get("/api/member/$invalidId")
-                .header("Authorization", "Bearer ${tokenPair.accessToken}")
-        )
-            .andExpect(status().isNotFound()) // 404
+        mockMvc
+            .perform(
+                get("/api/member/$invalidId")
+                    .header("Authorization", "Bearer ${tokenPair.accessToken}"),
+            ).andExpect(status().isNotFound()) // 404
     }
 
     @Test
@@ -50,19 +51,19 @@ class MemberBrowserFailureTest : BrowserTestTemplate() {
         val image =
             MockMultipartFile("image", "a.png", "image/png", "dummy".toByteArray())
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/api/member/me")
-                .file(image)
-                .param("nickname", "memberNickname")
-        )
-            .andExpect(status().isUnauthorized())
+        mockMvc
+            .perform(
+                multipart(HttpMethod.PATCH, "/api/member/me")
+                    .file(image)
+                    .param("nickname", "memberNickname"),
+            ).andExpect(status().isUnauthorized())
     }
 
     @Test
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
     @DisplayName("PATCH: /api/member/me - 닉네임 누락 (공백)")
     @Throws(
-        ErrorException::class
+        ErrorException::class,
     )
     fun `PATCH api member me - blank nickname`() {
         val memberId = 1L
@@ -73,12 +74,12 @@ class MemberBrowserFailureTest : BrowserTestTemplate() {
         val image =
             MockMultipartFile("image", "a.png", "image/png", "dummy".toByteArray())
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/api/member/me")
-                .file(image)
-                .param("nickname", " ") // 공백
-                .header("Authorization", "Bearer ${tokenPair.accessToken}")
-        )
-            .andExpect(status().isBadRequest())
+        mockMvc
+            .perform(
+                multipart(HttpMethod.PATCH, "/api/member/me")
+                    .file(image)
+                    .param("nickname", " ") // 공백
+                    .header("Authorization", "Bearer ${tokenPair.accessToken}"),
+            ).andExpect(status().isBadRequest())
     }
 }

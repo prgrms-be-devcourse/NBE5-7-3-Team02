@@ -13,7 +13,6 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.mock.web.MockPart
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import java.nio.charset.StandardCharsets
 
 @FlywayReset
 class MemberBrowserSuccessTest : BrowserTestTemplate() {
@@ -28,11 +27,11 @@ class MemberBrowserSuccessTest : BrowserTestTemplate() {
         val member = memberRepository.findById(memberId).orElseThrow()
         val tokenPair = jwtTokenProvider.generateTokenPair(member)
 
-        mockMvc.perform(
-            get("/api/member/me")
-                .header("Authorization", "Bearer ${tokenPair.accessToken}")
-        )
-            .andExpect(status().isOk())
+        mockMvc
+            .perform(
+                get("/api/member/me")
+                    .header("Authorization", "Bearer ${tokenPair.accessToken}"),
+            ).andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(member.id))
             .andExpect(jsonPath("$.name").value(member.name))
             .andExpect(jsonPath("$.email").value(member.email))
@@ -50,11 +49,11 @@ class MemberBrowserSuccessTest : BrowserTestTemplate() {
 
         val tokenPair = jwtTokenProvider.generateTokenPair(loginMember)
 
-        mockMvc.perform(
-            get("/api/member/${targetMemberId}")
-                .header("Authorization", "Bearer ${tokenPair.accessToken}" )
-        )
-            .andExpect(status().isOk())
+        mockMvc
+            .perform(
+                get("/api/member/$targetMemberId")
+                    .header("Authorization", "Bearer ${tokenPair.accessToken}"),
+            ).andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(targetMember.id))
             .andExpect(jsonPath("$.name").value(targetMember.name))
             .andExpect(jsonPath("$.email").value(targetMember.email))
@@ -70,20 +69,23 @@ class MemberBrowserSuccessTest : BrowserTestTemplate() {
 
         val newImage =
             MockMultipartFile(
-                "image", "profile.png", "image/png", "fake image content".toByteArray()
+                "image",
+                "profile.png",
+                "image/png",
+                "fake image content".toByteArray(),
             )
         val nicknamePart =
             MockPart("nickname", "newNickName".toByteArray())
         nicknamePart.headers.contentType = MediaType.TEXT_PLAIN
 
-        mockMvc.perform(
-            multipart(HttpMethod.PATCH, "/api/member/me")
-                .file(newImage)
-                .part(nicknamePart)
-                .header("Authorization", "Bearer ${tokenPair.accessToken}")
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                multipart(HttpMethod.PATCH, "/api/member/me")
+                    .file(newImage)
+                    .part(nicknamePart)
+                    .header("Authorization", "Bearer ${tokenPair.accessToken}")
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE),
+            ).andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("newNickName"))
             .andExpect(jsonPath("$.profile_image").exists())
             .andExpect(jsonPath("$.profile_image").isNotEmpty())
