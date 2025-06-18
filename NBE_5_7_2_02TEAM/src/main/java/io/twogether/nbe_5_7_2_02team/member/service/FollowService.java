@@ -15,8 +15,8 @@ import io.twogether.nbe_5_7_2_02team.member.dto.request.FollowRequest;
 import io.twogether.nbe_5_7_2_02team.member.dto.response.FollowCreateResponse;
 import io.twogether.nbe_5_7_2_02team.member.dto.response.MemberCreateResponse;
 import io.twogether.nbe_5_7_2_02team.member.util.mapper.FollowMapper;
-
 import io.twogether.nbe_5_7_2_02team.member.util.mapper.MemberMapperKt;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
