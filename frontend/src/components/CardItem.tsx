@@ -12,6 +12,7 @@ import { DeleteConfirmModal } from "./mypage/DeleteConfirmModal";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { AlertModal } from "./AlertModal";
+import dayjs from "dayjs";
 
 interface CardItemProps {
   post: Post;
@@ -247,9 +248,14 @@ export const CardItem = ({ post }: CardItemProps) => {
                 onClick={handleMemberClick}
             >
               <Avatar img={post.member_image} />
-              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                {post.member_name}
-              </p>
+              <div className="flex flex-col space-y-1">
+                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                  {post.member_name}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {dayjs(post.created_at).format('YYYY-MM-DD HH:mm:ss')}
+                </p>
+              </div>
             </div>
           </div>
 
