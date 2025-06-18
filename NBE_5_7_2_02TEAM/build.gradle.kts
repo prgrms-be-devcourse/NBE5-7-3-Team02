@@ -79,7 +79,6 @@ dependencies {
     testImplementation("com.github.database-rider:rider-spring:1.44.0")
     testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
 }
 
 tasks.test {
