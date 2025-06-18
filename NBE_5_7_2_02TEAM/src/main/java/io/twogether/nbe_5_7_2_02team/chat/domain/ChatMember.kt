@@ -6,16 +6,16 @@ import jakarta.persistence.*
 
 @Entity
 data class ChatMember(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @JoinColumn(name = "chatroom_id")
-    @ManyToOne
+    @field:JoinColumn(name = "chatroom_id")
+    @field:ManyToOne
     val chatRoom: ChatRoom,
-    @JoinColumn(name = "member_id")
-    @ManyToOne
+    @field:JoinColumn(name = "member_id")
+    @field:ManyToOne
     val member: Member,
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @field:Enumerated(EnumType.STRING)
+    @field:Column(name = "status")
     var chatMemberStatus: ChatMemberStatus = ChatMemberStatus.ONLINE,
 ) : BaseEntity()

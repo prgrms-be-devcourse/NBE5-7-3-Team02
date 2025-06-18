@@ -6,11 +6,11 @@ import jakarta.persistence.*
 
 @Entity
 data class ChatRoom(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @JoinColumn(name = "post_id")
-    @OneToOne
+    @field:JoinColumn(name = "post_id")
+    @field:OneToOne
     val post: Post,
 ) : BaseEntity() {
     @Column(name = "member_count")
