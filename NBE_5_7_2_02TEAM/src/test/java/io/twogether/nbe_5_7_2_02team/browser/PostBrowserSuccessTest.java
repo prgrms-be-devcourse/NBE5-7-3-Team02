@@ -34,8 +34,6 @@ import io.twogether.nbe_5_7_2_02team.post.dto.request.PostApplyRequest;
 import io.twogether.nbe_5_7_2_02team.post.dto.request.PostUpdateRequest;
 import io.twogether.nbe_5_7_2_02team.tag.dao.TagRepository;
 
-import lombok.AllArgsConstructor;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -60,12 +58,23 @@ public class PostBrowserSuccessTest extends BrowserTestTemplate {
     @Autowired private PostApplicationRepository postApplicationRepository;
     @Autowired private RecruitmentFieldRepository recruitmentFieldRepository;
 
-    @AllArgsConstructor
     static class PostCreateRequest {
+
         private String title;
         private String content;
         private List<String> tags;
         private RecruitmentStatus recruitmentStatus;
+
+        public PostCreateRequest(
+                String title,
+                String content,
+                List<String> tags,
+                RecruitmentStatus recruitmentStatus) {
+            this.title = title;
+            this.content = content;
+            this.tags = tags;
+            this.recruitmentStatus = recruitmentStatus;
+        }
     }
 
     @ParameterizedTest

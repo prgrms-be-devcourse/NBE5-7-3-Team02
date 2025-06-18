@@ -11,6 +11,9 @@ import io.twogether.nbe_5_7_2_02team.chat.domain.ChatRoom;
 import io.twogether.nbe_5_7_2_02team.chat.dto.response.ChatRoomGetResponse;
 import io.twogether.nbe_5_7_2_02team.global.annotation.FlywayReset;
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException;
+import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository;
+import io.twogether.nbe_5_7_2_02team.member.domain.Member;
+import io.twogether.nbe_5_7_2_02team.member.domain.Role;
 import io.twogether.nbe_5_7_2_02team.post.dao.PostRepository;
 import io.twogether.nbe_5_7_2_02team.post.domain.Post;
 import io.twogether.nbe_5_7_2_02team.post.domain.RecruitmentStatus;
@@ -34,6 +37,7 @@ class ChatRoomServiceTest {
     @Autowired private ChatRoomRepository chatRoomRepository;
 
     @Autowired private PostRepository postRepository;
+    @Autowired private MemberRepository memberRepository;
 
     private Post post;
     private Long chatRoomId;
@@ -43,12 +47,12 @@ class ChatRoomServiceTest {
         chatRoomRepository.deleteAll();
         postRepository.deleteAll();
 
-        post =
-                Post.builder()
-                        .title("제목")
-                        .content("내용")
-                        .recruitmentStatus(RecruitmentStatus.NONE)
-                        .build();
+        Member member =
+                new Member(
+                        "email@test.com", "name", "image", "job", "course", "gitid", Role.MEMBER);
+        memberRepository.save(member);
+
+        post = new Post("제목", "내용", RecruitmentStatus.NONE, member);
 
         postRepository.save(post);
 
