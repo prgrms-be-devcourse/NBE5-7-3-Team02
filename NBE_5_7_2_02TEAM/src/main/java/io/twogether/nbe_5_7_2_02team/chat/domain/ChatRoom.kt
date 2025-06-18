@@ -5,7 +5,7 @@ import io.twogether.nbe_5_7_2_02team.post.domain.Post
 import jakarta.persistence.*
 
 @Entity
-class ChatRoom(
+data class ChatRoom(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

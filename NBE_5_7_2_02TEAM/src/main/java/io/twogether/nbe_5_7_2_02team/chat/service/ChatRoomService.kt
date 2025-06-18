@@ -48,7 +48,7 @@ class ChatRoomService(
             .findByPost(post)
             ?.let { throw ErrorException(ErrorCode.CHAT_ROOM_ALREADY_EXISTS) }
 
-        return chatRoomRepository.save(ChatRoom(post)).id
+        return chatRoomRepository.save(ChatRoom(post = post)).id!!
     }
 
     @Transactional
