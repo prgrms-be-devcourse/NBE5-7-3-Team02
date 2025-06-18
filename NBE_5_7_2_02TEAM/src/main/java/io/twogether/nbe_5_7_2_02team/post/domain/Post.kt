@@ -11,7 +11,7 @@ import java.time.LocalDate
 class Post(
     @field:Column(nullable = false)
     var title: String,
-    @field:Column(nullable = false)
+    @field:Column(nullable = false, columnDefinition = "TEXT")
     @field:Lob
     var content: String,
     @field:Enumerated(EnumType.STRING)
