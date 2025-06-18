@@ -4,18 +4,31 @@ import com.github.database.rider.core.api.dataset.DataSet
 import io.twogether.nbe_5_7_2_02team.browser.template.BrowserTestTemplate
 import io.twogether.nbe_5_7_2_02team.global.annotation.FlywayReset
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.util.ReflectionTestUtils
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDateTime
 
 @FlywayReset
 class MemberBrowserFailureTest : BrowserTestTemplate() {
     @Autowired
     lateinit var memberRepository: MemberRepository
+
+    @BeforeEach
+    fun setupTimestamps() {
+        val now = LocalDateTime.now()
+        memberRepository.findAll().forEach {
+            ReflectionTestUtils.setField(it, "createdAt", now)
+            ReflectionTestUtils.setField(it, "updatedAt", now)
+        }
+    }
 
     @Test
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
