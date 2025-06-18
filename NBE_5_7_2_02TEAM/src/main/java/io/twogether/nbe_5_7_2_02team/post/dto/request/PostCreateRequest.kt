@@ -19,7 +19,7 @@ data class PostCreateRequest(
     @Schema(description = "게시글 내용", example = "React 프로젝트를 함께 개발할 팀원 모집", required = true)
     val content: String,
     @field:NotNull(message = "모집 상태는 필수입니다.")
-    @Schema(description = "모집 상태", example = "OPEN", required = true)
+    @Schema(description = "모집 상태", example = "RECRUITING")
     val recruitmentStatus: RecruitmentStatus,
     @field:FutureOrPresent(message = "마감일은 오늘 이후의 날짜여야 합니다.")
     @Schema(description = "모집 마감일", example = "2025-07-31")

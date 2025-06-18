@@ -11,7 +11,7 @@ data class PostUpdateRequest(
     val title: String,
     @Schema(description = "게시글 내용", example = "함께 할 팀원을 모집해요")
     val content: String,
-    @Schema(description = "모집 상태", example = "OPEN")
+    @Schema(description = "모집 상태", example = "RECRUITING")
     val recruitmentStatus: RecruitmentStatus,
     @Schema(description = "모집 마감일", example = "2025-08-15")
     val recruitmentDeadline: LocalDate?,

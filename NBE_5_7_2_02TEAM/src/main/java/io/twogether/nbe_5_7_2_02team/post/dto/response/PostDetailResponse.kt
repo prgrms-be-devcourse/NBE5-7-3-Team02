@@ -9,7 +9,7 @@ data class PostDetailResponse(
     val title: String,
     @Schema(description = "게시글 내용", example = "React, Spring Boot 기반 프로젝트입니다.")
     val content: String,
-    @Schema(description = "모집 상태", example = "OPEN")
+    @Schema(description = "모집 상태", example = "RECRUITING")
     val recruitmentStatus: RecruitmentStatus,
     @Schema(description = "태그 리스트", example = "[\"Spring\", \"Backend\"]")
     val tags: List<String>,
