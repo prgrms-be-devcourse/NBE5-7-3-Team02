@@ -8,6 +8,5 @@ import org.springframework.web.multipart.MultipartFile
 data class UpdateProfileRequest(
     @NotBlank(message = "이미지를 선택해주세요")
     val image: MultipartFile,
-    @field:[Size(max = 30) NotNull (message = "닉네임을 입력해 주세요")]
-    val nickname: String
+    @field:[Size(max = 30) NotNull(message = "닉네임을 입력해 주세요")] val nickname: String,
 )
