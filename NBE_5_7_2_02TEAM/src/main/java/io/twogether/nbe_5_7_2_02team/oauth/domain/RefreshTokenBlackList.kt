@@ -13,5 +13,5 @@ class RefreshTokenBlackList(@field:JoinColumn(name = "refresh_token_id") @field:
     BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null
 }

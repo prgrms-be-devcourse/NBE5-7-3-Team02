@@ -13,10 +13,10 @@ class RefreshToken(
 
     @field:JoinColumn(name = "member_id")
     @field:ManyToOne
-    private var member: Member
+    var member: Member
 ) :
     BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null
 }
