@@ -156,13 +156,13 @@ class ChatMemberServiceTest {
         ChatMember chatMember = chatMemberRepository.findByChatRoomAndMember(chatRoom, member);
 
         System.out.println("========================================");
-        System.out.println("ChatRoomId: " + chatRoom.id);
+        System.out.println("ChatRoomId: " + chatRoom.getId());
         System.out.println("memberId: " + member.getId());
         System.out.println("========================================");
-        System.out.println("chatMemberId: " + chatMember.id);
-        System.out.println("chatMemberChatRoomId: " + chatMember.chatRoom.id);
-        System.out.println("chatMemberMemberId: " + chatMember.member.getId());
-        System.out.println("chatMemberStatus: " + chatMember.chatMemberStatus);
+        System.out.println("chatMemberId: " + chatMember.getId());
+        System.out.println("chatMemberChatRoomId: " + chatMember.getChatRoom().getId());
+        System.out.println("chatMemberMemberId: " + chatMember.getMember().getId());
+        System.out.println("chatMemberStatus: " + chatMember.getChatMemberStatus());
         System.out.println("chatMemberCreatedAt: " + chatMember.getCreatedAt());
         System.out.println("========================================");
     }

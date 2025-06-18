@@ -69,8 +69,8 @@ class ChatRoomServiceTest {
         System.out.println("========================================");
         System.out.println("POST: " + post.getId());
         System.out.println("========================================");
-        System.out.println("ChatRoom ID: " + chatRoom.id);
-        System.out.println("ChatRoom POST: " + chatRoom.post.getId());
+        System.out.println("ChatRoom ID: " + chatRoom.getId());
+        System.out.println("ChatRoom POST: " + chatRoom.getPost().getId());
         System.out.println("createdAt: " + chatRoom.getCreatedAt());
         System.out.println("updatedAt: " + chatRoom.getUpdatedAt());
         System.out.println("========================================");
