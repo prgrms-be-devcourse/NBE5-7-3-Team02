@@ -10,14 +10,12 @@ import io.twogether.nbe_5_7_2_02team.chat.util.CheckUserLogin
 import io.twogether.nbe_5_7_2_02team.global.exception.ErrorException
 import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
 import io.twogether.nbe_5_7_2_02team.member.dao.MemberRepository
-import lombok.RequiredArgsConstructor
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
 class ChatMessageService(
     private val chatRoomService: ChatRoomService,
     private val chatMessageRepository: ChatMessageRepository,
@@ -26,13 +24,13 @@ class ChatMessageService(
     private val checkUserLogin: CheckUserLogin,
 ) {
     @Transactional(readOnly = true)
-    fun getChatMessage(chatRoomId: Long): List<ChatMessageGetResponse>? {
+    fun getChatMessage(chatRoomId: Long): List<ChatMessageGetResponse> {
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
-        val chatMessageList: List<ChatMessage?> =
+        val chatMessageList: List<ChatMessage> =
             chatMessageRepository.findByChatRoomOrderByCreatedAtAsc(chatRoom)
 
-        return chatMessageList.map { chatMessage -> chatMessage!!.toGetResponse() }
+        return chatMessageList.map { chatMessage -> chatMessage.toGetResponse() }
     }
 
     @Transactional
@@ -41,12 +39,10 @@ class ChatMessageService(
         chatMessagePostRequest: ChatMessagePostRequest,
         memberId: Long?,
     ): ChatMessageGetResponse {
-        val member =
-            memberRepository
-                .findById(memberId)
-                .orElseThrow(Supplier { ErrorException(ErrorCode.NOT_FOUND_MEMBER) })
-//                TODO: MemberRepository.java가 마이그레이션 된 후 적용 예정
-//                ?: ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+        memberId ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_LOGIN)
+
+        val member: Member = memberRepository
+            .findMemberById(memberId) ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
@@ -62,8 +58,11 @@ class ChatMessageService(
         val chatMessageId =
             chatMessageRepository
                 .save(
-                    ChatMessage(chatRoom, chatMember, content),
-                ).id
+                    ChatMessage(
+                        chatRoom = chatRoom,
+                        chatMember = chatMember,
+                        content = content)
+                ).id!!
 
         val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()
 
@@ -92,6 +91,6 @@ class ChatMessageService(
                 chatMember,
             ) ?: throw ErrorException(ErrorCode.CHAT_MESSAGE_NOT_FOUND)
 
-        chatMessageRepository.deleteById(chatMessage.id)
+        chatMessageRepository.deleteById(chatMessage.id!!)
     }
 }

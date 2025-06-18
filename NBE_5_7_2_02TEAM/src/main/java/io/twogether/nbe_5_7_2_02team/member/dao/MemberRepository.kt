@@ -4,5 +4,7 @@ import io.twogether.nbe_5_7_2_02team.member.domain.Member
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository : JpaRepository<Member, Long> {
+    fun findMemberById(id: Long): Member?
+
     fun findByEmail(email: String): Member?
 }
