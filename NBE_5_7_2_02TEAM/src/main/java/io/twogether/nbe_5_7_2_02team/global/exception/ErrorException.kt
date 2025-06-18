@@ -1,16 +1,7 @@
-package io.twogether.nbe_5_7_2_02team.global.exception;
+package io.twogether.nbe_5_7_2_02team.global.exception
 
-import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode;
+import io.twogether.nbe_5_7_2_02team.global.response.error.ErrorCode
 
-import lombok.Getter;
-
-@Getter
-public class ErrorException extends RuntimeException {
-
-    public final ErrorCode errorCode;
-
-    public ErrorException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
-    }
-}
+class ErrorException(
+    val errorCode: ErrorCode,
+) : RuntimeException(errorCode.message)
