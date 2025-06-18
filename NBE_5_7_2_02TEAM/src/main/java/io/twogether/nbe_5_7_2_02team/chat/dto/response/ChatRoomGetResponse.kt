@@ -13,8 +13,8 @@ data class ChatRoomGetResponse(
 
 fun ChatRoom.toGetResponse(): ChatRoomGetResponse =
     ChatRoomGetResponse(
-        id = this.id,
-        postId = this.post.id!!,
+        id = this.id!!,
+        postId = this.post.id,
         title = this.post.title,
         memberCount = this.memberCount,
         updatedAt = this.updatedAt,

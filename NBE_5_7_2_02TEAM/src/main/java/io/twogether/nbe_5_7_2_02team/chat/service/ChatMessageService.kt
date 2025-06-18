@@ -41,9 +41,8 @@ class ChatMessageService(
     ): ChatMessageGetResponse {
         memberId ?: throw ErrorException(ErrorCode.CHAT_MEMBER_NOT_LOGIN)
 
-        val member: Member =
-            memberRepository
-                .findMemberById(memberId) ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
+        val member: Member = memberRepository
+            .findMemberById(memberId) ?: throw ErrorException(ErrorCode.NOT_FOUND_MEMBER)
 
         val chatRoom = chatRoomService.checkChatRoomExists(chatRoomId)
 
@@ -62,8 +61,7 @@ class ChatMessageService(
                     ChatMessage(
                         chatRoom = chatRoom,
                         chatMember = chatMember,
-                        content = content,
-                    ),
+                        content = content)
                 ).id!!
 
         val chatMessage = chatMessageRepository.findById(chatMessageId).orElseThrow()

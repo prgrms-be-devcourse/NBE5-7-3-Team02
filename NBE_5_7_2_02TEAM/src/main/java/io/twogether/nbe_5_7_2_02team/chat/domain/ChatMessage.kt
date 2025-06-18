@@ -4,7 +4,7 @@ import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity
 import jakarta.persistence.*
 
 @Entity
-class ChatMessage(
+data class ChatMessage(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
