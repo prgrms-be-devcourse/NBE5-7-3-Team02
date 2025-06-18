@@ -8,11 +8,9 @@ class Follow(
     @field:ManyToOne(fetch = FetchType.LAZY)
     @field:JoinColumn(name = "follower_id", nullable = false)
     var follower: Member,
-
     @field:ManyToOne(fetch = FetchType.LAZY)
     @field:JoinColumn(name = "following_id", nullable = false)
-    var following: Member
-
+    var following: Member,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
