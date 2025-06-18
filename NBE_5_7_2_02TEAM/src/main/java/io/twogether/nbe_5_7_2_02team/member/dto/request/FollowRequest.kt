@@ -1,19 +1,10 @@
-package io.twogether.nbe_5_7_2_02team.member.dto.request;
+package io.twogether.nbe_5_7_2_02team.member.dto.request
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class FollowRequest {
-
-    private Long followerId;
-    private Long followingId;
-
-    public static FollowRequest of(Long followerId, Long followingId) {
-        return new FollowRequest(followerId, followingId);
-    }
-}
+data class FollowRequest(
+    @field:NotNull(message = "잘못된 팔로우 요청입니다.")
+    val followerId: Long,
+    @field:NotNull(message = "잘못된 팔로우 요청입니다.")
+    val followingId: Long,
+)

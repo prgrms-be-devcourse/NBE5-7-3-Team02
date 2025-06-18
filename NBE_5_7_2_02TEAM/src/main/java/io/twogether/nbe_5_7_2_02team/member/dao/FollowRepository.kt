@@ -1,27 +1,37 @@
-package io.twogether.nbe_5_7_2_02team.member.dao;
+package io.twogether.nbe_5_7_2_02team.member.dao
 
-import io.twogether.nbe_5_7_2_02team.member.domain.Follow;
-import io.twogether.nbe_5_7_2_02team.member.domain.Member;
+import io.twogether.nbe_5_7_2_02team.member.domain.Follow
+import io.twogether.nbe_5_7_2_02team.member.domain.Member
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-public interface FollowRepository extends JpaRepository<Follow, Long> {
-
+interface FollowRepository : JpaRepository<Follow, Long> {
     @Query("SELECT f.follower FROM Follow f where f.following = :member")
-    Page<Member> findFollowerMembers(@Param("member") Member member, Pageable pageable);
+    fun findFollowerMembers(
+        @Param("member") member: Member,
+        pageable: Pageable,
+    ): Page<Member>
 
     @Query("select f.following from Follow f where f.follower = :member")
-    Page<Member> findFollowingMembers(@Param("member") Member member, Pageable pageable);
+    fun findFollowingMembers(
+        @Param("member") member: Member,
+        pageable: Pageable,
+    ): Page<Member>
 
-    boolean existsByFollowerAndFollowing(Member follower, Member following);
+    fun existsByFollowerAndFollowing(
+        follower: Member,
+        following: Member,
+    ): Boolean
 
-    Long countByFollower(Member follower);
+    fun countByFollower(follower: Member): Long
 
-    Long countByFollowing(Member following);
+    fun countByFollowing(following: Member): Long
 
-    void deleteByFollowerAndFollowing(Member follower, Member following);
+    fun deleteByFollowerAndFollowing(
+        follower: Member,
+        following: Member,
+    ): Long
 }
