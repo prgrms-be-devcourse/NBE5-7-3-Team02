@@ -72,8 +72,8 @@ class ChatMemberService(
                     ChatMember(
                         chatRoom = chatRoom,
                         member = member,
-                        chatMemberStatus = ChatMemberStatus.ONLINE
-                    )
+                        chatMemberStatus = ChatMemberStatus.ONLINE,
+                    ),
                 ).id!!
 
         val size = chatMemberRepository.countByChatRoom(chatRoom)

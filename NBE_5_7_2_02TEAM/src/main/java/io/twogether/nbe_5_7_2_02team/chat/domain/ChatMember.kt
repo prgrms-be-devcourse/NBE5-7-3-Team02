@@ -9,16 +9,13 @@ data class ChatMember(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @JoinColumn(name = "chatroom_id")
     @ManyToOne
     val chatRoom: ChatRoom,
-
     @JoinColumn(name = "member_id")
     @ManyToOne
     val member: Member,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    var chatMemberStatus: ChatMemberStatus = ChatMemberStatus.ONLINE
+    var chatMemberStatus: ChatMemberStatus = ChatMemberStatus.ONLINE,
 ) : BaseEntity()
