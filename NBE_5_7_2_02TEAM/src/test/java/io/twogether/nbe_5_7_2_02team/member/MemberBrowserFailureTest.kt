@@ -62,9 +62,6 @@ class MemberBrowserFailureTest : BrowserTestTemplate() {
     @Test
     @DataSet(value = ["datasets/v2/member.yml"], cleanBefore = true, cleanAfter = true)
     @DisplayName("PATCH: /api/member/me - 닉네임 누락 (공백)")
-    @Throws(
-        ErrorException::class,
-    )
     fun `PATCH api member me - blank nickname`() {
         val memberId = 1L
 
