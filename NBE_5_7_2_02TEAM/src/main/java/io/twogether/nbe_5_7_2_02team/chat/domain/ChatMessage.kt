@@ -1,19 +1,56 @@
-package io.twogether.nbe_5_7_2_02team.chat.domain
+package io.twogether.nbe_5_7_2_02team.chat.domain;
 
-import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity
-import jakarta.persistence.*
+import io.twogether.nbe_5_7_2_02team.global.common.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
-data class ChatMessage(
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ChatMessage extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    private Long id;
+
+    @ManyToOne
     @JoinColumn(name = "chatroom_id")
+    private ChatRoom chatRoom;
+
     @ManyToOne
-    val chatRoom: ChatRoom,
     @JoinColumn(name = "chatroom_member_id")
-    @ManyToOne
-    val chatMember: ChatMember,
+    private ChatMember chatMember;
+
     @Column(name = "content")
-    val content: String,
-) : BaseEntity()
+    private String content;
+
+    public ChatMessage(ChatRoom chatRoom, ChatMember chatMember, String content) {
+        this.chatRoom = chatRoom;
+        this.chatMember = chatMember;
+        this.content = content;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public ChatMember getChatMember() {
+        return chatMember;
+    }
+
+    public String getContent() {
+        return content;
+    }
+}
