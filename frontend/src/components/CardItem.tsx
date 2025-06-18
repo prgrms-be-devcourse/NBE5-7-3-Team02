@@ -271,7 +271,7 @@ export const CardItem = ({ post }: CardItemProps) => {
           </div>
 
           {/* 내용 */}
-          <p className="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700 dark:text-gray-400 whitespace-pre-wrap break-all">
             {post.content}
           </p>
 
