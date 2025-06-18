@@ -27,12 +27,12 @@ enum class ErrorCode(
 
     // JWT
     INVALID_ACCESS_SIGNATURE(ErrorStatus.UNAUTHORIZED, "JWT-001", "잘못된 Access Token 서명입니다."),
-    EXPIRED_ACCESS_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-002", "만료된 Access Token 토큰입니다."),
+    EXPIRED_ACCESS_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-002", "로그인이 만료되었습니다.[1]"),
     UNSUPPORTED_ACCESS_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-003", "지원되지 않는 Access Token 토큰입니다."),
     INVALID_ACCESS_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-004", "유효하지 않은 Access Token 토큰입니다."),
     INVALID_REFRESH_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-005", "유효하지 않은 Refresh 토큰입니다."),
     INVALID_REFRESH_SIGNATURE(ErrorStatus.UNAUTHORIZED, "JWT-006", "잘못된 Refresh Token 서명입니다."),
-    EXPIRED_REFRESH_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-007", "로그인이 만료되었습니다."),
+    EXPIRED_REFRESH_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-007", "로그인이 만료되었습니다.[2]"),
     UNSUPPORTED_REFRESH_TOKEN(ErrorStatus.UNAUTHORIZED, "JWT-008", "지원되지 않는 Refresh Token 토큰입니다."),
 
     // IMAGE
